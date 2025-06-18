@@ -8,8 +8,8 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #111;
-      color: white;
+      background-color: #ffffff; /* temporarily white for visibility */
+      color: #111;
       text-align: center;
     }
 
@@ -42,4 +42,50 @@
       font-weight: bold;
       background-color: #b80000;
       color: white;
-      border:
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #880000;
+    }
+
+    footer {
+      margin-top: 80px;
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Buckeye IT Client Portal</h1>
+    <div class="subtitle">Security · Network · Server · WiFi · Compliance</div>
+  </header>
+
+  <main>
+    <p style="font-size: 1.3em; margin-bottom: 40px;">
+      Welcome! Please choose a request type below:
+    </p>
+
+    <a class="button" href="https://forms.office.com/your-new-user-form" target="_blank">
+      ➕ Request New User
+    </a><br>
+
+    <a class="button" href="https://forms.office.com/your-disable-form" target="_blank">
+      ❌ Disable User Account
+    </a><br>
+
+    <a class="button" href="https://forms.office.com/your-general-support-form" target="_blank">
+      🛠 Submit Support Ticket
+    </a>
+  </main>
+
+  <footer>
+    Buckeye IT © 2025 · All Rights Reserved
+  </footer>
+</body>
+</html>
