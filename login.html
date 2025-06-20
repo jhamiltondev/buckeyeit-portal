@@ -3,10 +3,131 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Buckeye IT Client Login</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Buckeye IT Client Portal Login</title>
+  <style>
+    body {
+      background: #4B2E39; /* Deep maroon background */
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      margin: 80px auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .left, .right {
+      flex: 1;
+      padding: 40px;
+    }
+
+    h2 {
+      margin-bottom: 30px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin: 15px 0 5px;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .remember {
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .remember input {
+      margin-right: 10px;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      border: none;
+      background-color: #C8102E; /* Buckeye Red */
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: not-allowed; /* Disabled since Microsoft Login is used */
+    }
+
+    .right .ms-login {
+      margin-top: 20px;
+      background: #2F2F2F;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .footer a {
+      color: #C8102E;
+      text-decoration: none;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<body>
+  <div class="container">
+    <div class="left">
+      <h2>Minimal login form</h2>
+      <form>
+        <label for="username">Username or Email</label>
+        <input type="text" id="username" placeholder="Username or Email" disabled />
+
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Password" disabled />
+
+        <div class="remember">
+          <input type="checkbox" disabled />
+          <label for="remember">Remember Me</label>
+        </div>
+
+        <button type="button" class="btn" disabled>Login now</button>
+      </form>
+    </div>
+
+    <div class="right">
+      <h2>Or login with</h2>
+      <button class="ms-login" onclick="location.href='/.auth/login/aad'">
+        Sign in with Microsoft
+      </button>
+
+      <div class="footer">
+        Not yet registered? <a href="#">Signup here</a>
+      </div>
+    </div>
+  </div>
 
   <!-- Auth Check Script -->
   <script>
@@ -25,41 +146,5 @@
     }
     checkAuth();
   </script>
-
-  <div class="flex bg-white shadow-xl rounded-xl overflow-hidden max-w-5xl w-full">
-    <!-- Login Form -->
-    <div class="w-full md:w-1/2 p-10 space-y-6">
-      <h1 class="text-3xl font-bold text-red-700">Login</h1>
-      <p class="text-gray-600 text-sm">Don't have an account yet? <a href="#" class="text-red-600 hover:underline">Sign Up</a></p>
-
-      <!-- Microsoft Sign-In -->
-      <a href="/.auth/login/aad" class="w-full inline-flex items-center justify-center px-4 py-3 text-white bg-red-700 hover:bg-red-800 rounded-lg font-medium transition">
-        Sign in with Microsoft
-      </a>
-
-      <!-- Divider -->
-      <div class="flex items-center justify-between my-4">
-        <hr class="w-full border-gray-300">
-        <span class="px-2 text-sm text-gray-400">OR</span>
-        <hr class="w-full border-gray-300">
-      </div>
-
-      <!-- External Sign-In -->
-      <a href="https://buckeyeclientauth.ciamlogin.com/89f6ba91-5e7f-45da-8804-b0c4cfbcec4b/oauth2/v2.0/authorize?p=B2C_1A_signup_signin&client_id=462b1d1c-20f3-41fe-8bdb-3ac78a4cd95a&nonce=defaultNonce&redirect_uri=https%3A%2F%2Fportal.buckeyeit.com%2F.auth%2Flogin%2Faad%2Fcallback&scope=openid&response_type=id_token&prompt=login"
-         class="w-full inline-flex items-center justify-center px-4 py-3 text-white bg-gray-700 hover:bg-gray-800 rounded-lg font-medium transition">
-        Sign in / Sign up with Email
-      </a>
-
-      <p class="text-sm text-gray-500 mt-6 text-center">
-        Need help? <a href="mailto:support@buckeyeit.com" class="text-red-600 hover:underline">Contact Support</a>
-      </p>
-    </div>
-
-    <!-- Illustration Panel -->
-    <div class="hidden md:block w-1/2 bg-gray-100 p-8 flex items-center justify-center">
-      <img src="https://undraw.co/api/illustrations/5c7689b7-186d-40d3-8a4b-7c86f4a2a901" alt="Login Illustration" class="max-h-[300px] object-contain">
-    </div>
-  </div>
-
 </body>
 </html>
