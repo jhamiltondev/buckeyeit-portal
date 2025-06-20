@@ -5,6 +5,10 @@
       "allowedRoles": ["anonymous"]
     },
     {
+      "route": "/password.html",
+      "allowedRoles": ["anonymous"]
+    },
+    {
       "route": "/",
       "redirect": "/login",
       "statusCode": 302
@@ -27,10 +31,6 @@
       "route": "/*",
       "allowedRoles": ["authenticated"],
       "rewrite": "/index.html"
-    },
-    {
-      "route": "/password.html",
-      "allowedRoles": ["anonymous"]
     }
   ],
   "navigationFallback": {
@@ -41,7 +41,8 @@
       "/css/*",
       "/images/*",
       "/js/*",
-      "/assets/*"
+      "/assets/*",
+      "/password.html"
     ]
   },
   "globalHeaders": {
