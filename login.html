@@ -2,153 +2,96 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Buckeye IT Client Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Buckeye IT Client Portal</title>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #c8102e 0%, #505050 100%);
-      color: #333;
-    }
-
-    .container {
       display: flex;
-      min-height: 100vh;
       justify-content: center;
       align-items: center;
-      padding: 40px;
+      height: 100vh;
     }
 
     .login-box {
-      display: flex;
       background: white;
-      border-radius: 16px;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-      overflow: hidden;
-      max-width: 900px;
-      width: 100%;
-    }
-
-    .form-section {
       padding: 40px;
-      flex: 1;
-      min-width: 300px;
-      text-align: center;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
     }
 
-    .form-section img.logo {
+    .login-box img {
+      display: block;
+      margin: 0 auto 20px;
       width: 140px;
-      margin-bottom: 25px;
     }
 
-    .form-section h2 {
-      margin-bottom: 10px;
+    .login-box h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #0d122b;
     }
 
-    .form-section p {
-      font-size: 14px;
-      margin-bottom: 30px;
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
     }
 
-    .form-section input {
+    input {
       width: 100%;
       padding: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 14px;
     }
 
-    .btn-login {
-      background: #c8102e;
+    button {
+      width: 100%;
+      background-color: #c8102e;
       color: white;
       border: none;
-      width: 100%;
-      padding: 12px;
+      padding: 14px;
       font-size: 16px;
       border-radius: 6px;
-      cursor: not-allowed;
-    }
-
-    .social-login {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .social-login button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 10px;
-      font-size: 15px;
-      border-radius: 6px;
-      border: none;
       cursor: pointer;
     }
 
-    .ms-login {
-      background: #2f2f2f;
-      color: white;
-    }
-
-    .ms-login img {
-      width: 20px;
-      height: 20px;
-    }
-
-    .image-section {
-      flex: 1;
-      background: #f9f9f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 40px;
-    }
-
-    .image-section img {
-      max-width: 100%;
-      height: auto;
-    }
-
-    @media (max-width: 768px) {
-      .login-box {
-        flex-direction: column;
-      }
-
-      .image-section {
-        padding: 20px;
-      }
+    button:hover {
+      background-color: #a50c22;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="login-box">
-      <div class="form-section">
-        <img src="BuckeyeIT-MainLogo-01-copy-2.png" alt="Buckeye IT Logo" class="logo" />
-        <h2>Login</h2>
-        <p>Don't have an account yet? <a href="https://buckeyeclientauth.ciamlogin.com/buckeyeclientauth.onmicrosoft.com/oauth2/v2.0/authorize?client_id=462b1d1c-20f3-41fe-8bdb-3ac78a4cd95a&nonce=H5QiEgp7Ti&redirect_uri=https://portal.buckeyeit.com/.auth/login/aad/callback&scope=openid&response_type=id_token&prompt=login">Sign Up</a></p>
+  <div class="login-box">
+    <img src="BuckeyeIT-MainLogo-01-copy-2.png" alt="Buckeye IT Logo" />
+    <h2>Client Login</h2>
+    <form onsubmit="event.preventDefault(); location.href='/.auth/login/aad';">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        placeholder="you@example.com"
+        readonly
+        onclick="location.href='/.auth/login/aad';"
+      />
 
-        <input type="email" placeholder="you@example.com" />
-        <input type="password" placeholder="Enter password"/>
-        <button class="btn-login">Login</button>
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        placeholder="Enter password"
+        readonly
+        onclick="location.href='/.auth/login/aad';"
+      />
 
-        <div class="social-login">
-          <button class="ms-login" onclick="location.href='/.auth/login/aad'">
-            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/microsoft.svg" alt="Microsoft Logo" />
-            Sign in with Microsoft
-          </button>
-        </div>
-      </div>
-
-      <div class="image-section">
-        <img src="https://cdn.pixabay.com/photo/2019/10/11/19/36/girl-4540797_1280.png" alt="Illustration" />
-      </div>
-    </div>
+      <button type="submit">Login</button>
+    </form>
   </div>
 
   <!-- Auth Check Script -->
