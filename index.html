@@ -65,23 +65,19 @@
   </style>
 
   <script>
-    async function checkLogin() {
-      const res = await fetch("/.auth/me");
-      const data = await res.json();
-      const user = data[0];
-
-      if (!user) {
-        // Redirect to login if user is not authenticated
-        window.location.href = "/.auth/login/aad";
+  fetch("/.auth/me")
+    .then(res => res.json())
+    .then(data => {
+      if (!data[0]) {
+        // Not authenticated → redirect to login
+        window.location.href = "/login";
       } else {
-        document.getElementById("user-email").innerText = user.userDetails;
-        document.getElementById("user-info").style.display = "block";
-        document.getElementById("logout").style.display = "inline-block";
+        console.log("✅ Authenticated as:", data[0].userDetails);
+        // Optional: show content, hide loading, etc.
+        document.getElementById("main-content").style.display = "block";
       }
-    }
-
-    window.onload = checkLogin;
-  </script>
+    });
+</script>
 </head>
 
 <body>
