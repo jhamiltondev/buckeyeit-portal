@@ -3,36 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VIP Login - Buckeye IT</title>
+  <title>Buckeye IT VIP Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex items-center justify-center px-4">
-
-  <div class="bg-white shadow-lg rounded-xl max-w-md w-full p-8 space-y-6 text-center">
-    <h1 class="text-2xl font-bold text-slate-900">Welcome to Buckeye IT VIP Portal</h1>
-    <p class="text-gray-600">Please sign in to continue</p>
-
-    <!-- Microsoft Login -->
-    <a href="/.auth/login/aad" class="w-full inline-flex items-center justify-center px-4 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
-      <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 1.5h10.5v10.5H1.5V1.5zM12 1.5h10.5v10.5H12V1.5zM1.5 12h10.5v10.5H1.5V12zM12 12h10.5v10.5H12V12z"/></svg>
-      Sign in with Microsoft
-    </a>
-
-    <!-- Divider -->
-    <div class="flex items-center justify-between my-4">
-      <hr class="w-full border-gray-300">
-      <span class="px-2 text-sm text-gray-400">OR</span>
-      <hr class="w-full border-gray-300">
-    </div>
-
-    <!-- Email/Password Sign-In -->
-<a href="https://buckeyeclientauth.ciamlogin.com/buckeyeclientauth.onmicrosoft.com/oauth2/v2.0/authorize?client_id=462b1d1c-20f3-41fe-8bdb-3ac78a4cd95a&nonce=TgxdshQFxa&redirect_uri=https://portal.buckeyeit.com/.auth/login/aad/callback&scope=openid&response_type=id_token&prompt=login"
-   class="your-tailwind-classes">
-   Sign in / Sign up with Email
-</a>
-    <!-- Optional Footer -->
-    <p class="text-sm text-gray-400 mt-6">Need help? <a href="mailto:support@buckeyeit.com" class="text-blue-600 hover:underline">Contact Support</a></p>
-  </div>
 
   <!-- Auth Check Script -->
   <script>
@@ -41,18 +13,79 @@
         const res = await fetch('/.auth/me');
         const data = await res.json();
         const clientPrincipal = data.clientPrincipal;
-
         if (clientPrincipal && clientPrincipal.userDetails) {
-          // Already signed in → redirect to dashboard
           window.location.href = "/index.html";
         }
       } catch (error) {
         console.error("Auth check failed:", error);
       }
     }
-
     checkAuth();
   </script>
+</head>
 
+<body class="bg-gradient-to-br from-purple-500 to-pink-400 min-h-screen flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+    
+    <!-- Left: Login Form -->
+    <div class="p-10 flex flex-col justify-center space-y-6">
+      <h2 class="text-3xl font-bold text-gray-800">Login</h2>
+      <p class="text-gray-500 text-sm">Don't have an account yet? <a href="#" class="text-purple-600 hover:underline">Sign Up</a></p>
+
+      <!-- Email Login -->
+      <form class="space-y-4">
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+          <input id="email" type="email" placeholder="you@example.com"
+            class="w-full px-4 py-2 mt-1 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <input id="password" type="password" placeholder="Enter 6 character or more"
+            class="w-full px-4 py-2 mt-1 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+          <div class="text-right mt-1">
+            <a href="#" class="text-xs text-purple-600 hover:underline">Forgot Password?</a>
+          </div>
+        </div>
+
+        <div class="flex items-center">
+          <input id="remember" type="checkbox" class="mr-2">
+          <label for="remember" class="text-sm text-gray-600">Remember me</label>
+        </div>
+
+        <button type="submit"
+          class="w-full py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition">
+          LOGIN
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="flex items-center justify-between my-4">
+        <hr class="w-full border-gray-300">
+        <span class="px-2 text-sm text-gray-400">or login with</span>
+        <hr class="w-full border-gray-300">
+      </div>
+
+      <!-- Social Buttons -->
+      <div class="space-y-2">
+        <a href="/.auth/login/aad"
+          class="w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" class="w-5 h-5 mr-2" alt="Microsoft Logo">
+          Sign in with Microsoft
+        </a>
+        <a href="#"
+          class="w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5 mr-2" alt="Google Logo">
+          Sign in with Google
+        </a>
+      </div>
+    </div>
+
+    <!-- Right: Illustration -->
+    <div class="hidden md:flex items-center justify-center bg-white p-10">
+      <img src="https://cdni.iconscout.com/illustration/premium/thumb/business-woman-using-computer-4498312-3738982.png" alt="Illustration" class="w-80">
+    </div>
+  </div>
 </body>
 </html>
