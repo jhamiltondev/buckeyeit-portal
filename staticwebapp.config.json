@@ -11,8 +11,29 @@
   },
   "routes": [
     {
+      "route": "/login",
+      "redirect": "/.auth/login/aad?post_login_redirect_uri=/"
+    },
+    {
+      "route": "/logout",
+      "redirect": "/.auth/logout"
+    },
+    {
+      "route": "/",
+      "allowedRoles": ["authenticated"],
+      "rewrite": "/index.html"
+    },
+    {
       "route": "/*",
       "allowedRoles": ["authenticated"]
     }
-  ]
+  ],
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/.auth/*"]
+  },
+  "runtime": {
+    "tokenStoreEnabled": true,
+    "cookieExpirationInDays": 1
+  }
 }
