@@ -2,25 +2,18 @@
   "routes": [
     {
       "route": "/",
-      "rewrite": "/index.html",
-      "allowedRoles": ["authenticated"]
+      "redirect": "/login",
+      "statusCode": 302
     },
     {
       "route": "/login",
-      "serve": "/login.html",
-      "allowedRoles": ["anonymous"]
+      "serve": "/login.html"
     },
     {
-      "route": "/login.html",
-      "allowedRoles": ["anonymous"]
+      "route": "/login.html"
     },
     {
-      "route": "/.auth/*",
-      "allowedRoles": ["anonymous"]
-    },
-    {
-      "route": "/index.html",
-      "allowedRoles": ["authenticated"]
+      "route": "/.auth/*"
     }
   ],
   "navigationFallback": {
@@ -29,12 +22,11 @@
       "/login.html",
       "/.auth/*",
       "/css/*",
-      "/js/*",
-      "/images/*"
+      "/images/*",
+      "/js/*"
     ]
   },
   "globalHeaders": {
-    "Access-Control-Allow-Origin": "*",
     "Cache-Control": "no-cache"
   },
   "platform": {
