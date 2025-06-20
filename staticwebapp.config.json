@@ -3,7 +3,7 @@
     "identityProviders": {
       "azureActiveDirectory": {
         "registration": {
-          "openIdIssuer": "https://login.microsoftonline.com/89f6ba91-5e7f-45da-8804-b0c4cfbcec4b/v2.0",
+         "openIdIssuer": "https://buckeyeclientauth.ciamlogin.com/89f6b9a1-5e7f-45da-8804-b0c4cfbce4cb/v2.0",
           "clientId": "0c527b69-6835-444c-888d-7834025f7003"
         }
       }
