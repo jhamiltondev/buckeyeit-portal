@@ -3,16 +3,16 @@
     "identityProviders": {
       "azureActiveDirectory": {
         "registration": {
-         "openIdIssuer": "https://buckeyeclientauth.ciamlogin.com/89f6b9a1-5e7f-45da-8804-b0c4cfbce4cb/v2.0",
-          "clientId": "0c527b69-6835-444c-888d-7834025f7003"
+          "openIdIssuer": "https://login.microsoftonline.com/b054a3b7-3fad-4666-a7d7-44a8add4a68c/v2.0",
+          "clientId": "27d2b98a-bf4b-4c26-aa07-afda5c43cd47"
         }
       }
     }
-},
+  },
   "routes": [
     {
       "route": "/*",
-      "allowedRoles": ["anonymous", "authenticated"]
+      "allowedRoles": ["authenticated"]
     }
   ]
 }
