@@ -13,6 +13,19 @@
       "route": "/login.html"
     },
     {
+      "route": "/index.html",
+      "allowedRoles": ["authenticated"]
+    },
+    {
+      "route": "/dashboard",
+      "allowedRoles": ["authenticated"]
+    },
+    {
+      "route": "/*",
+      "allowedRoles": ["authenticated"],
+      "rewrite": "/index.html"
+    },
+    {
       "route": "/.auth/*"
     }
   ],
@@ -27,6 +40,7 @@
     ]
   },
   "globalHeaders": {
+    "Access-Control-Allow-Origin": "*",
     "Cache-Control": "no-cache"
   },
   "platform": {
