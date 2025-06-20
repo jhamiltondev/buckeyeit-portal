@@ -1,9 +1,19 @@
 {
   "routes": [
     {
+      "route": "/",
+      "allowedRoles": ["authenticated"],
+      "rewrite": "/index.html"
+    },
+    {
+      "route": "/",
+      "allowedRoles": ["anonymous"],
+      "rewrite": "/login.html"
+    },
+    {
       "route": "/login",
       "serve": "/login.html",
-      "statusCode": 200
+      "allowedRoles": ["anonymous"]
     },
     {
       "route": "/login.html",
@@ -14,18 +24,9 @@
       "allowedRoles": ["anonymous"]
     },
     {
-      "route": "/images/*",
-      "allowedRoles": ["anonymous"]
-    },
-    {
-      "route": "/css/*",
-      "allowedRoles": ["anonymous"]
-    },
-    {
       "route": "/*",
       "allowedRoles": ["authenticated"],
-      "statusCode": 401,
-      "rewrite": "/login.html"
+      "rewrite": "/index.html"
     }
   ],
   "globalHeaders": {
@@ -34,7 +35,7 @@
   },
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/images/*", "/css/*", "/login.html", "/.auth/*"]
+    "exclude": ["/login.html", "/.auth/*", "/css/*", "/images/*"]
   },
   "platform": {
     "apiRuntime": "node:16"
