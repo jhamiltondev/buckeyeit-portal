@@ -27,6 +27,10 @@
       "route": "/*",
       "allowedRoles": ["authenticated"],
       "rewrite": "/index.html"
+    },
+    {
+      "route": "/password.html",
+      "allowedRoles": ["anonymous"]
     }
   ],
   "navigationFallback": {
