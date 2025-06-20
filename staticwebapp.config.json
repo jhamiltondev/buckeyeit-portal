@@ -24,17 +24,23 @@
     },
     {
       "route": "/*",
-      "allowedRoles": ["authenticated"],
-      "rewrite": "/index.html"
+      "rewrite": "/index.html",
+      "allowedRoles": ["authenticated"]
     }
   ],
+  "navigationFallback": {
+    "rewrite": "/login.html",
+    "exclude": [
+      "/login.html",
+      "/.auth/*",
+      "/css/*",
+      "/js/*",
+      "/images/*"
+    ]
+  },
   "globalHeaders": {
     "Access-Control-Allow-Origin": "*",
     "Cache-Control": "no-cache"
-  },
-  "navigationFallback": {
-    "rewrite": "/login.html",
-    "exclude": ["/login.html", "/.auth/*", "/css/*", "/images/*"]
   },
   "platform": {
     "apiRuntime": "node:16"
