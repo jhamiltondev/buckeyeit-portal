@@ -19,7 +19,7 @@
 
   <!-- Main Section -->
   <main class="max-w-6xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-semibold text-center mb-6">Welcome, VIP Client</h1>
+    <h1 id="welcome-message" class="text-3xl font-semibold text-center mb-6">Welcome!</h1>
     <p class="text-center text-gray-600 mb-10">Automated tools and requests at your fingertips.</p>
 
     <!-- Grid of VIP Cards -->
@@ -68,5 +68,28 @@
     </div>
   </main>
 
+  <!-- Auth Check + Personalized Welcome -->
+  <script>
+    async function personalizeDashboard() {
+      try {
+        const res = await fetch('/.auth/me');
+        const data = await res.json();
+        const user = data.clientPrincipal;
+
+        if (user && user.userClaims) {
+          const nameClaim = user.userClaims.find(c => c.typ === 'name');
+          const displayName = nameClaim ? nameClaim.val : user.userDetails;
+
+          document.getElementById('welcome-message').textContent = `Welcome, ${displayName}!`;
+        } else {
+          document.getElementById('welcome-message').textContent = "Welcome!";
+        }
+      } catch (err) {
+        console.error("Error fetching user info:", err);
+      }
+    }
+
+    personalizeDashboard();
+  </script>
 </body>
 </html>
