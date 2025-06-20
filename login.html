@@ -3,129 +3,100 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Buckeye IT Client Portal Login</title>
+  <title>Sign in - Buckeye IT Portal</title>
   <style>
     body {
-      background: #4B2E39; /* Deep maroon background */
-      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
     }
 
-    .container {
-      width: 100%;
-      max-width: 800px;
-      margin: 80px auto;
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-      overflow: hidden;
+    header {
+      background-color: #0d122b;
+      color: white;
+      padding: 20px;
+      font-size: 20px;
+      font-weight: bold;
       display: flex;
-      flex-wrap: wrap;
+      justify-content: center;
     }
 
-    .left, .right {
-      flex: 1;
+    .login-container {
+      max-width: 400px;
+      margin: 80px auto;
+      background: white;
       padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
     }
 
-    h2 {
+    .login-container h2 {
+      margin-bottom: 10px;
+      color: #0d122b;
+    }
+
+    .login-container p {
+      color: #666;
+      font-size: 14px;
       margin-bottom: 30px;
-      color: #333;
-      font-weight: 600;
     }
 
-    label {
-      font-weight: 600;
-      display: block;
-      margin: 15px 0 5px;
-      color: #333;
-    }
-
-    input[type="text"],
-    input[type="password"] {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+    .ms-login-btn {
+      background-color: #2F2F2F;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
       font-size: 16px;
-    }
-
-    .remember {
-      margin-top: 15px;
+      cursor: pointer;
       display: flex;
       align-items: center;
-    }
-
-    .remember input {
-      margin-right: 10px;
-    }
-
-    .btn {
-      margin-top: 20px;
-      padding: 12px;
+      justify-content: center;
+      gap: 10px;
       width: 100%;
-      border: none;
-      background-color: #C8102E; /* Buckeye Red */
-      color: white;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: not-allowed; /* Disabled since Microsoft Login is used */
+      transition: background-color 0.3s ease;
     }
 
-    .right .ms-login {
-      margin-top: 20px;
-      background: #2F2F2F;
-      color: white;
-      border: none;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 6px;
-      width: 100%;
-      cursor: pointer;
+    .ms-login-btn:hover {
+      background-color: #1e1e1e;
     }
 
-    .footer {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #666;
+    .ms-login-btn img {
+      width: 22px;
+      height: 22px;
     }
 
-    .footer a {
-      color: #C8102E;
-      text-decoration: none;
+    .footer-note {
+      margin-top: 30px;
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    @media (max-width: 500px) {
+      .login-container {
+        margin: 40px 20px;
+        padding: 30px 20px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="left">
-      <h2>Minimal login form</h2>
-      <form>
-        <label for="username">Username or Email</label>
-        <input type="text" id="username" placeholder="Username or Email" disabled />
+  <header>
+    Buckeye <span style="color:#c8102e">&nbsp;IT Client Portal</span>
+  </header>
 
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Password" disabled />
+  <div class="login-container">
+    <h2>Welcome</h2>
+    <p>Sign in to access your VIP tools and requests</p>
 
-        <div class="remember">
-          <input type="checkbox" disabled />
-          <label for="remember">Remember Me</label>
-        </div>
+    <button class="ms-login-btn" onclick="location.href='/.auth/login/aad'">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/microsoft.svg" alt="Microsoft Logo" />
+      Sign in with Microsoft
+    </button>
 
-        <button type="button" class="btn" disabled>Login now</button>
-      </form>
-    </div>
-
-    <div class="right">
-      <h2>Or login with</h2>
-      <button class="ms-login" onclick="location.href='/.auth/login/aad'">
-        Sign in with Microsoft
-      </button>
-
-      <div class="footer">
-        Not yet registered? <a href="#">Signup here</a>
-      </div>
+    <div class="footer-note">
+      Powered by Buckeye IT · Secure Microsoft Entra Login
     </div>
   </div>
 
