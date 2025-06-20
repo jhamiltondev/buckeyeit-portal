@@ -2,13 +2,8 @@
   "routes": [
     {
       "route": "/",
-      "allowedRoles": ["authenticated"],
-      "rewrite": "/index.html"
-    },
-    {
-      "route": "/",
-      "allowedRoles": ["anonymous"],
-      "rewrite": "/login.html"
+      "rewrite": "/index.html",
+      "allowedRoles": ["authenticated"]
     },
     {
       "route": "/login",
@@ -38,7 +33,7 @@
     "Cache-Control": "no-cache"
   },
   "navigationFallback": {
-    "rewrite": "/index.html",
+    "rewrite": "/login.html",
     "exclude": ["/login.html", "/.auth/*", "/css/*", "/images/*"]
   },
   "platform": {
