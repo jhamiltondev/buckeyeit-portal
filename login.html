@@ -9,104 +9,80 @@
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #c8102e 0%, #505050 100%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
       height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .login-box {
       background: white;
       padding: 40px;
       border-radius: 16px;
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      text-align: center;
     }
 
     .login-box img {
-      display: block;
-      margin: 0 auto 20px;
       width: 140px;
+      margin-bottom: 20px;
     }
 
     .login-box h2 {
-      text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       color: #0d122b;
     }
 
-    label {
+    .auth-button {
       display: block;
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
-
-    input {
       width: 100%;
-      padding: 12px;
       margin-bottom: 16px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-
-    button {
-      width: 100%;
-      background-color: #c8102e;
-      color: white;
-      border: none;
-      padding: 14px;
+      padding: 12px;
       font-size: 16px;
       border-radius: 6px;
+      border: none;
       cursor: pointer;
+      color: white;
     }
 
-    button:hover {
-      background-color: #a50c22;
-    }
+    .ms-login { background-color: #2f2f2f; }
+    .google-login { background-color: #db4437; }
+    .facebook-login { background-color: #4267B2; }
+
+    .auth-button:hover { opacity: 0.9; }
   </style>
 </head>
 <body>
   <div class="login-box">
     <img src="BuckeyeIT-MainLogo-01-copy-2.png" alt="Buckeye IT Logo" />
-    <h2>Client Login</h2>
-    <form onsubmit="event.preventDefault(); location.href='/.auth/login/aad';">
-      <label for="email">Email</label>
-      <input
-        type="email"
-        id="email"
-        placeholder="you@example.com"
-        readonly
-        onclick="location.href='/.auth/login/aad';"
-      />
+    <h2>Sign in to Buckeye IT Portal</h2>
 
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        placeholder="Enter password"
-        readonly
-        onclick="location.href='/.auth/login/aad';"
-      />
+    <button class="auth-button ms-login" onclick="location.href='/.auth/login/aad'">
+      Sign in with Microsoft
+    </button>
 
-      <button type="submit">Login</button>
-    </form>
+    <button class="auth-button google-login" onclick="location.href='/.auth/login/google'">
+      Sign in with Google
+    </button>
+
+    <button class="auth-button facebook-login" onclick="location.href='/.auth/login/facebook'">
+      Sign in with Facebook
+    </button>
   </div>
 
-  <!-- Auth Check Script -->
+  <!-- Auth Check -->
   <script>
     async function checkAuth() {
       try {
         const res = await fetch('/.auth/me');
         const data = await res.json();
-        const clientPrincipal = data.clientPrincipal;
-
-        if (clientPrincipal && clientPrincipal.userDetails) {
+        if (data.clientPrincipal && data.clientPrincipal.userDetails) {
           window.location.href = "/index.html";
         }
-      } catch (error) {
-        console.error("Auth check failed:", error);
+      } catch (err) {
+        console.error("Auth check failed:", err);
       }
     }
     checkAuth();
