@@ -68,28 +68,38 @@
     </div>
   </main>
 
-  <!-- Auth Check + Personalized Welcome -->
-  <script>
-    async function personalizeDashboard() {
-      try {
-        const res = await fetch('/.auth/me');
-        const data = await res.json();
-        const user = data.clientPrincipal;
+  <h1 id="welcome-msg" class="text-3xl font-semibold text-center mb-6">Welcome!</h1>
 
-        if (user && user.userClaims) {
-          const nameClaim = user.userClaims.find(c => c.typ === 'name');
-          const displayName = nameClaim ? nameClaim.val : user.userDetails;
+<script>
+  async function getUserName() {
+    try {
+      const response = await fetch('/.auth/me');
+      const data = await response.json();
 
-          document.getElementById('welcome-message').textContent = `Welcome, ${displayName}!`;
-        } else {
-          document.getElementById('welcome-message').textContent = "Welcome!";
+      const user = data.clientPrincipal;
+
+      // Attempt to find the "name" claim
+      let displayName = null;
+      if (user && user.userClaims) {
+        const nameClaim = user.userClaims.find(claim => claim.typ === "name");
+        if (nameClaim) {
+          displayName = nameClaim.val;
         }
-      } catch (err) {
-        console.error("Error fetching user info:", err);
       }
-    }
 
-    personalizeDashboard();
-  </script>
+      // Fallback to userDetails (like email prefix) if displayName is not found
+      if (!displayName && user && user.userDetails) {
+        displayName = user.userDetails.split('@')[0];
+      }
+
+      // Display the welcome message
+      document.getElementById("welcome-msg").textContent = `Welcome, ${displayName}!`;
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+    }
+  }
+
+  getUserName();
+</script>
 </body>
 </html>
