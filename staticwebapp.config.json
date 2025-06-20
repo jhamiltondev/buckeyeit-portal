@@ -1,0 +1,42 @@
+{
+  "routes": [
+    {
+      "route": "/login",
+      "serve": "/login.html",
+      "statusCode": 200
+    },
+    {
+      "route": "/login.html",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/.auth/*",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/images/*",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/css/*",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/*",
+      "allowedRoles": ["authenticated"],
+      "statusCode": 401,
+      "rewrite": "/login.html"
+    }
+  ],
+  "globalHeaders": {
+    "Access-Control-Allow-Origin": "*",
+    "Cache-Control": "no-cache"
+  },
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/images/*", "/css/*", "/login.html", "/.auth/*"]
+  },
+  "platform": {
+    "apiRuntime": "node:16"
+  }
+}
