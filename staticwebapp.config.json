@@ -1,43 +1,34 @@
-{
-  "routes": [
-    {
-      "route": "/",
-      "allowedRoles": ["authenticated"],
-      "rewrite": "/index.html"
-    },
-    {
-      "route": "/",
-      "allowedRoles": ["anonymous"],
-      "rewrite": "/login.html"
-    },
-    {
-      "route": "/login",
-      "serve": "/login.html",
-      "allowedRoles": ["anonymous"]
-    },
-    {
-      "route": "/login.html",
-      "allowedRoles": ["anonymous"]
-    },
-    {
-      "route": "/.auth/*",
-      "allowedRoles": ["anonymous"]
-    },
-    {
-      "route": "/*",
-      "allowedRoles": ["authenticated"],
-      "rewrite": "/index.html"
-    }
-  ],
-  "globalHeaders": {
-    "Access-Control-Allow-Origin": "*",
-    "Cache-Control": "no-cache"
+"routes": [
+  {
+    "route": "/",
+    "allowedRoles": ["authenticated"],
+    "rewrite": "/index.html"
   },
-  "navigationFallback": {
-    "rewrite": "/index.html",
-    "exclude": ["/login.html", "/.auth/*", "/css/*", "/images/*"]
+  {
+    "route": "/",
+    "allowedRoles": ["anonymous"],
+    "rewrite": "/login.html"
   },
-  "platform": {
-    "apiRuntime": "node:16"
+  {
+    "route": "/login",
+    "serve": "/login.html",
+    "allowedRoles": ["anonymous"]
+  },
+  {
+    "route": "/login.html",
+    "allowedRoles": ["anonymous"]
+  },
+  {
+    "route": "/.auth/*",
+    "allowedRoles": ["anonymous"]
+  },
+  {
+    "route": "/index.html",
+    "allowedRoles": ["authenticated"]
+  },
+  {
+    "route": "/*",
+    "allowedRoles": ["authenticated"],
+    "rewrite": "/index.html"
   }
-}
+]
