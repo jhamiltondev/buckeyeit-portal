@@ -32,7 +32,8 @@
       "/.auth/*",
       "/css/*",
       "/images/*",
-      "/js/*"
+      "/js/*",
+      "/assets/*"
     ]
   },
   "globalHeaders": {
