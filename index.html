@@ -78,22 +78,32 @@
 
       const user = data.clientPrincipal;
 
-      // Attempt to find the "name" claim
+     <script>
+  async function getUserName() {
+    try {
+      const response = await fetch('/.auth/me');
+      const data = await response.json();
+      console.log("AUTH DATA:", data);
+
+      const user = data.clientPrincipal;
+
       let displayName = null;
+
       if (user && user.userClaims) {
+        // Log claims to debug what's in there
+        console.log("User Claims:", user.userClaims);
+
         const nameClaim = user.userClaims.find(claim => claim.typ === "name");
         if (nameClaim) {
           displayName = nameClaim.val;
         }
       }
 
-      // Fallback to userDetails (like email prefix) if displayName is not found
       if (!displayName && user && user.userDetails) {
         displayName = user.userDetails.split('@')[0];
       }
 
-      // Display the welcome message
-      document.getElementById("welcome-msg").textContent = `Welcome, ${displayName}!`;
+      document.getElementById("welcome-msg").textContent = `Welcome, ${displayName || 'User'}!`;
     } catch (error) {
       console.error("Error fetching user info:", error);
     }
