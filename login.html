@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Buckeye IT Client Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
 
   <!-- Auth Check Script -->
   <script>
@@ -13,6 +15,7 @@
         const res = await fetch('/.auth/me');
         const data = await res.json();
         const clientPrincipal = data.clientPrincipal;
+
         if (clientPrincipal && clientPrincipal.userDetails) {
           window.location.href = "/index.html";
         }
@@ -22,70 +25,41 @@
     }
     checkAuth();
   </script>
-</head>
 
-<body class="bg-gradient-to-br from-purple-500 to-pink-400 min-h-screen flex items-center justify-center p-4">
-  <div class="bg-white rounded-xl shadow-2xl max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 overflow-hidden">
-    
-    <!-- Left: Login Form -->
-    <div class="p-10 flex flex-col justify-center space-y-6">
-      <h2 class="text-3xl font-bold text-gray-800">Login</h2>
-      <p class="text-gray-500 text-sm">Don't have an account yet? <a href="#" class="text-purple-600 hover:underline">Sign Up</a></p>
+  <div class="flex bg-white shadow-xl rounded-xl overflow-hidden max-w-5xl w-full">
+    <!-- Login Form -->
+    <div class="w-full md:w-1/2 p-10 space-y-6">
+      <h1 class="text-3xl font-bold text-red-700">Login</h1>
+      <p class="text-gray-600 text-sm">Don't have an account yet? <a href="#" class="text-red-600 hover:underline">Sign Up</a></p>
 
-      <!-- Email Login -->
-      <form class="space-y-4">
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-          <input id="email" type="email" placeholder="you@example.com"
-            class="w-full px-4 py-2 mt-1 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
-        </div>
-
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-          <input id="password" type="password" placeholder="Enter 6 character or more"
-            class="w-full px-4 py-2 mt-1 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
-          <div class="text-right mt-1">
-            <a href="#" class="text-xs text-purple-600 hover:underline">Forgot Password?</a>
-          </div>
-        </div>
-
-        <div class="flex items-center">
-          <input id="remember" type="checkbox" class="mr-2">
-          <label for="remember" class="text-sm text-gray-600">Remember me</label>
-        </div>
-
-        <button type="submit"
-          class="w-full py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition">
-          LOGIN
-        </button>
-      </form>
+      <!-- Microsoft Sign-In -->
+      <a href="/.auth/login/aad" class="w-full inline-flex items-center justify-center px-4 py-3 text-white bg-red-700 hover:bg-red-800 rounded-lg font-medium transition">
+        Sign in with Microsoft
+      </a>
 
       <!-- Divider -->
       <div class="flex items-center justify-between my-4">
         <hr class="w-full border-gray-300">
-        <span class="px-2 text-sm text-gray-400">or login with</span>
+        <span class="px-2 text-sm text-gray-400">OR</span>
         <hr class="w-full border-gray-300">
       </div>
 
-      <!-- Social Buttons -->
-      <div class="space-y-2">
-        <a href="/.auth/login/aad"
-          class="w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" class="w-5 h-5 mr-2" alt="Microsoft Logo">
-          Sign in with Microsoft
-        </a>
-        <a href="#"
-          class="w-full inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
-          <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5 mr-2" alt="Google Logo">
-          Sign in with Google
-        </a>
-      </div>
+      <!-- External Sign-In -->
+      <a href="https://buckeyeclientauth.ciamlogin.com/89f6ba91-5e7f-45da-8804-b0c4cfbcec4b/oauth2/v2.0/authorize?p=B2C_1A_signup_signin&client_id=462b1d1c-20f3-41fe-8bdb-3ac78a4cd95a&nonce=defaultNonce&redirect_uri=https%3A%2F%2Fportal.buckeyeit.com%2F.auth%2Flogin%2Faad%2Fcallback&scope=openid&response_type=id_token&prompt=login"
+         class="w-full inline-flex items-center justify-center px-4 py-3 text-white bg-gray-700 hover:bg-gray-800 rounded-lg font-medium transition">
+        Sign in / Sign up with Email
+      </a>
+
+      <p class="text-sm text-gray-500 mt-6 text-center">
+        Need help? <a href="mailto:support@buckeyeit.com" class="text-red-600 hover:underline">Contact Support</a>
+      </p>
     </div>
 
-    <!-- Right: Illustration -->
-    <div class="hidden md:flex items-center justify-center bg-white p-10">
-      <img src="https://cdni.iconscout.com/illustration/premium/thumb/business-woman-using-computer-4498312-3738982.png" alt="Illustration" class="w-80">
+    <!-- Illustration Panel -->
+    <div class="hidden md:block w-1/2 bg-gray-100 p-8 flex items-center justify-center">
+      <img src="https://undraw.co/api/illustrations/5c7689b7-186d-40d3-8a4b-7c86f4a2a901" alt="Login Illustration" class="max-h-[300px] object-contain">
     </div>
   </div>
+
 </body>
 </html>
