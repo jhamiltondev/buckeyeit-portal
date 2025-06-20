@@ -2,105 +2,82 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Buckeye IT Client Portal</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #ffffff;
-      color: #111;
-      text-align: center;
-    }
-
-    header {
-      background-color: #b80000;
-      padding: 20px 10px;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2.5em;
-      color: white;
-    }
-
-    .subtitle {
-      font-size: 1.1em;
-      color: #f2f2f2;
-      margin-top: 5px;
-    }
-
-    main {
-      padding: 60px 20px;
-    }
-
-    .button {
-      display: inline-block;
-      margin: 20px;
-      padding: 20px 40px;
-      font-size: 18px;
-      font-weight: bold;
-      background-color: #b80000;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background-color 0.3s ease;
-    }
-
-    .button:hover {
-      background-color: #880000;
-    }
-
-    footer {
-      margin-top: 80px;
-      font-size: 0.9em;
-      color: #666;
-    }
-
-    #user-info, #logout {
-      margin-top: 30px;
-    }
-  </style>
-  
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-white text-gray-800 font-sans">
 
-<body>
-  <header>
-    <h1>Buckeye IT Client Portal</h1>
-    <div class="subtitle">Security · Network · Server · WiFi · Compliance</div>
+  <!-- Top Navigation -->
+  <header class="bg-slate-900 text-white p-6 flex items-center justify-between">
+    <div class="text-2xl font-bold">Buckeye IT</div>
+    <nav class="space-x-4 text-sm">
+      <a href="/" class="hover:underline">Back to main site</a>
+      <a href="/login" class="hover:underline">Login</a>
+    </nav>
   </header>
 
-  <main>
-    <p style="font-size: 1.3em; margin-bottom: 40px;">
-      Welcome! Please choose a request type below:
-    </p>
+  <!-- Main Section -->
+  <main class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-semibold text-center mb-6">How can we help?</h1>
 
-    <a class="button" href="https://forms.office.com/Pages/ResponsePage.aspx?id=t6NUsK0_Zkan10SordSmjHstGy9klzVGtV5wZBg8LwFURDkyTVVMNFpUQzRLRlBRTzk0WFRTMUk4WC4u" target="_blank">
-      ➕ Request New User
-    </a><br>
-
-    <a class="button" href="https://forms.office.com/Pages/ResponsePage.aspx?id=t6NUsK0_Zkan10SordSmjHstGy9klzVGtV5wZBg8LwFUMkxWN1IzTzROUVRVMkM4MTFNMFZOS0sxOS4u" target="_blank">
-      ❌ Disable User Account
-    </a><br>
-
-    <a class="button" href="https://forms.office.com/Pages/ResponsePage.aspx?id=t6NUsK0_Zkan10SordSmjHstGy9klzVGtV5wZBg8LwFUOUlUSkRTQjZBQkJCQzhDNkhXRDlWQklSSy4u" target="_blank">
-      🔑 Request a Password Reset
-    </a>
-
-    <div id="user-info" style="display: none; margin-top: 30px;">
-      <strong>Logged in as:</strong> <span id="user-email"></span>
+    <!-- Search -->
+    <div class="flex justify-center mb-10">
+      <input
+        type="text"
+        placeholder="Search for guides"
+        class="w-full max-w-xl rounded-full border border-gray-300 px-5 py-3 focus:outline-none shadow-sm"
+      />
+      <button class="ml-3 px-5 py-3 bg-slate-900 text-white rounded-full hover:bg-slate-700">
+        Search
+      </button>
     </div>
 
-    <div style="margin-top: 20px;">
-      <a href="/.auth/logout" id="logout" class="button" style="display: none;">Logout</a>
+    <!-- Grid of Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Card 1 -->
+      <div class="border rounded-xl p-6 text-center shadow hover:shadow-md transition">
+        <div class="text-4xl mb-2">🚀</div>
+        <h2 class="font-semibold text-lg mb-1">Getting Started with Buckeye</h2>
+        <p class="text-sm text-gray-600">Step-by-step tutorials to help you onboard.</p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="border rounded-xl p-6 text-center shadow hover:shadow-md transition">
+        <div class="text-4xl mb-2">👩‍💼</div>
+        <h2 class="font-semibold text-lg mb-1">Admin Guide</h2>
+        <p class="text-sm text-gray-600">Manage your organization’s access and settings.</p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="border rounded-xl p-6 text-center shadow hover:shadow-md transition">
+        <div class="text-4xl mb-2">🔒</div>
+        <h2 class="font-semibold text-lg mb-1">Security Overview</h2>
+        <p class="text-sm text-gray-600">Understand our security and compliance measures.</p>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="border rounded-xl p-6 text-center shadow hover:shadow-md transition">
+        <div class="text-4xl mb-2">💡</div>
+        <h2 class="font-semibold text-lg mb-1">App Features</h2>
+        <p class="text-sm text-gray-600">Learn about everything our platform can do.</p>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="border rounded-xl p-6 text-center shadow hover:shadow-md transition">
+        <div class="text-4xl mb-2">📄</div>
+        <h2 class="font-semibold text-lg mb-1">eSignature Guide</h2>
+        <p class="text-sm text-gray-600">Understand legal and usage details for eSignature.</p>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="border rounded-xl p-6 text-center shadow hover:shadow-md transition">
+        <div class="text-4xl mb-2">📘</div>
+        <h2 class="font-semibold text-lg mb-1">Documentation</h2>
+        <p class="text-sm text-gray-600">Browse help articles and knowledge base.</p>
+      </div>
     </div>
   </main>
 
-  <footer>
-    Have questions? <a href="mailto:support@buckeyeit.com" style="color:#b80000; text-decoration: none;">Email support@buckeyeit.com</a><br>
-    Buckeye IT © 2025 · All Rights Reserved
-  </footer>
 </body>
 </html>
