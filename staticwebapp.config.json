@@ -13,20 +13,16 @@
       "route": "/login.html"
     },
     {
-      "route": "/index.html",
-      "allowedRoles": ["authenticated"]
+      "route": "/.auth/*"
     },
     {
-      "route": "/dashboard",
+      "route": "/index.html",
       "allowedRoles": ["authenticated"]
     },
     {
       "route": "/*",
       "allowedRoles": ["authenticated"],
       "rewrite": "/index.html"
-    },
-    {
-      "route": "/.auth/*"
     }
   ],
   "navigationFallback": {
