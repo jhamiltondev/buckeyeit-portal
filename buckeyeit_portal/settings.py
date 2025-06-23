@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,12 +27,7 @@ SECRET_KEY = 'django-insecure-&y*ld2(2yt9#e5)+u_mnq(fns-fg28jyan8aco&96ljyohl5wm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'buckeyeitclientportal.azurewebsites.net',
-    'clientportalbuckeyeit.azurewebsites.net',
-    '127.0.0.1',
-    'portal.buckeyeit.com',
-]
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -84,14 +81,11 @@ WSGI_APPLICATION = 'buckeyeit_portal.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'your_db_name',
-        'USER': 'your_db_user',
-        'PASSWORD': 'your_db_password',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default='postgres://USER:PASSWORD@HOST:5432/DBNAME',
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
 
 
@@ -129,8 +123,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'portal' / 'static']
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
