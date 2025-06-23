@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-&y*ld2(2yt9#e5)+u_mnq(fns-fg28jyan8aco&96ljyohl5wm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['buckeyeitclientportal.azurewebsites.net', '127.0.0.1']
+ALLOWED_HOSTS = ['buckeyeitclientportal.azurewebsites.net', '127.0.0.1', 'portal.buckeyeit.com']
 
 
 # Application definition
