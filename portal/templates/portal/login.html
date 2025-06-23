@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,7 +57,7 @@
 </head>
 <body>
   <div class="login-box">
-    <img src="assets/buckeye-logo.png" alt="Buckeye IT Logo" />
+    <img src="{% static 'portal/assets/buckeye-logo.png' %}" alt="Buckeye IT Logo" />
     <h2>Buckeye IT Client Portal</h2>
 
     <button class="auth-button ms-login" onclick="location.href='/.auth/login/aad'">
@@ -79,7 +80,7 @@
         const res = await fetch('/.auth/me');
         const data = await res.json();
         if (data.clientPrincipal && data.clientPrincipal.userDetails) {
-          window.location.href = "/index.html";
+          window.location.href = "{% url 'portal:index' %}";
         }
       } catch (err) {
         console.error("Auth check failed:", err);
