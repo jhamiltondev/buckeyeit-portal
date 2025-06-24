@@ -13,3 +13,4 @@ gunicorn
 dj-database-url
 django-jazzmin
 whitenoise
+django-import-export

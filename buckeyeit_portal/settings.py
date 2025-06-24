@@ -161,3 +161,23 @@ ACCOUNT_ADAPTER = 'portal.adapters.NoNewUsersAccountAdapter'
 CSRF_TRUSTED_ORIGINS = [
     "https://portal.buckeyeit.com",
 ]
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Buckeye IT Admin",
+    "site_header": "Buckeye IT Portal",
+    "site_brand": "Buckeye IT",
+    "site_logo": "portal/assets/buckeye-logo.png",
+    "login_logo": "portal/assets/buckeye-logo.png",
+    "welcome_sign": "Welcome to Buckeye IT Admin Portal",
+    "copyright": "Buckeye IT",
+    "primary_color": "#c8102e",
+    "secondary_color": "#505050",
+    "accent": "#c8102e",
+    "navbar": "#505050",
+    "user_avatar": None,
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "related_modal_active": True,
+    "custom_css": None,
+    "custom_js": None,
+}
