@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'buckeyeit_portal.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgres://USER:PASSWORD@HOST:5432/DBNAME',
+        default='postgres://USER :PASSWORD@HOST:5432/DBNAME',
         conn_max_age=600,
         ssl_require=True
     )
@@ -141,6 +141,7 @@ AUTH_USER_MODEL = 'portal.User'
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/login/'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
