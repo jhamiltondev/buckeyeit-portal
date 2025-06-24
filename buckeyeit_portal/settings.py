@@ -153,3 +153,5 @@ SOCIALACCOUNT_PROVIDERS = {
         'TENANT': 'common', # or your tenant ID
     }
 }
+
+ACCOUNT_ADAPTER = 'portal.adapters.NoNewUsersAccountAdapter'

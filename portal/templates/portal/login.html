@@ -1,4 +1,5 @@
 {% load static %}
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -144,7 +145,7 @@
       <button type="submit" class="login-btn">Sign In</button>
     </form>
     <div class="divider">or</div>
-    <form action="{% url 'socialaccount_login' 'microsoft' %}" method="get" style="margin-bottom: 0;">
+    <form action="{% provider_login_url 'microsoft' %}" method="get" style="margin-bottom: 0;">
       <button type="submit" class="ms-login">
         <svg class="ms-icon" viewBox="0 0 24 24"><rect fill="#f25022" x="2" y="2" width="9" height="9"/><rect fill="#7fba00" x="13" y="2" width="9" height="9"/><rect fill="#00a4ef" x="2" y="13" width="9" height="9"/><rect fill="#ffb900" x="13" y="13" width="9" height="9"/></svg>
         Sign in with Microsoft
