@@ -80,7 +80,7 @@
         const res = await fetch('/.auth/me');
         const data = await res.json();
         if (data.clientPrincipal && data.clientPrincipal.userDetails) {
-          window.location.href = "{% url 'portal:index' %}";
+          window.location.href = "{% url 'portal:dashboard' %}";
         }
       } catch (err) {
         console.error("Auth check failed:", err);

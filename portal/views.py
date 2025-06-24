@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 @login_required
-def index(request):
+def dashboard(request):
     return render(request, 'portal/index.html')
 
 def login_view(request):
