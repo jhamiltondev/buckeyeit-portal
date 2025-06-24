@@ -155,3 +155,7 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 ACCOUNT_ADAPTER = 'portal.adapters.NoNewUsersAccountAdapter'
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://portal.buckeyeit.com",
+]
