@@ -5,88 +5,151 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - Buckeye IT Client Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #c8102e 0%, #505050 100%);
       height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-
     .login-box {
       background: white;
-      padding: 40px;
-      border-radius: 16px;
+      padding: 48px 36px 36px 36px;
+      border-radius: 18px;
       width: 100%;
       max-width: 420px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
       text-align: center;
     }
-
     .login-box img {
-      width: 140px;
-      margin-bottom: 20px;
+      width: 120px;
+      margin-bottom: 18px;
     }
-
     .login-box h2 {
-      margin-bottom: 24px;
+      margin-bottom: 18px;
       color: #0d122b;
+      font-weight: 600;
+      font-size: 2rem;
     }
-
-    .auth-button {
+    .form-group {
+      margin-bottom: 18px;
+      text-align: left;
+    }
+    .form-group label {
       display: block;
+      margin-bottom: 6px;
+      color: #333;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .form-group input {
       width: 100%;
-      margin-bottom: 16px;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: #f8f8f8;
+      transition: border 0.2s;
+    }
+    .form-group input:focus {
+      border: 1.5px solid #c8102e;
+      outline: none;
+    }
+    .login-btn {
+      width: 100%;
       padding: 12px;
-      font-size: 16px;
+      font-size: 1.1rem;
       border-radius: 6px;
       border: none;
-      cursor: pointer;
+      background: #c8102e;
       color: white;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: background 0.2s;
     }
-
-    .ms-login { background-color: #2f2f2f; }
-    .google-login { background-color: #db4437; }
-    .facebook-login { background-color: #4267B2; }
-
-    .auth-button:hover { opacity: 0.9; }
+    .login-btn:hover {
+      background: #a00d24;
+    }
+    .divider {
+      margin: 18px 0 12px 0;
+      text-align: center;
+      color: #888;
+      font-size: 0.95rem;
+      position: relative;
+    }
+    .divider:before, .divider:after {
+      content: '';
+      display: inline-block;
+      width: 40%;
+      height: 1px;
+      background: #eee;
+      vertical-align: middle;
+      margin: 0 8px;
+    }
+    .ms-login {
+      background-color: #2f2f2f;
+      color: #fff;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.2s;
+    }
+    .ms-login:hover {
+      background: #222;
+    }
+    .ms-icon {
+      width: 22px;
+      height: 22px;
+      vertical-align: middle;
+    }
+    .error-message {
+      color: #c8102e;
+      margin-bottom: 12px;
+      font-size: 1rem;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
   <div class="login-box">
     <img src="{% static 'portal/assets/buckeye-logo.png' %}" alt="Buckeye IT Logo" />
-    <h2>Buckeye IT Client Portal</h2>
-
-    <button class="auth-button ms-login" onclick="location.href='/.auth/login/aad'">
-      Sign in with Microsoft
-    </button>
-
-    <button class="auth-button google-login" onclick="location.href='/.auth/login/google'">
-      Sign in with Google
-    </button>
-
-    <button class="auth-button facebook-login" onclick="location.href='/.auth/login/facebook'">
-      Sign in with Facebook
-    </button>
+    <h2>Sign in to Buckeye IT Portal</h2>
+    {% if form.errors %}
+      <div class="error-message">Invalid username/email or password.</div>
+    {% endif %}
+    <form method="post" autocomplete="on" style="margin-bottom: 0;">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="id_login">Email or Username</label>
+        <input type="text" name="login" id="id_login" required autofocus placeholder="Enter your email or username" />
+      </div>
+      <div class="form-group">
+        <label for="id_password">Password</label>
+        <input type="password" name="password" id="id_password" required placeholder="Enter your password" />
+      </div>
+      <button type="submit" class="login-btn">Sign In</button>
+    </form>
+    <div class="divider">or</div>
+    <form action="{% url 'socialaccount_login' 'microsoft' %}" method="get" style="margin-bottom: 0;">
+      <button type="submit" class="ms-login">
+        <svg class="ms-icon" viewBox="0 0 24 24"><rect fill="#f25022" x="2" y="2" width="9" height="9"/><rect fill="#7fba00" x="13" y="2" width="9" height="9"/><rect fill="#00a4ef" x="2" y="13" width="9" height="9"/><rect fill="#ffb900" x="13" y="13" width="9" height="9"/></svg>
+        Sign in with Microsoft
+      </button>
+    </form>
   </div>
-
-  <!-- Auth Check -->
-  <script>
-    async function checkAuth() {
-      try {
-        const res = await fetch('/.auth/me');
-        const data = await res.json();
-        if (data.clientPrincipal && data.clientPrincipal.userDetails) {
-          window.location.href = "{% url 'portal:dashboard' %}";
-        }
-      } catch (err) {
-        console.error("Auth check failed:", err);
-      }
-    }
-    checkAuth();
-  </script>
 </body>
 </html>
