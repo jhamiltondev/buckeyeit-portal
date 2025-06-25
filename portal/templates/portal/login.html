@@ -1,161 +1,35 @@
-{% load static %}
-{% load socialaccount %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - Buckeye IT Client Portal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #c8102e 0%, #505050 100%);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .login-box {
-      background: white;
-      padding: 48px 36px 36px 36px;
-      border-radius: 18px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      text-align: center;
-    }
-    .login-box img {
-      width: 120px;
-      margin-bottom: 18px;
-    }
-    .login-box h2 {
-      margin-bottom: 18px;
-      color: #0d122b;
-      font-weight: 600;
-      font-size: 2rem;
-    }
-    .form-group {
-      margin-bottom: 18px;
-      text-align: left;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      color: #333;
-      font-size: 1rem;
-      font-weight: 500;
-    }
-    .form-group input {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 1rem;
-      background: #f8f8f8;
-      transition: border 0.2s;
-    }
-    .form-group input:focus {
-      border: 1.5px solid #c8102e;
-      outline: none;
-    }
-    .login-btn {
-      width: 100%;
-      padding: 12px;
-      font-size: 1.1rem;
-      border-radius: 6px;
-      border: none;
-      background: #c8102e;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-      margin-bottom: 16px;
-      transition: background 0.2s;
-    }
-    .login-btn:hover {
-      background: #a00d24;
-    }
-    .divider {
-      margin: 18px 0 12px 0;
-      text-align: center;
-      color: #888;
-      font-size: 0.95rem;
-      position: relative;
-    }
-    .divider:before, .divider:after {
-      content: '';
-      display: inline-block;
-      width: 40%;
-      height: 1px;
-      background: #eee;
-      vertical-align: middle;
-      margin: 0 8px;
-    }
-    .ms-login {
-      background-color: #2f2f2f;
-      color: #fff;
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 6px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: background 0.2s;
-    }
-    .ms-login:hover {
-      background: #222;
-    }
-    .ms-icon {
-      width: 22px;
-      height: 22px;
-      vertical-align: middle;
-    }
-    .error-message {
-      color: #c8102e;
-      margin-bottom: 12px;
-      font-size: 1rem;
-      font-weight: 500;
-    }
-  </style>
-</head>
-<body>
-  <div class="login-box">
-    <img src="{% static 'portal/assets/buckeye-logo.png' %}" alt="Buckeye IT Logo" />
-    <h2>Sign in to Buckeye IT Portal</h2>
-    {% if messages %}
-      {% for message in messages %}
-        <div class="error-message">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
-    {% if form.errors %}
-      <div class="error-message">Invalid username/email or password.</div>
-    {% endif %}
-    <form method="post" autocomplete="on" style="margin-bottom: 0;">
-      {% csrf_token %}
-      <div class="form-group">
-        <label for="id_login">Email or Username</label>
-        <input type="text" name="login" id="id_login" required autofocus placeholder="Enter your email or username" />
-      </div>
-      <div class="form-group">
-        <label for="id_password">Password</label>
-        <input type="password" name="password" id="id_password" required placeholder="Enter your password" />
-      </div>
-      <button type="submit" class="login-btn">Sign In</button>
-    </form>
-    <div class="divider">or</div>
-    <form action="{% provider_login_url 'microsoft' %}" method="get" style="margin-bottom: 0;">
-      <button type="submit" class="ms-login">
-        <svg class="ms-icon" viewBox="0 0 24 24"><rect fill="#f25022" x="2" y="2" width="9" height="9"/><rect fill="#7fba00" x="13" y="2" width="9" height="9"/><rect fill="#00a4ef" x="2" y="13" width="9" height="9"/><rect fill="#ffb900" x="13" y="13" width="9" height="9"/></svg>
-        Sign in with Microsoft
-      </button>
-    </form>
-  </div>
-</body>
-</html>
+{% extends "portal/base.html" %}
+{% block title %}Login - Buckeye IT Client Portal{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow p-4" style="max-width: 400px; width: 100%; border-radius: 20px;">
+        <div class="text-center mb-4">
+            <img src="{% static 'portal/assets/buckeye-logo.png' %}" alt="Buckeye IT Logo" style="height: 60px;">
+        </div>
+        <h2 class="text-center mb-3">Sign in to Buckeye IT Portal</h2>
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="login" class="form-label">Email or Username</label>
+                <input type="text" class="form-control" id="login" name="login" placeholder="Enter your email or username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn btn-danger w-100 mb-2">Sign In</button>
+        </form>
+        <div class="text-center my-2">or</div>
+        <a href="{% url 'socialaccount_login' 'azuread' %}" class="btn btn-dark w-100 mb-2">
+            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/microsoft/microsoft-original.svg" alt="Microsoft Logo" style="height: 20px; margin-right: 8px; vertical-align: middle;"> Sign in with Microsoft
+        </a>
+        {% if messages %}
+            <div class="mt-3">
+                {% for message in messages %}
+                    <div class="alert alert-danger" role="alert">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
