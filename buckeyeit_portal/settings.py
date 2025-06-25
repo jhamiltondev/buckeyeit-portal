@@ -169,7 +169,10 @@ SOCIALACCOUNT_ADAPTER = 'portal.adapters.CustomSocialAccountAdapter'
 
 CSRF_TRUSTED_ORIGINS = [
     "https://portal.buckeyeit.com",
+    "http://portal.buckeyeit.com",
 ]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 JAZZMIN_SETTINGS = {
     "site_title": "Buckeye IT Admin",
