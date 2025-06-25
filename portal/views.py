@@ -12,7 +12,9 @@ from django.urls import get_resolver
 
 @login_required
 def dashboard(request, tenant_slug=None):
-    return render(request, 'portal/dashboard.html')
+    tenant = getattr(request.user, 'tenant', None)
+    is_vip = getattr(tenant, 'vip', False) if tenant else False
+    return render(request, 'portal/dashboard.html', {'is_vip': is_vip, 'tenant': tenant})
 
 def login_view(request):
     if request.method == 'POST':

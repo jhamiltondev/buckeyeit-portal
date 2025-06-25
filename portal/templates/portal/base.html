@@ -26,7 +26,16 @@
             <nav class="buckeye-sidebar col-md-2 d-none d-md-block p-3">
                 <ul class="nav flex-column">
                     <li class="nav-item"><a class="nav-link text-white" href="{% url 'portal:dashboard' %}">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="/admin/">Admin</a></li>
+                    {% if not is_vip %}
+                        <li class="nav-item"><a class="nav-link text-white" href="#support">Support</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="#knowledge">Knowledge Base</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="#profile">My Profile</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="#company">Company Info</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="#announcements">Announcements</a></li>
+                    {% endif %}
+                    {% if request.user.is_superuser %}
+                        <li class="nav-item"><a class="nav-link text-white" href="/admin/">Admin</a></li>
+                    {% endif %}
                     <li class="nav-item"><a class="nav-link text-white" href="{% url 'portal:logout' %}">Logout</a></li>
                 </ul>
             </nav>
