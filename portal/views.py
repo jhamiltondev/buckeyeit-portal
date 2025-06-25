@@ -10,8 +10,8 @@ from django.http import HttpResponseRedirect
 # Create your views here.
 
 @login_required
-def dashboard(request):
-    return render(request, 'portal/index.html')
+def dashboard(request, tenant_slug=None):
+    return render(request, 'portal/dashboard.html')
 
 def login_view(request):
     if request.method == 'POST':
@@ -21,7 +21,11 @@ def login_view(request):
         
         if user is not None:
             login(request, user)
-            return redirect('portal:dashboard')
+            tenant_slug = user.tenant.slug if user.tenant else None
+            if tenant_slug:
+                return redirect('portal:tenant_dashboard', tenant_slug=tenant_slug)
+            else:
+                return redirect('portal:dashboard')
         else:
             messages.error(request, 'Invalid username/email or password.')
     
