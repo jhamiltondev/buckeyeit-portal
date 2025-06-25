@@ -17,7 +17,7 @@ def login_view(request):
         
         if user is not None:
             login(request, user)
-            return redirect('dashboard')
+            return redirect('portal:dashboard')
         else:
             messages.error(request, 'Invalid username/email or password.')
     
