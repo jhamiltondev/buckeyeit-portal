@@ -21,14 +21,21 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponse
+from django.contrib.auth import logout
 
 def root_redirect(request):
     if request.user.is_authenticated:
         user = request.user
-        if hasattr(user, 'tenant') and user.tenant and hasattr(user.tenant, 'slug'):
+        # If user has a tenant and a valid slug, redirect to tenant dashboard
+        if hasattr(user, 'tenant') and user.tenant and getattr(user.tenant, 'slug', None):
             return redirect('tenant_dashboard', tenant_slug=user.tenant.slug)
-        else:
+        # If user has no tenant, redirect to generic dashboard
+        elif not hasattr(user, 'tenant') or not user.tenant:
             return redirect('portal:dashboard')
+        # If tenant exists but no slug, log out and show error
+        else:
+            logout(request)
+            return HttpResponse(b"Your account is not properly configured. Please contact support.", status=400, content_type='text/plain')
     # Prevent redirect loop if already on /login/
     if request.path == '/login/':
         return HttpResponse()
