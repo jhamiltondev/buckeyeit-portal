@@ -28,7 +28,7 @@ def root_redirect(request):
         user = request.user
         # If user has a tenant and a valid slug, redirect to tenant dashboard
         if hasattr(user, 'tenant') and user.tenant and getattr(user.tenant, 'slug', None):
-            return redirect('tenant_dashboard', tenant_slug=user.tenant.slug)
+            return redirect('portal:tenant_dashboard', tenant_slug=user.tenant.slug)
         # If user has no tenant, redirect to generic dashboard
         elif not hasattr(user, 'tenant') or not user.tenant:
             return redirect('portal:dashboard')
