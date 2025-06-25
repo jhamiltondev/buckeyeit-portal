@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +25,7 @@
         <div class="row">
             <nav class="buckeye-sidebar col-md-2 d-none d-md-block p-3">
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link text-white" href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="{% url 'portal:dashboard' %}">Dashboard</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="/admin/">Admin</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="{% url 'logout' %}">Logout</a></li>
                 </ul>
