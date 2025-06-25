@@ -20,6 +20,7 @@ from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.http import HttpResponse
 
 def root_redirect(request):
     if request.user.is_authenticated:
@@ -28,6 +29,9 @@ def root_redirect(request):
             return redirect('tenant_dashboard', tenant_slug=user.tenant.slug)
         else:
             return redirect('portal:dashboard')
+    # Prevent redirect loop if already on /login/
+    if request.path == '/login/':
+        return HttpResponse()
     return redirect('portal:login')
 
 urlpatterns = [
