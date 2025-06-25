@@ -5,7 +5,8 @@ from django.contrib import messages
 from django.contrib.auth.views import LogoutView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
+from django.urls import get_resolver
 
 # Create your views here.
 
@@ -47,3 +48,7 @@ class LogoutViewAllowGet(LogoutView):
 def logout_allow_get(request):
     logout(request)
     return HttpResponseRedirect('/login/')
+
+def debug_urls(request):
+    url_names = [str(k) for k in get_resolver().reverse_dict.keys()]
+    return HttpResponse("<br>".join(url_names))
