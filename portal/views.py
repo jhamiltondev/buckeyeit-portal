@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.views import LogoutView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseRedirect
 
 # Create your views here.
 
@@ -37,3 +38,8 @@ def root_redirect(request):
 class LogoutViewAllowGet(LogoutView):
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
+
+@csrf_exempt
+def logout_allow_get(request):
+    logout(request)
+    return HttpResponseRedirect('/login/')
