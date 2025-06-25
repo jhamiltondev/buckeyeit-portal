@@ -145,6 +145,12 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'
 
+# Email verification settings for allauth
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # Disable email verification
+ACCOUNT_EMAIL_REQUIRED = False  # Don't require email for social accounts
+SOCIALACCOUNT_AUTO_SIGNUP = True  # Automatically create user accounts for social logins
+SOCIALACCOUNT_EMAIL_REQUIRED = False  # Don't require email for social accounts
+
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
@@ -153,10 +159,13 @@ AUTHENTICATION_BACKENDS = [
 SOCIALACCOUNT_PROVIDERS = {
     'microsoft': {
         'TENANT': 'common', # or your tenant ID
+        'SCOPE': ['User.Read'],
+        'AUTH_PARAMS': {'prompt': 'select_account'},
     }
 }
 
 ACCOUNT_ADAPTER = 'portal.adapters.NoNewUsersAccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'portal.adapters.CustomSocialAccountAdapter'
 
 CSRF_TRUSTED_ORIGINS = [
     "https://portal.buckeyeit.com",

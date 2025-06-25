@@ -129,6 +129,11 @@
   <div class="login-box">
     <img src="{% static 'portal/assets/buckeye-logo.png' %}" alt="Buckeye IT Logo" />
     <h2>Sign in to Buckeye IT Portal</h2>
+    {% if messages %}
+      {% for message in messages %}
+        <div class="error-message">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
     {% if form.errors %}
       <div class="error-message">Invalid username/email or password.</div>
     {% endif %}

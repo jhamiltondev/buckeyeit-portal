@@ -17,3 +17,8 @@ class UserAdmin(ImportExportModelAdmin):
     list_display = ('username', 'email', 'is_active', 'is_staff', 'tenant')
     search_fields = ('username', 'email')
     list_filter = ('is_active', 'is_staff', 'tenant')
+
+# Register social account models
+# admin.site.register(SocialApp)
+# admin.site.register(SocialAccount)
+# admin.site.register(SocialToken)
