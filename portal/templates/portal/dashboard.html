@@ -1,16 +1,103 @@
 {% extends "portal/base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
+<div class="container-fluid">
+    <div class="row mb-4">
+        <!-- Welcome Card -->
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-sm welcome-card animate__animated animate__fadeInDown">
+                <div class="card-body d-flex align-items-center">
+                    <img src="{% static 'portal/assets/buckeye-logo.png' %}" alt="Company Logo" class="me-3" style="height:48px;">
+                    <div>
+                        <h5 class="card-title mb-1">Welcome back, {{ request.user.first_name }}{% if tenant %} from {{ tenant.name }}{% endif %}!</h5>
+                        <div class="text-muted small">{{ now|date:'l, F j, Y, g:i A' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Account Status -->
+        <div class="col-lg-3 mb-3">
+            <div class="card shadow-sm animate__animated animate__fadeInRight">
                 <div class="card-body">
-                    <h1 class="card-title mb-4">Welcome to the Buckeye IT Dashboard</h1>
-                    <p class="card-text">This is your main dashboard. Use the sidebar to navigate to different sections, including the admin area.</p>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fa fa-id-badge fa-2x text-secondary me-2"></i>
+                        <span class="fw-bold">Account Status</span>
+                    </div>
+                    <span class="badge {% if is_vip %}bg-danger{% else %}bg-secondary{% endif %}">
+                        {% if is_vip %}VIP{% else %}Standard{% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!-- Announcements -->
+        <div class="col-lg-3 mb-3">
+            <div class="card shadow-sm animate__animated animate__fadeInRight">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fa fa-bullhorn fa-2x text-warning me-2"></i>
+                        <span class="fw-bold">Announcements</span>
+                    </div>
+                    <div class="alert alert-warning alert-dismissible fade show py-2 px-3 mb-0" role="alert">
+                        <strong>Scheduled maintenance:</strong> July 15th, 10 PM–12 AM
+                        <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <!-- Quick Actions -->
+        <div class="col-lg-4 mb-3">
+            <div class="card shadow-sm animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="fa fa-bolt text-primary me-2"></i>Quick Actions</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="#" class="btn btn-outline-primary quick-action"><i class="fa fa-edit me-1"></i> Submit Ticket</a>
+                        <a href="#" class="btn btn-outline-secondary quick-action"><i class="fa fa-folder-open me-1"></i> View Open Tickets</a>
+                        <a href="#" class="btn btn-outline-info quick-action"><i class="fa fa-users-cog me-1"></i> Manage Users</a>
+                        <a href="#" class="btn btn-outline-success quick-action"><i class="fa fa-file-download me-1"></i> Download Docs</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Ticket Summary -->
+        <div class="col-lg-8 mb-3">
+            <div class="card shadow-sm animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="fa fa-ticket-alt text-success me-2"></i>Recent Tickets</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fa fa-circle text-warning me-2"></i>Printer not working</span>
+                            <span class="badge bg-warning text-dark">Open</span>
+                            <span class="text-muted small">2024-06-01</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fa fa-circle text-info me-2"></i>VPN setup help</span>
+                            <span class="badge bg-info text-dark">In Progress</span>
+                            <span class="text-muted small">2024-05-28</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fa fa-circle text-success me-2"></i>Password reset</span>
+                            <span class="badge bg-success">Resolved</span>
+                            <span class="text-muted small">2024-05-20</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Animate.css for smooth card transitions -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+    .quick-action {
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .quick-action:hover {
+        box-shadow: 0 4px 16px rgba(33,150,243,0.12);
+        transform: translateY(-2px) scale(1.04);
+    }
+    .welcome-card { background: linear-gradient(90deg, #b71c1c 0%, #d32f2f 100%); color: #fff; }
+</style>
 {% endblock %} 
