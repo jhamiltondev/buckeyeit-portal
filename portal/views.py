@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.views import LogoutView
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -31,6 +33,7 @@ def password_view(request):
 def root_redirect(request):
     return redirect('login')
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LogoutViewAllowGet(LogoutView):
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
