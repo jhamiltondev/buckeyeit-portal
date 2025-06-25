@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from django.contrib.auth.views import LogoutView
 
 # Create your views here.
 
@@ -29,3 +30,7 @@ def password_view(request):
 
 def root_redirect(request):
     return redirect('login')
+
+class LogoutViewAllowGet(LogoutView):
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
