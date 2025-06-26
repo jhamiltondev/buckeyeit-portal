@@ -18,9 +18,16 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             border-bottom-left-radius: 18px;
             border-bottom-right-radius: 18px;
-            min-height: 64px;
+            min-height: 48px;
+            padding: 0.5rem 1.5rem !important;
             position: relative;
             z-index: 1020;
+        }
+        .buckeye-logo { height: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.10)); }
+        .buckeye-header h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0;
         }
         .header-actions {
             margin-left: auto;
@@ -371,7 +378,7 @@
 </head>
 <body>
     <a href="#mainContent" class="skip-link" tabindex="0">Skip to main content</a>
-    <header class="buckeye-header p-3 d-flex align-items-center position-relative" role="banner" aria-label="Portal Header">
+    <header class="buckeye-header d-flex align-items-center position-relative" role="banner" aria-label="Portal Header">
         <button class="sidebar-toggle d-md-none" id="sidebarToggleMobile" aria-label="Toggle sidebar"><i class="fa fa-bars"></i></button>
         <img src="{% static 'portal/assets/buckeyeit-logo-white.png' %}" alt="Buckeye IT Logo" class="buckeye-logo me-3">
         <h4 class="mb-0">Buckeye IT Portal</h4>
