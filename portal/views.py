@@ -62,3 +62,7 @@ def logout_allow_get(request):
 def debug_urls(request):
     url_names = [str(k) for k in get_resolver().reverse_dict.keys()]
     return HttpResponse("<br>".join(url_names))
+
+@login_required
+def support_view(request):
+    return render(request, 'portal/support.html')

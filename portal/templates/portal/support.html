@@ -1,0 +1,92 @@
+{% extends "portal/base.html" %}
+{% load static %}
+{% block title %}Support{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-lg-12 mb-3">
+            <div class="card shadow-sm animate__animated animate__fadeInDown">
+                <div class="card-body d-flex align-items-center">
+                    <i class="fa fa-headset fa-2x text-primary me-3"></i>
+                    <h4 class="mb-0">Support Center</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <!-- Submit a Ticket -->
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-sm animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3"><i class="fa fa-edit text-primary me-2"></i>Submit a Ticket</h5>
+                    <form method="post" action="#">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Ticket</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- View My Tickets -->
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-sm animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3"><i class="fa fa-folder-open text-secondary me-2"></i>My Tickets</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Example Ticket</td>
+                                    <td><span class="badge bg-warning text-dark">Open</span></td>
+                                    <td>2024-06-26</td>
+                                </tr>
+                                <tr>
+                                    <td>VPN Setup</td>
+                                    <td><span class="badge bg-info text-dark">In Progress</span></td>
+                                    <td>2024-06-25</td>
+                                </tr>
+                                <tr>
+                                    <td>Password Reset</td>
+                                    <td><span class="badge bg-success">Resolved</span></td>
+                                    <td>2024-06-20</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- Later: Replace with real ticket data -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <!-- Ticket Status Definitions -->
+        <div class="col-lg-12 mb-3">
+            <div class="card shadow-sm animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3"><i class="fa fa-info-circle text-info me-2"></i>Ticket Status Definitions</h5>
+                    <ul>
+                        <li><span class="badge bg-warning text-dark">Open</span> – Your ticket has been received and is awaiting action.</li>
+                        <li><span class="badge bg-info text-dark">In Progress</span> – Our team is working on your request.</li>
+                        <li><span class="badge bg-success">Resolved</span> – Your issue has been addressed and the ticket is closed.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+{% endblock %} 
