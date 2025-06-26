@@ -74,7 +74,7 @@
         </form>
         <div class="divider">or</div>
         <a href="{% provider_login_url 'microsoft' %}" class="btn btn-dark w-100 mb-2">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/microsoft/microsoft-original.svg" alt="Microsoft Logo" style="height: 20px; margin-right: 8px; vertical-align: middle;"> Sign in with Microsoft
+            <img src="{% static 'portal/assets/microsoft-logo.png' %}" alt="Microsoft Logo" style="height: 20px; margin-right: 8px; vertical-align: middle;"> Sign in with Microsoft
         </a>
         {% if messages %}
             <div class="mt-3">
