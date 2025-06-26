@@ -15,4 +15,5 @@ urlpatterns = [
     path('<slug:tenant_slug>/dashboard/', views.dashboard, name='tenant_dashboard'),
     path('debug-urls/', views.debug_urls),
     path('support/', views.support_view, name='support'),
+    path('support/submit/', views.submit_ticket_view, name='submit_ticket'),
 ] 

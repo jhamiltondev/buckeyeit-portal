@@ -66,3 +66,7 @@ def debug_urls(request):
 @login_required
 def support_view(request):
     return render(request, 'portal/support.html')
+
+@login_required
+def submit_ticket_view(request):
+    return render(request, 'portal/submit_ticket.html')

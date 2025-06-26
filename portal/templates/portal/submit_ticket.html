@@ -1,0 +1,31 @@
+{% extends "portal/base.html" %}
+{% load static %}
+{% block title %}Submit a Ticket{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm animate__animated animate__fadeInDown mt-4">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-3"><i class="fa fa-edit text-primary me-2"></i>Submit a Support Ticket</h4>
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+                        </div>
+                        <!-- Optional: Add file upload or priority fields here -->
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane me-1"></i>Submit Ticket</button>
+                        <a href="{% url 'portal:support' %}" class="btn btn-link">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+{% endblock %} 
