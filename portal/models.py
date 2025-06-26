@@ -10,6 +10,14 @@ class Tenant(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     vip = models.BooleanField(default=False, help_text="Check if this tenant is VIP and should see automated features.")
     domain = models.CharField(max_length=100, unique=True, blank=True, null=True, help_text="Primary email domain for auto-assignment, e.g. 'reedminerals.com'")
+    # Company Info fields
+    address = models.CharField(max_length=255, blank=True)
+    phone = models.CharField(max_length=50, blank=True)
+    website = models.URLField(blank=True)
+    logo = models.ImageField(upload_to='tenant_logos/', blank=True, null=True)
+    main_poc_name = models.CharField(max_length=100, blank=True, help_text="Main point of contact name")
+    main_poc_email = models.EmailField(blank=True, help_text="Main point of contact email")
+    renewal_date = models.DateField(blank=True, null=True, help_text="Renewal or service review date")
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -21,6 +29,7 @@ class Tenant(models.Model):
 
 class User(AbstractUser):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, null=True, blank=True)
+    support_role = models.CharField(max_length=100, blank=True, help_text="Optional support role, e.g. 'Password Resets', 'Billing Contact'")
 
 class Announcement(models.Model):
     title = models.CharField(max_length=200)
@@ -68,3 +77,14 @@ class KnowledgeBaseArticle(models.Model):
 
     def __str__(self):
         return self.title
+
+# Tenant-specific document uploads
+class TenantDocument(models.Model):
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='documents')
+    title = models.CharField(max_length=200)
+    file = models.FileField(upload_to='tenant_docs/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    def __str__(self):
+        return f"{self.title} ({self.tenant.name})"

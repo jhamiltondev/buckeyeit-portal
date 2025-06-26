@@ -7,7 +7,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import get_resolver
-from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle
+from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument
+from django.contrib.admin.views.decorators import staff_member_required
 
 # Create your views here.
 
@@ -95,4 +96,33 @@ def profile_view(request):
     return render(request, 'portal/profile.html', {
         'user': user,
         'tenant': tenant,
+    })
+
+@login_required
+def company_info_view(request):
+    tenant = getattr(request.user, 'tenant', None)
+    if not tenant:
+        return redirect('portal:dashboard')
+    # Handle document upload (admin/staff only)
+    is_admin = request.user.is_staff or request.user.is_superuser
+    if is_admin and request.method == 'POST' and 'file' in request.FILES:
+        title = request.POST.get('title', '').strip()
+        file = request.FILES['file']
+        if title and file:
+            TenantDocument.objects.create(
+                tenant=tenant,
+                title=title,
+                file=file,
+                uploaded_by=request.user
+            )
+            return redirect('portal:company_info')
+    # Key contacts: all users in this tenant
+    contacts = User.objects.filter(tenant=tenant).order_by('first_name', 'last_name')
+    # Tenant docs
+    docs = TenantDocument.objects.filter(tenant=tenant).order_by('-uploaded_at')
+    return render(request, 'portal/company_info.html', {
+        'tenant': tenant,
+        'contacts': contacts,
+        'docs': docs,
+        'is_admin': is_admin,
     })
