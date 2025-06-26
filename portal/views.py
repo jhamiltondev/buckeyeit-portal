@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import get_resolver
+from .models import Announcement, Ticket
 
 # Create your views here.
 
@@ -14,7 +15,14 @@ from django.urls import get_resolver
 def dashboard(request, tenant_slug=None):
     tenant = getattr(request.user, 'tenant', None)
     is_vip = getattr(tenant, 'vip', False) if tenant else False
-    return render(request, 'portal/dashboard.html', {'is_vip': is_vip, 'tenant': tenant})
+    announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')
+    tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')[:5]
+    return render(request, 'portal/dashboard.html', {
+        'is_vip': is_vip,
+        'tenant': tenant,
+        'announcements': announcements,
+        'tickets': tickets,
+    })
 
 def login_view(request):
     if request.method == 'POST':
