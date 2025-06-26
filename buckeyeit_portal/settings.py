@@ -142,7 +142,7 @@ AUTH_USER_MODEL = 'portal.User'
 # django-allauth config
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/admin/login/'
 LOGIN_URL = '/login/'
 
 # Email verification settings for allauth
