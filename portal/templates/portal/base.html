@@ -11,13 +11,44 @@
     {% block extra_head %}{% endblock %}
     <style>
         body { background-color: #f5f5f5; }
-        .buckeye-header { background: #b71c1c; color: #fff; }
-        .buckeye-sidebar { background: #424242; color: #fff; min-height: 100vh; }
+        .buckeye-header {
+            background: linear-gradient(90deg, #b71c1c 0%, #d32f2f 100%);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            min-height: 64px;
+        }
+        .buckeye-sidebar {
+            background: linear-gradient(135deg, #b71c1c 0%, #424242 100%);
+            color: #fff;
+            min-height: 100vh;
+            border-top-right-radius: 18px;
+            border-bottom-right-radius: 18px;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+            padding-top: 2rem !important;
+        }
         .buckeye-footer { background: #424242; color: #fff; }
-        .buckeye-logo { height: 40px; }
-        .nav-link.active, .nav-link:focus, .nav-link:hover { background: #b71c1c; color: #fff !important; transition: background 0.2s, color 0.2s; }
-        .nav-link { display: flex; align-items: center; gap: 0.75em; transition: background 0.2s, color 0.2s, transform 0.15s; }
-        .nav-link:hover { transform: translateX(5px) scale(1.05); box-shadow: 0 2px 8px rgba(183,28,28,0.08); }
+        .buckeye-logo { height: 44px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.10)); }
+        .nav-link.active, .nav-link:focus, .nav-link:hover {
+            background: rgba(255,255,255,0.10);
+            color: #fff !important;
+            border-radius: 24px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75em;
+            transition: background 0.2s, color 0.2s, transform 0.15s;
+            margin-bottom: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 24px;
+        }
+        .nav-link:hover {
+            transform: translateX(5px) scale(1.05);
+            box-shadow: 0 2px 8px rgba(183,28,28,0.08);
+        }
         .fa-fw { width: 1.25em; text-align: center; }
     </style>
 </head>
