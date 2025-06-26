@@ -1,5 +1,6 @@
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
+from .models import Tenant
 
 class NoNewUsersAccountAdapter(DefaultAccountAdapter):
     def is_open_for_signup(self, request):
@@ -20,5 +21,14 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         user = super().save_user(request, sociallogin, form)
         # Ensure social users are active
         user.is_active = True
+        # Hybrid tenant auto-assignment based on email domain
+        email = user.email
+        if email and '@' in email:
+            domain = email.split('@')[1].lower()
+            try:
+                tenant = Tenant.objects.get(domain__iexact=domain)
+                user.tenant = tenant
+            except Tenant.DoesNotExist:
+                pass  # Leave tenant blank for admin review
         user.save()
         return user 
