@@ -47,3 +47,23 @@ class Ticket(models.Model):
 
     def __str__(self):
         return f"{self.subject} ({self.get_status_display()})"
+
+class KnowledgeBaseCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True)
+    icon = models.CharField(max_length=50, blank=True, help_text="Font Awesome icon class, e.g. 'fa-envelope'")
+
+    def __str__(self):
+        return self.name
+
+class KnowledgeBaseArticle(models.Model):
+    category = models.ForeignKey(KnowledgeBaseCategory, on_delete=models.CASCADE, related_name='articles')
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    view_count = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title

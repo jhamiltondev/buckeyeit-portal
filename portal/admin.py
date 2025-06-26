@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Tenant, Announcement, Ticket
+from .models import User, Tenant, Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle
 from import_export.admin import ImportExportModelAdmin
 
 class UserInline(admin.TabularInline):
@@ -27,3 +27,5 @@ class UserAdmin(ImportExportModelAdmin):
 
 admin.site.register(Announcement)
 admin.site.register(Ticket)
+admin.site.register(KnowledgeBaseCategory)
+admin.site.register(KnowledgeBaseArticle)
