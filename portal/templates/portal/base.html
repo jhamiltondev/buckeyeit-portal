@@ -97,6 +97,7 @@
             align-items: center;
             gap: 0.75em;
             margin-bottom: 2rem;
+            margin-top: 2.5rem;
             padding: 0 1rem;
             transition: opacity 0.2s;
         }
@@ -425,7 +426,7 @@
             </div>
         </div>
     </header>
-    <div class="container-fluid">
+    <div class="container-fluid" style="min-height: calc(100vh - 48px - 40px);">
         <div class="row">
             <nav class="buckeye-sidebar d-none d-md-block p-3" id="sidebar" role="navigation" aria-label="Main sidebar navigation" tabindex="0">
                 <div class="sidebar-user mb-4" id="sidebarUser" aria-label="User info panel">
@@ -457,7 +458,7 @@
             </main>
         </div>
     </div>
-    <footer class="buckeye-footer text-center py-2">
+    <footer class="buckeye-footer text-center py-2 fixed-bottom" style="background: #424242; color: #fff;">
         &copy; {{ year|default:2024 }} Buckeye IT
     </footer>
     <button class="help-widget-btn" id="helpWidgetBtn" title="Help & Support" aria-label="Open help widget" tabindex="0"><i class="fa fa-question"></i></button>
