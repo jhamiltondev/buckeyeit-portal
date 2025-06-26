@@ -16,4 +16,6 @@ urlpatterns = [
     path('debug-urls/', views.debug_urls),
     path('support/', views.support_view, name='support'),
     path('support/submit/', views.submit_ticket_view, name='submit_ticket'),
+    path('knowledge/', views.knowledge_base_view, name='knowledge_base'),
+    path('knowledge/article/<int:article_id>/', views.knowledge_article_view, name='knowledge_article'),
 ] 

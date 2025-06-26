@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import get_resolver
-from .models import Announcement, Ticket
+from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle
 
 # Create your views here.
 
@@ -70,3 +70,20 @@ def support_view(request):
 @login_required
 def submit_ticket_view(request):
     return render(request, 'portal/submit_ticket.html')
+
+@login_required
+def knowledge_base_view(request):
+    categories = KnowledgeBaseCategory.objects.all()
+    articles = KnowledgeBaseArticle.objects.filter(is_active=True).order_by('-view_count')[:5]
+    return render(request, 'portal/knowledge_base.html', {
+        'categories': categories,
+        'trending_articles': articles,
+    })
+
+@login_required
+def knowledge_article_view(request, article_id):
+    article = KnowledgeBaseArticle.objects.get(pk=article_id)
+    # Increment view count
+    article.view_count += 1
+    article.save(update_fields=['view_count'])
+    return render(request, 'portal/knowledge_article.html', {'article': article})

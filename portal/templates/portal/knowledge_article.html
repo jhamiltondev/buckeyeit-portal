@@ -1,0 +1,35 @@
+{% extends "portal/base.html" %}
+{% load static %}
+{% block title %}{{ article.title }} | Knowledge Base{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm animate__animated animate__fadeInDown mt-4">
+                <div class="card-body">
+                    <h3 class="fw-bold mb-2">{{ article.title }}</h3>
+                    <div class="mb-3 text-muted small">Views: {{ article.view_count }}</div>
+                    <div class="mb-4">{{ article.content|safe }}</div>
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="me-2">Was this helpful?</span>
+                        <button class="btn btn-outline-success btn-sm me-2"><i class="fa fa-thumbs-up"></i></button>
+                        <button class="btn btn-outline-danger btn-sm"><i class="fa fa-thumbs-down"></i></button>
+                    </div>
+                    <form method="post" action="#" class="mb-3">
+                        {% csrf_token %}
+                        <input type="text" class="form-control" name="feedback" placeholder="Tell us how we can improve this guide...">
+                        <button type="submit" class="btn btn-link btn-sm mt-2">Submit Feedback</button>
+                    </form>
+                    <div class="mt-4">
+                        <a href="{% url 'portal:support' %}?category={{ article.category.id }}" class="btn btn-outline-primary">
+                            <i class="fa fa-headset me-1"></i>Submit a Request
+                        </a>
+                        <a href="{% url 'portal:knowledge_base' %}" class="btn btn-link">Back to Knowledge Base</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+{% endblock %} 
