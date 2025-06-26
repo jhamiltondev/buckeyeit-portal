@@ -18,4 +18,5 @@ urlpatterns = [
     path('support/submit/', views.submit_ticket_view, name='submit_ticket'),
     path('knowledge/', views.knowledge_base_view, name='knowledge_base'),
     path('knowledge/article/<int:article_id>/', views.knowledge_article_view, name='knowledge_article'),
+    path('profile/', views.profile_view, name='profile'),
 ] 

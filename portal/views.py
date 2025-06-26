@@ -87,3 +87,12 @@ def knowledge_article_view(request, article_id):
     article.view_count += 1
     article.save(update_fields=['view_count'])
     return render(request, 'portal/knowledge_article.html', {'article': article})
+
+@login_required
+def profile_view(request):
+    user = request.user
+    tenant = getattr(user, 'tenant', None)
+    return render(request, 'portal/profile.html', {
+        'user': user,
+        'tenant': tenant,
+    })
