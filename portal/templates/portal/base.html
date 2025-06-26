@@ -34,7 +34,7 @@
                     {% if not is_vip %}
                         <li class="nav-item"><a class="nav-link text-white" href="{% url 'portal:support' %}"><i class="fa fa-headset fa-fw"></i>Support</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="{% url 'portal:knowledge_base' %}"><i class="fa fa-book fa-fw"></i>Knowledge Base</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" href="#profile"><i class="fa fa-user fa-fw"></i>My Profile</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'portal:profile' %}"><i class="fa fa-user fa-fw"></i>My Profile</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="#company"><i class="fa fa-building fa-fw"></i>Company Info</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="#announcements"><i class="fa fa-bullhorn fa-fw"></i>Announcements</a></li>
                     {% endif %}
