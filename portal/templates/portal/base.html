@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'portal/assets/styles.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" type="image/png" href="{% static 'portal/assets/favicon.png' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@11.1.0/dist/css/shepherd.css">
     {% block extra_head %}{% endblock %}
     <style>
         body { background-color: #f5f5f5; }
@@ -18,23 +19,89 @@
             border-bottom-left-radius: 18px;
             border-bottom-right-radius: 18px;
             min-height: 64px;
+            position: relative;
+            z-index: 1020;
+        }
+        .header-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .notification-bell {
+            font-size: 1.3rem;
+            color: #fff;
+            cursor: pointer;
+            position: relative;
+        }
+        .notification-dot {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            background: #ff5252;
+            border-radius: 50%;
+        }
+        .user-dropdown {
+            color: #fff;
+            cursor: pointer;
+        }
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 0.5rem;
+            border: 2px solid #fff2;
+        }
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
         }
         .buckeye-sidebar {
-            background: linear-gradient(135deg, #b71c1c 0%, #424242 100%);
-            color: #fff;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(8px);
+            color: #222;
             min-height: 100vh;
             border-top-right-radius: 18px;
             border-bottom-right-radius: 18px;
             box-shadow: 2px 0 12px rgba(0,0,0,0.08);
             padding-top: 2rem !important;
+            transition: width 0.3s, left 0.3s, box-shadow 0.3s;
+            width: 240px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1010;
+            overflow-x: hidden;
         }
-        .buckeye-footer { background: #424242; color: #fff; }
-        .buckeye-logo { height: 44px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.10)); }
-        .nav-link.active, .nav-link:focus, .nav-link:hover {
-            background: rgba(255,255,255,0.10);
-            color: #fff !important;
-            border-radius: 24px;
-            transition: background 0.2s, color 0.2s;
+        .buckeye-sidebar.collapsed {
+            width: 70px;
+        }
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75em;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+            transition: opacity 0.2s;
+        }
+        .sidebar-user.collapsed {
+            opacity: 0;
+            height: 0;
+            margin: 0;
+            padding: 0;
+        }
+        .sidebar-divider {
+            border-top: 1px solid #eee;
+            margin: 1.5rem 0 1rem 0;
         }
         .nav-link {
             display: flex;
@@ -44,38 +111,341 @@
             margin-bottom: 0.5rem;
             padding: 0.75rem 1.25rem;
             border-radius: 24px;
+            color: #222 !important;
         }
-        .nav-link:hover {
-            transform: translateX(5px) scale(1.05);
-            box-shadow: 0 2px 8px rgba(183,28,28,0.08);
+        .nav-link.active, .nav-link:focus, .nav-link:hover {
+            background: rgba(183,28,28,0.10);
+            color: #b71c1c !important;
+            border-radius: 24px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .nav-link.collapsed-text {
+            display: none;
+        }
+        .buckeye-sidebar.collapsed .nav-link .collapsed-text {
+            display: none;
+        }
+        .buckeye-sidebar.collapsed .nav-link {
+            justify-content: center;
+            padding: 0.75rem 0.5rem;
         }
         .fa-fw { width: 1.25em; text-align: center; }
+        @media (max-width: 991.98px) {
+            .buckeye-sidebar {
+                left: -240px;
+                box-shadow: none;
+            }
+            .buckeye-sidebar.open {
+                left: 0;
+                box-shadow: 2px 0 12px rgba(0,0,0,0.18);
+            }
+            .main-content {
+                margin-left: 0 !important;
+            }
+        }
+        .main-content {
+            margin-left: 240px;
+            transition: margin-left 0.3s;
+        }
+        .main-content.collapsed {
+            margin-left: 70px;
+        }
+        @media (max-width: 991.98px) {
+            .main-content, .main-content.collapsed {
+                margin-left: 0;
+            }
+        }
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.3rem;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        body.light-mode {
+            background-color: #f5f5f5;
+        }
+        body.dark-mode {
+            background-color: #18191a;
+        }
+        .dark-mode .buckeye-header {
+            background: linear-gradient(90deg, #232526 0%, #414345 100%);
+            color: #fff;
+        }
+        .dark-mode .buckeye-sidebar {
+            background: rgba(40,40,40,0.85);
+            color: #eee;
+        }
+        .dark-mode .nav-link {
+            color: #eee !important;
+        }
+        .dark-mode .nav-link.active, .dark-mode .nav-link:focus, .dark-mode .nav-link:hover {
+            background: rgba(183,28,28,0.18);
+            color: #ff5252 !important;
+        }
+        .dark-mode .main-content {
+            background: #232526;
+            color: #eee;
+        }
+        .dark-mode .buckeye-footer {
+            background: #232526;
+            color: #eee;
+        }
+        .dark-mode .dropdown-menu {
+            background: #232526;
+            color: #eee;
+        }
+        .dark-mode .dropdown-item {
+            color: #eee;
+        }
+        .dark-mode .dropdown-item:hover {
+            background: #333;
+            color: #fff;
+        }
+        .notification-dropdown {
+            min-width: 280px;
+            max-width: 350px;
+            font-size: 0.97rem;
+        }
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75em;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-title {
+            font-weight: 600;
+        }
+        .notification-time {
+            font-size: 0.85em;
+            color: #888;
+        }
+        .dark-mode .notification-dropdown {
+            background: #232526;
+            color: #eee;
+            border-color: #333;
+        }
+        .dark-mode .notification-item {
+            border-bottom: 1px solid #333;
+        }
+        .dark-mode .notification-title {
+            color: #fff;
+        }
+        .dark-mode .notification-time {
+            color: #bbb;
+        }
+        .help-widget-btn {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 1050;
+            background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            box-shadow: 0 4px 16px rgba(183,28,28,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .help-widget-btn:hover {
+            background: #a31515;
+            box-shadow: 0 8px 32px rgba(183,28,28,0.22);
+        }
+        .help-modal {
+            position: fixed;
+            bottom: 100px;
+            right: 40px;
+            z-index: 1060;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            padding: 1.5rem 1.25rem 1.25rem 1.25rem;
+            min-width: 280px;
+            max-width: 320px;
+            display: none;
+        }
+        .help-modal.open {
+            display: block;
+        }
+        .help-modal-title {
+            font-weight: 700;
+            color: #b71c1c;
+            margin-bottom: 0.5rem;
+        }
+        .help-modal-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75em;
+            margin-bottom: 1rem;
+            color: #b71c1c;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.08rem;
+            transition: color 0.2s;
+        }
+        .help-modal-link:hover {
+            color: #d32f2f;
+            text-decoration: underline;
+        }
+        .help-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .dark-mode .help-modal {
+            background: #232526;
+            color: #eee;
+        }
+        .dark-mode .help-modal-title {
+            color: #ff5252;
+        }
+        .dark-mode .help-modal-link {
+            color: #ff5252;
+        }
+        .dark-mode .help-modal-link:hover {
+            color: #fff;
+        }
+        .dark-mode .help-modal-close {
+            color: #bbb;
+        }
+        .skip-link {
+            position: absolute;
+            left: -999px;
+            top: 10px;
+            background: #fff;
+            color: #b71c1c;
+            padding: 0.5em 1em;
+            z-index: 2000;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: left 0.2s;
+        }
+        .skip-link:focus {
+            left: 16px;
+            outline: 2px solid #b71c1c;
+        }
+        .buckeye-sidebar {
+            color: #222;
+            background: rgba(255,255,255,0.15);
+        }
+        .buckeye-sidebar .nav-link {
+            color: #222 !important;
+        }
+        .buckeye-sidebar .nav-link:focus {
+            outline: 2px solid #b71c1c;
+            outline-offset: 2px;
+        }
+        .help-modal {
+            color: #222;
+        }
+        .help-modal a:focus, .help-modal button:focus {
+            outline: 2px solid #b71c1c;
+            outline-offset: 2px;
+        }
+        .dark-mode .buckeye-sidebar {
+            color: #eee;
+            background: rgba(40,40,40,0.85);
+        }
+        .dark-mode .buckeye-sidebar .nav-link {
+            color: #eee !important;
+        }
+        .dark-mode .help-modal {
+            color: #eee;
+        }
     </style>
 </head>
 <body>
-    <header class="buckeye-header p-3 d-flex align-items-center">
+    <a href="#mainContent" class="skip-link" tabindex="0">Skip to main content</a>
+    <header class="buckeye-header p-3 d-flex align-items-center position-relative" role="banner" aria-label="Portal Header">
+        <button class="sidebar-toggle d-md-none" id="sidebarToggleMobile" aria-label="Toggle sidebar"><i class="fa fa-bars"></i></button>
         <img src="{% static 'portal/assets/buckeyeit-logo-white.png' %}" alt="Buckeye IT Logo" class="buckeye-logo me-3">
         <h4 class="mb-0">Buckeye IT Portal</h4>
+        <div class="header-actions ms-auto">
+            <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode"><i class="fa fa-moon"></i></button>
+            <div class="dropdown me-2">
+                <span class="notification-bell position-relative dropdown-toggle" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications" role="button">
+                    <i class="fa fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </span>
+                <div class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="notificationDropdown">
+                    <div class="notification-item">
+                        <i class="fa fa-bullhorn text-warning fa-fw mt-1"></i>
+                        <div>
+                            <div class="notification-title">Welcome to the new Buckeye IT Portal!</div>
+                            <div class="notification-time">Just now</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <i class="fa fa-ticket-alt text-primary fa-fw mt-1"></i>
+                        <div>
+                            <div class="notification-title">Your ticket #1234 has been updated.</div>
+                            <div class="notification-time">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <i class="fa fa-info-circle text-info fa-fw mt-1"></i>
+                        <div>
+                            <div class="notification-title">Knowledge Base now live!</div>
+                            <div class="notification-time">Yesterday</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dropdown">
+                <a class="user-dropdown dropdown-toggle d-flex align-items-center" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://ui-avatars.com/api/?name={{ request.user.get_full_name|urlencode }}&background=0D8ABC&color=fff&size=36" class="user-avatar" alt="User Avatar">
+                    <span class="d-none d-md-inline">{{ request.user.first_name }}</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="{% url 'portal:profile' %}"><i class="fa fa-user me-2"></i>My Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'portal:logout' %}"><i class="fa fa-sign-out-alt me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+        </div>
     </header>
     <div class="container-fluid">
         <div class="row">
-            <nav class="buckeye-sidebar col-md-2 d-none d-md-block p-3">
-                <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link text-white" href="{% url 'portal:dashboard' %}"><i class="fa fa-home fa-fw"></i>Dashboard</a></li>
+            <nav class="buckeye-sidebar d-none d-md-block p-3" id="sidebar" role="navigation" aria-label="Main sidebar navigation" tabindex="0">
+                <div class="sidebar-user mb-4" id="sidebarUser" aria-label="User info panel">
+                    <img src="https://ui-avatars.com/api/?name={{ request.user.get_full_name|urlencode }}&background=0D8ABC&color=fff&size=48" class="user-avatar" alt="User Avatar">
+                    <div>
+                        <div class="fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</div>
+                        <div class="small text-muted">{{ tenant.name|default:'Tenant' }}</div>
+                    </div>
+                </div>
+                <ul class="nav flex-column" role="menu">
+                    <li class="nav-item"><a class="nav-link text-dark" href="{% url 'portal:dashboard' %}" role="menuitem" tabindex="0"><i class="fa fa-home fa-fw"></i><span class="collapsed-text">Dashboard</span></a></li>
                     {% if not is_vip %}
-                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'portal:support' %}"><i class="fa fa-headset fa-fw"></i>Support</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'portal:knowledge_base' %}"><i class="fa fa-book fa-fw"></i>Knowledge Base</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'portal:profile' %}"><i class="fa fa-user fa-fw"></i>My Profile</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" href="#company"><i class="fa fa-building fa-fw"></i>Company Info</a></li>
-                        <li class="nav-item"><a class="nav-link text-white" href="#announcements"><i class="fa fa-bullhorn fa-fw"></i>Announcements</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="{% url 'portal:support' %}" role="menuitem" tabindex="0"><i class="fa fa-headset fa-fw"></i><span class="collapsed-text">Support</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="{% url 'portal:knowledge_base' %}" role="menuitem" tabindex="0"><i class="fa fa-book fa-fw"></i><span class="collapsed-text">Knowledge Base</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="{% url 'portal:profile' %}" role="menuitem" tabindex="0"><i class="fa fa-user fa-fw"></i><span class="collapsed-text">My Profile</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#company" role="menuitem" tabindex="0"><i class="fa fa-building fa-fw"></i><span class="collapsed-text">Company Info</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="#announcements" role="menuitem" tabindex="0"><i class="fa fa-bullhorn fa-fw"></i><span class="collapsed-text">Announcements</span></a></li>
                     {% endif %}
+                    <div class="sidebar-divider"></div>
                     {% if request.user.is_superuser %}
-                        <li class="nav-item"><a class="nav-link text-white" href="/admin/"><i class="fa fa-cog fa-fw"></i>Admin</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="/admin/"><i class="fa fa-cog fa-fw"></i><span class="collapsed-text">Admin</span></a></li>
                     {% endif %}
-                    <li class="nav-item"><a class="nav-link text-white" href="{% url 'portal:logout' %}"><i class="fa fa-sign-out-alt fa-fw"></i>Logout</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" href="{% url 'portal:logout' %}" role="menuitem" tabindex="0"><i class="fa fa-sign-out-alt fa-fw"></i><span class="collapsed-text">Logout</span></a></li>
                 </ul>
+                <button class="sidebar-toggle d-none d-md-flex mt-4 mx-auto" id="sidebarToggle" aria-label="Collapse sidebar" tabindex="0"><i class="fa fa-angle-double-left"></i></button>
             </nav>
-            <main class="col-md-10 ms-sm-auto px-4 py-4">
+            <main class="main-content col-md-10 ms-sm-auto px-4 py-4" id="mainContent" tabindex="0">
                 {% block content %}{% endblock %}
             </main>
         </div>
@@ -83,6 +453,129 @@
     <footer class="buckeye-footer text-center py-2">
         &copy; {{ year|default:2024 }} Buckeye IT
     </footer>
+    <button class="help-widget-btn" id="helpWidgetBtn" title="Help & Support" aria-label="Open help widget" tabindex="0"><i class="fa fa-question"></i></button>
+    <div class="help-modal" id="helpModal" role="dialog" aria-modal="true" aria-label="Help and support modal" tabindex="-1">
+        <button class="help-modal-close" id="helpModalClose" aria-label="Close help" tabindex="0">&times;</button>
+        <div class="help-modal-title"><i class="fa fa-question-circle me-2"></i>Need Help?</div>
+        <a href="{% url 'portal:knowledge_base' %}" class="help-modal-link" tabindex="0"><i class="fa fa-book fa-fw"></i> Knowledge Base</a>
+        <a href="{% url 'portal:support' %}" class="help-modal-link" tabindex="0"><i class="fa fa-headset fa-fw"></i> Contact Support</a>
+        <button class="btn btn-outline-primary w-100 mt-2" id="startTourBtn" tabindex="0"><i class="fa fa-magic me-1"></i> Take a Tour</button>
+        <div class="small text-muted mt-2">Our team is here to help you 24/7.</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@11.1.0/dist/js/shepherd.min.js"></script>
+    <script>
+        // Sidebar collapse/expand logic
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarUser = document.getElementById('sidebarUser');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('collapsed');
+                sidebarUser.classList.toggle('collapsed');
+                this.querySelector('i').classList.toggle('fa-angle-double-left');
+                this.querySelector('i').classList.toggle('fa-angle-double-right');
+            });
+        }
+        // Mobile sidebar toggle
+        const sidebarToggleMobile = document.getElementById('sidebarToggleMobile');
+        if (sidebarToggleMobile) {
+            sidebarToggleMobile.addEventListener('click', function() {
+                sidebar.classList.toggle('open');
+            });
+        }
+        // Close sidebar on main content click (mobile)
+        mainContent.addEventListener('click', function() {
+            if (window.innerWidth < 992 && sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+        // Theme switcher logic
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        function setTheme(mode) {
+            document.body.classList.remove('light-mode', 'dark-mode');
+            document.body.classList.add(mode + '-mode');
+            localStorage.setItem('theme', mode);
+            themeIcon.className = mode === 'dark' ? 'fa fa-sun' : 'fa fa-moon';
+            themeToggle.title = mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+        }
+        function getPreferredTheme() {
+            return localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        }
+        themeToggle.addEventListener('click', function() {
+            const current = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            setTheme(current === 'dark' ? 'light' : 'dark');
+        });
+        setTheme(getPreferredTheme());
+        // Help widget logic
+        const helpWidgetBtn = document.getElementById('helpWidgetBtn');
+        const helpModal = document.getElementById('helpModal');
+        const helpModalClose = document.getElementById('helpModalClose');
+        helpWidgetBtn.addEventListener('click', function() {
+            helpModal.classList.toggle('open');
+        });
+        helpModalClose.addEventListener('click', function() {
+            helpModal.classList.remove('open');
+        });
+        document.addEventListener('click', function(e) {
+            if (!helpModal.contains(e.target) && e.target !== helpWidgetBtn && helpModal.classList.contains('open')) {
+                helpModal.classList.remove('open');
+            }
+        });
+        // Shepherd.js onboarding tour stub
+        const startTourBtn = document.getElementById('startTourBtn');
+        if (startTourBtn) {
+            startTourBtn.addEventListener('click', function() {
+                helpModal.classList.remove('open');
+                const tour = new Shepherd.Tour({
+                    defaultStepOptions: {
+                        classes: 'shepherd-theme-arrows',
+                        scrollTo: true
+                    }
+                });
+                tour.addStep({
+                    title: 'Sidebar',
+                    text: 'This is your main navigation. Use it to access dashboard, support, knowledge base, and more.',
+                    attachTo: { element: '#sidebar', on: 'right' },
+                    buttons: [
+                        { text: 'Next', action: tour.next }
+                    ]
+                });
+                tour.addStep({
+                    title: 'Header',
+                    text: 'Here you can find notifications, theme switcher, and your profile menu.',
+                    attachTo: { element: '.buckeye-header', on: 'bottom' },
+                    buttons: [
+                        { text: 'Next', action: tour.next }
+                    ]
+                });
+                tour.addStep({
+                    title: 'Help Widget',
+                    text: 'Need help? Click this button anytime for support or to revisit this tour.',
+                    attachTo: { element: '.help-widget-btn', on: 'left' },
+                    buttons: [
+                        { text: 'Done', action: tour.complete }
+                    ]
+                });
+                tour.start();
+            });
+        }
+        // Help modal: trap focus when open
+        helpWidgetBtn.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                helpModal.classList.toggle('open');
+                helpModal.focus();
+            }
+        });
+        helpModal.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                helpModal.classList.remove('open');
+                helpWidgetBtn.focus();
+            }
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html> 

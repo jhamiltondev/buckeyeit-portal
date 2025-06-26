@@ -9,6 +9,7 @@ class Tenant(models.Model):
     slug = models.SlugField(max_length=100, unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     vip = models.BooleanField(default=False, help_text="Check if this tenant is VIP and should see automated features.")
+    domain = models.CharField(max_length=100, unique=True, blank=True, null=True, help_text="Primary email domain for auto-assignment, e.g. 'reedminerals.com'")
 
     def save(self, *args, **kwargs):
         if not self.slug:

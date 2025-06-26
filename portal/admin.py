@@ -9,8 +9,8 @@ class UserInline(admin.TabularInline):
 @admin.register(Tenant)
 class TenantAdmin(admin.ModelAdmin):
     inlines = [UserInline]
-    list_display = ('name', 'slug', 'vip', 'created_at')
-    search_fields = ('name',)
+    list_display = ('name', 'slug', 'vip', 'domain')
+    search_fields = ('name', 'slug', 'domain')
     fields = ('name', 'slug', 'vip')
     prepopulated_fields = {"slug": ("name",)}
 
