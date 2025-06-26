@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Tenant
+from .models import User, Tenant, Announcement, Ticket
 from import_export.admin import ImportExportModelAdmin
 
 class UserInline(admin.TabularInline):
@@ -24,3 +24,6 @@ class UserAdmin(ImportExportModelAdmin):
 # admin.site.register(SocialApp)
 # admin.site.register(SocialAccount)
 # admin.site.register(SocialToken)
+
+admin.site.register(Announcement)
+admin.site.register(Ticket)
