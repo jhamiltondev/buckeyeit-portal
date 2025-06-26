@@ -22,7 +22,7 @@
 </head>
 <body>
     <header class="buckeye-header p-3 d-flex align-items-center">
-        <img src="{% static 'portal/assets/buckeye-logo-white.png' %}" alt="Buckeye IT Logo" class="buckeye-logo me-3">
+        <img src="{% static 'portal/assets/buckeyeit-logo-white.png' %}" alt="Buckeye IT Logo" class="buckeye-logo me-3">
         <h4 class="mb-0">Buckeye IT Portal</h4>
     </header>
     <div class="container-fluid">
@@ -31,7 +31,7 @@
                 <ul class="nav flex-column">
                     <li class="nav-item"><a class="nav-link text-white" href="{% url 'portal:dashboard' %}"><i class="fa fa-home fa-fw"></i>Dashboard</a></li>
                     {% if not is_vip %}
-                        <li class="nav-item"><a class="nav-link text-white" href="#support"><i class="fa fa-headset fa-fw"></i>Support</a></li>
+                        <li class="nav-item"><a class="nav-link text-white" href="{% url 'portal:support' %}"><i class="fa fa-headset fa-fw"></i>Support</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="#knowledge"><i class="fa fa-book fa-fw"></i>Knowledge Base</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="#profile"><i class="fa fa-user fa-fw"></i>My Profile</a></li>
                         <li class="nav-item"><a class="nav-link text-white" href="#company"><i class="fa fa-building fa-fw"></i>Company Info</a></li>
