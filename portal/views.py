@@ -40,6 +40,7 @@ def dashboard(request, tenant_slug=None):
                     'title': article.get('title'),
                     'url': article.get('url'),
                     'source': article.get('source', {}).get('name'),
+                    'image': article.get('urlToImage'),
                 })
     except Exception:
         tech_news = []
