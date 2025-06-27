@@ -41,21 +41,25 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for ticket in tickets %}
                                 <tr>
-                                    <td>Example Ticket</td>
-                                    <td><span class="badge bg-warning text-dark">Open</span></td>
-                                    <td>2024-06-26</td>
+                                    <td>{{ ticket.subject }}</td>
+                                    <td>
+                                        {% if ticket.status == 'open' %}
+                                            <span class="badge bg-warning text-dark">Open</span>
+                                        {% elif ticket.status == 'in_progress' %}
+                                            <span class="badge bg-info text-dark">In Progress</span>
+                                        {% elif ticket.status == 'resolved' %}
+                                            <span class="badge bg-success">Resolved</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ ticket.created_at|date:"Y-m-d" }}</td>
                                 </tr>
+                                {% empty %}
                                 <tr>
-                                    <td>VPN Setup</td>
-                                    <td><span class="badge bg-info text-dark">In Progress</span></td>
-                                    <td>2024-06-25</td>
+                                    <td colspan="3">No tickets found.</td>
                                 </tr>
-                                <tr>
-                                    <td>Password Reset</td>
-                                    <td><span class="badge bg-success">Resolved</span></td>
-                                    <td>2024-06-20</td>
-                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                         <!-- Later: Replace with real ticket data -->

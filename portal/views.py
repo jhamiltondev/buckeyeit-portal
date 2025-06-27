@@ -66,7 +66,8 @@ def debug_urls(request):
 
 @login_required
 def support_view(request):
-    return render(request, 'portal/support.html')
+    tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'portal/support.html', {'tickets': tickets})
 
 @login_required
 def submit_ticket_view(request):
