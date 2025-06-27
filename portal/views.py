@@ -104,16 +104,21 @@ def support_view(request):
 
 @login_required
 def submit_ticket_view(request):
+    print("[DEBUG] submit_ticket_view called, method:", request.method)
     if request.method == 'POST':
         form = SupportTicketForm(request.POST, request.FILES)
         if form.is_valid():
+            print("[DEBUG] SupportTicketForm is valid. About to call create_connectwise_ticket.")
             # Create ticket in ConnectWise
             cw_result = create_connectwise_ticket(form.cleaned_data, request.user)
+            print("[DEBUG] create_connectwise_ticket returned:", cw_result)
             if cw_result:
                 messages.success(request, 'Your support ticket has been submitted and routed to our team!')
             else:
                 messages.error(request, 'There was an error submitting your ticket to ConnectWise. Please try again or contact support.')
             return redirect('portal:support')
+        else:
+            print("[DEBUG] SupportTicketForm is invalid. Errors:", form.errors)
     else:
         form = SupportTicketForm()
     return render(request, 'portal/submit_ticket.html', {'form': form})
