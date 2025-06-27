@@ -44,8 +44,10 @@ def dashboard(request, tenant_slug=None):
                     'source': article.get('source', {}).get('name'),
                     'image': article.get('urlToImage'),
                 })
-    except Exception:
+    except Exception as e:
+        print('NewsAPI error:', e)
         tech_news = []
+    print('Tech news fetched:', tech_news)
 
     return render(request, 'portal/dashboard.html', {
         'is_vip': is_vip,
