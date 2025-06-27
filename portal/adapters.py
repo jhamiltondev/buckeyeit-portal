@@ -39,7 +39,7 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 def get_connectwise_tickets(user):
     """
     Fetch ConnectWise tickets for the user.
-    - Standard users: by email
+    - Standard users: by contact ID (looked up by email)
     - VIP users: by domain (all tickets for their company)
     Returns a list of ticket dicts.
     """
@@ -48,8 +48,6 @@ def get_connectwise_tickets(user):
     public_key = settings.CONNECTWISE_PUBLIC_KEY
     private_key = settings.CONNECTWISE_PRIVATE_KEY
     client_id = settings.CONNECTWISE_CLIENT_ID
-
-    # Auth header
     auth_string = f"{company_id}+{public_key}:{private_key}"
     auth_b64 = base64.b64encode(auth_string.encode()).decode()
     headers = {
@@ -57,29 +55,29 @@ def get_connectwise_tickets(user):
         'clientId': client_id,
         'Accept': 'application/json',
     }
-
     # Build query
     if hasattr(user, 'tenant') and getattr(user.tenant, 'vip', False):
         # VIP: all tickets for the domain
         domain = user.email.split('@')[-1]
         conditions = f"contactEmail contains '{domain}'"
     else:
-        # Standard: only their tickets
-        conditions = f"contactEmail='{user.email}'"
-
+        # Standard: look up contact ID by email
+        contact_id = get_connectwise_contact_id(user.email)
+        if not contact_id:
+            return []
+        conditions = f"contact/id={contact_id}"
     params = {
         'conditions': conditions,
         'orderBy': 'dateEntered desc',
         'pageSize': 10,
     }
-
     try:
         resp = requests.get(base_url, headers=headers, params=params, timeout=10)
         if resp.status_code == 200:
             return resp.json()
     except Exception:
         pass
-    return [] 
+    return []
 
 def get_connectwise_contact_id(email, company_identifier=None):
     """
