@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
-from .views import LogoutViewAllowGet, logout_allow_get, dashboard, login_view, password_view, root_redirect, debug_urls, support_view, submit_ticket_view, knowledge_base_view, knowledge_article_view, profile_view, company_info_view
+from .views import LogoutViewAllowGet, logout_allow_get, dashboard, login_view, password_view, root_redirect, debug_urls, support_view, submit_ticket_view, knowledge_base_view, knowledge_article_view, profile_view, company_info_view, announcements_view
 
 app_name = 'portal'
 
@@ -20,4 +20,5 @@ urlpatterns = [
     path('knowledge/article/<int:article_id>/', views.knowledge_article_view, name='knowledge_article'),
     path('profile/', views.profile_view, name='profile'),
     path('company-info/', company_info_view, name='company_info'),
+    path('announcements/', announcements_view, name='announcements'),
 ] 

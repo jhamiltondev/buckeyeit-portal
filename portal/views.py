@@ -126,3 +126,14 @@ def company_info_view(request):
         'docs': docs,
         'is_admin': is_admin,
     })
+
+@login_required
+def announcements_view(request):
+    # Pinned announcement (if any)
+    pinned = Announcement.objects.filter(is_active=True, pinned=True).order_by('-created_at').first()
+    # Feed: all other active announcements, newest first
+    feed = Announcement.objects.filter(is_active=True, pinned=False).order_by('-created_at')
+    return render(request, 'portal/announcements.html', {
+        'pinned': pinned,
+        'feed': feed,
+    })
