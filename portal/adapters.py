@@ -79,31 +79,69 @@ def get_connectwise_tickets(user):
         pass
     return [] 
 
-def create_connectwise_ticket(form_data, user):
+def get_connectwise_contact_id(email, company_identifier=None):
     """
-    Create a ticket in ConnectWise using mapped fields from the support form.
+    Look up a ConnectWise contact by email. If not found, create it.
+    Returns the contact ID or None.
     """
-    base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/tickets"
+    base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/companies/contacts"
     company_id = settings.CONNECTWISE_COMPANY_ID
     public_key = settings.CONNECTWISE_PUBLIC_KEY
     private_key = settings.CONNECTWISE_PRIVATE_KEY
     client_id = settings.CONNECTWISE_CLIENT_ID
-
     headers = {
         'Authorization': f'Basic ' + requests.auth._basic_auth_str(f'{company_id}+{public_key}', private_key).split(' ')[1],
         'clientId': client_id,
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     }
+    # Try to find contact by email
+    params = {'conditions': f"email='{email}'"}
+    try:
+        resp = requests.get(base_url, headers=headers, params=params, timeout=10)
+        if resp.status_code == 200 and resp.json():
+            return resp.json()[0]['id']
+    except Exception:
+        pass
+    # If not found, create contact
+    payload = {
+        'email': email,
+        'company': {'identifier': company_identifier} if company_identifier else None,
+        'firstName': email.split('@')[0],
+        'lastName': '',
+    }
+    payload = {k: v for k, v in payload.items() if v is not None}
+    try:
+        resp = requests.post(base_url, headers=headers, json=payload, timeout=10)
+        if resp.status_code in (200, 201):
+            return resp.json()['id']
+    except Exception:
+        pass
+    return None
 
-    # Map form fields to ConnectWise fields
+def create_connectwise_ticket(form_data, user):
+    base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/tickets"
+    company_id = settings.CONNECTWISE_COMPANY_ID
+    public_key = settings.CONNECTWISE_PUBLIC_KEY
+    private_key = settings.CONNECTWISE_PRIVATE_KEY
+    client_id = settings.CONNECTWISE_CLIENT_ID
+    headers = {
+        'Authorization': f'Basic ' + requests.auth._basic_auth_str(f'{company_id}+{public_key}', private_key).split(' ')[1],
+        'clientId': client_id,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    }
     summary = form_data['request_type']
     if form_data.get('request_type') == 'Other' and form_data.get('request_type_other'):
         summary = form_data['request_type_other']
     summary = f"{summary} - {form_data['description'][:60]}"
     contact_email = form_data.get('affected_user') or user.email
-
-    # Add onsite/remote note to description
+    # Use tenant.name as company identifier if available
+    company_identifier = None
+    if hasattr(user, 'tenant') and user.tenant:
+        company_identifier = user.tenant.name or user.tenant.domain
+    # Look up or create contact
+    contact_id = get_connectwise_contact_id(contact_email, company_identifier)
     onsite_note = ''
     if form_data.get('onsite_or_remote') == 'Onsite Visit Requested':
         onsite_note = 'User requests onsite visit.'
@@ -112,8 +150,6 @@ def create_connectwise_ticket(form_data, user):
     description = form_data['description']
     if onsite_note:
         description = onsite_note + '\n\n' + description
-
-    # Defaults (customize as needed)
     payload = {
         "summary": summary,
         "board": {"name": "Implementation (MS)"},
@@ -123,16 +159,14 @@ def create_connectwise_ticket(form_data, user):
         "item": {"name": form_data['request_type']},
         "priority": {"name": form_data['priority']},
         "source": {"name": "Portal"},
+        "contactId": contact_id,
         "contactEmailAddress": contact_email,
         "contactName": user.get_full_name() or user.username,
-        "company": {"identifier": user.tenant.domain if hasattr(user, 'tenant') and user.tenant else None},
+        "company": {"identifier": company_identifier} if company_identifier else None,
         "site": None,
         "initialDescription": description,
     }
-
-    # Remove None values
     payload = {k: v for k, v in payload.items() if v is not None}
-
     try:
         resp = requests.post(base_url, headers=headers, json=payload, timeout=10)
         if resp.status_code in (200, 201):
