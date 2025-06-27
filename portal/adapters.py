@@ -72,7 +72,7 @@ def get_connectwise_tickets(user):
         'pageSize': 10,
     }
     try:
-        resp = requests.get(base_url, headers=headers, params=params, timeout=10)
+        resp = requests.get(base_url, headers=headers, params=params, timeout=30)
         if resp.status_code == 200:
             return resp.json()
     except Exception:
@@ -198,7 +198,7 @@ def create_connectwise_ticket(form_data, user):
     payload = {k: v for k, v in payload.items() if v is not None}
     print("[DEBUG] Submitting ConnectWise ticket with payload:", payload)
     try:
-        resp = requests.post(base_url, headers=headers, json=payload, timeout=10)
+        resp = requests.post(base_url, headers=headers, json=payload, timeout=30)
         print("[DEBUG] ConnectWise response status:", resp.status_code)
         print("[DEBUG] ConnectWise response text:", resp.text)
         if resp.status_code in (200, 201):
@@ -232,7 +232,7 @@ def test_connectwise_fetch_by_email(email):
         'pageSize': 10,
     }
     try:
-        resp = requests.get(base_url, headers=headers, params=params, timeout=10)
+        resp = requests.get(base_url, headers=headers, params=params, timeout=30)
         print('[DEBUG] ConnectWise fetch status:', resp.status_code)
         print('[DEBUG] ConnectWise fetch response:', resp.text)
         if resp.status_code == 200:
@@ -278,7 +278,7 @@ def test_connectwise_fetch_by_contact_email(email):
         'pageSize': 10,
     }
     try:
-        resp = requests.get(tickets_url, headers=headers, params=params, timeout=10)
+        resp = requests.get(tickets_url, headers=headers, params=params, timeout=30)
         print('[DEBUG] Ticket fetch status:', resp.status_code)
         print('[DEBUG] Ticket fetch response:', resp.text)
         if resp.status_code == 200:
