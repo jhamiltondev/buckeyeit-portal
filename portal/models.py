@@ -32,10 +32,18 @@ class User(AbstractUser):
     support_role = models.CharField(max_length=100, blank=True, help_text="Optional support role, e.g. 'Password Resets', 'Billing Contact'")
 
 class Announcement(models.Model):
+    CATEGORY_CHOICES = [
+        ('general', 'General'),
+        ('maintenance', 'Maintenance'),
+        ('tips', 'Tips'),
+    ]
     title = models.CharField(max_length=200)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+    pinned = models.BooleanField(default=False, help_text="Pin this announcement to the top for all tenants.")
+    category = models.CharField(max_length=32, choices=CATEGORY_CHOICES, default='general')
+    author = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, blank=True)
     # Optionally, add tenant = models.ForeignKey(Tenant, ...) for tenant-specific announcements
 
     def __str__(self):

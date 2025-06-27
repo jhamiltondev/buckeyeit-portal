@@ -38,7 +38,19 @@ class UserAdmin(ImportExportModelAdmin):
 # admin.site.register(SocialAccount)
 # admin.site.register(SocialToken)
 
-admin.site.register(Announcement)
+class AnnouncementAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'pinned', 'created_at', 'author', 'is_active')
+    list_filter = ('category', 'pinned', 'is_active')
+    search_fields = ('title', 'message')
+    fields = ('title', 'message', 'category', 'pinned', 'is_active', 'author')
+    readonly_fields = ('created_at',)
+    def save_model(self, request, obj, form, change):
+        if not obj.author:
+            obj.author = request.user
+        super().save_model(request, obj, form, change)
+
+admin.site.register(Announcement, AnnouncementAdmin)
+
 admin.site.register(Ticket)
 admin.site.register(KnowledgeBaseCategory)
 admin.site.register(KnowledgeBaseArticle)
