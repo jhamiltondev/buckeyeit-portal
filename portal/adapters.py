@@ -93,7 +93,7 @@ def get_connectwise_contact_id(email, company_identifier=None):
     Look up a ConnectWise contact by email. If not found, create it.
     Returns the contact ID or None.
     """
-    base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/companies/contacts"
+    base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/company/contacts"
     company_id = settings.CONNECTWISE_COMPANY_ID
     public_key = settings.CONNECTWISE_PUBLIC_KEY
     private_key = settings.CONNECTWISE_PRIVATE_KEY
@@ -306,7 +306,7 @@ def test_connectwise_fetch_by_contact_email(email):
     from django.conf import settings
     import requests
     # Step 1: Look up contact by email
-    contacts_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/companies/contacts"
+    contacts_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/company/contacts"
     company_id = settings.CONNECTWISE_COMPANY_ID
     public_key = settings.CONNECTWISE_PUBLIC_KEY
     private_key = settings.CONNECTWISE_PRIVATE_KEY
