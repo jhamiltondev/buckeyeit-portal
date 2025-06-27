@@ -55,17 +55,23 @@ def get_connectwise_tickets(user):
         'clientId': client_id,
         'Accept': 'application/json',
     }
+    print(f"[DEBUG] Fetching ConnectWise tickets for user: {user.email}")
     # Build query
     if hasattr(user, 'tenant') and getattr(user.tenant, 'vip', False):
         # VIP: all tickets for the domain
         domain = user.email.split('@')[-1]
         conditions = f"contactEmail contains '{domain}'"
+        print(f"[DEBUG] User is VIP. Using domain: {domain}")
+        print(f"[DEBUG] API conditions: {conditions}")
     else:
         # Standard: look up contact ID by email
         contact_id = get_connectwise_contact_id(user.email)
+        print(f"[DEBUG] User is not VIP. Contact ID for {user.email}: {contact_id}")
         if not contact_id:
+            print(f"[DEBUG] No contact ID found for {user.email}. Returning empty list.")
             return []
         conditions = f"contact/id={contact_id}"
+        print(f"[DEBUG] API conditions: {conditions}")
     params = {
         'conditions': conditions,
         'orderBy': 'dateEntered desc',
@@ -73,10 +79,13 @@ def get_connectwise_tickets(user):
     }
     try:
         resp = requests.get(base_url, headers=headers, params=params, timeout=30)
+        print(f"[DEBUG] ConnectWise API status: {resp.status_code}")
+        print(f"[DEBUG] ConnectWise API response: {resp.text}")
         if resp.status_code == 200:
+            print(f"[DEBUG] Tickets fetched: {resp.json()}")
             return resp.json()
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[DEBUG] Exception while fetching tickets: {e}")
     return []
 
 def get_connectwise_contact_id(email, company_identifier=None):
