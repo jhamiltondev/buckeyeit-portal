@@ -154,12 +154,24 @@ def create_connectwise_ticket(form_data, user):
     description = form_data['description']
     if onsite_note:
         description = onsite_note + '\n\n' + description
+    # Map only valid ConnectWise subtypes
+    VALID_SUBTYPES = [
+        "Technical Issue",
+        "Password Reset",
+        "Software Installation",
+        "Hardware Problem",
+        "Network Issue",
+        "General Inquiry"
+    ]
+    subtype = form_data['request_type']
+    if subtype not in VALID_SUBTYPES:
+        subtype = "General Inquiry"
     payload = {
         "summary": summary,
         "board": {"name": "Implementation (MS)"},
         "status": {"name": "Needs Worked"},
         "type": {"name": "Request"},
-        "subType": {"name": form_data['request_type']},
+        "subType": {"name": subtype},
         "item": {"name": form_data['request_type']},
         "priority": {"name": form_data['priority']},
         "source": {"name": "Portal"},
