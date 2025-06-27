@@ -110,10 +110,14 @@ def get_connectwise_contact_id(email, company_identifier=None):
     params = {'conditions': f"email='{email}'"}
     try:
         resp = requests.get(base_url, headers=headers, params=params, timeout=10)
+        print(f"[DEBUG] Contact lookup status: {resp.status_code}")
+        print(f"[DEBUG] Contact lookup response: {resp.text}")
         if resp.status_code == 200 and resp.json():
-            return resp.json()[0]['id']
-    except Exception:
-        pass
+            contact_id = resp.json()[0]['id']
+            print(f"[DEBUG] Found contact ID: {contact_id} for email: {email}")
+            return contact_id
+    except Exception as e:
+        print(f"[DEBUG] Exception during contact lookup: {e}")
     # If not found, create contact
     payload = {
         'email': email,
@@ -123,11 +127,17 @@ def get_connectwise_contact_id(email, company_identifier=None):
     }
     payload = {k: v for k, v in payload.items() if v is not None}
     try:
+        print(f"[DEBUG] Creating contact with payload: {payload}")
         resp = requests.post(base_url, headers=headers, json=payload, timeout=10)
+        print(f"[DEBUG] Contact creation status: {resp.status_code}")
+        print(f"[DEBUG] Contact creation response: {resp.text}")
         if resp.status_code in (200, 201):
-            return resp.json()['id']
-    except Exception:
-        pass
+            contact_id = resp.json()['id']
+            print(f"[DEBUG] Created contact ID: {contact_id} for email: {email}")
+            return contact_id
+    except Exception as e:
+        print(f"[DEBUG] Exception during contact creation: {e}")
+    print(f"[DEBUG] Could not find or create contact for email: {email}")
     return None
 
 def create_connectwise_ticket(form_data, user):
