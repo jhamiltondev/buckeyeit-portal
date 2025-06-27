@@ -10,7 +10,7 @@ from django.urls import get_resolver
 from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument
 from django.contrib.admin.views.decorators import staff_member_required
 import requests
-from .adapters import get_connectwise_tickets
+from .adapters import get_connectwise_tickets, create_connectwise_ticket
 from .forms import SupportTicketForm
 
 # Create your views here.
@@ -105,10 +105,12 @@ def submit_ticket_view(request):
     if request.method == 'POST':
         form = SupportTicketForm(request.POST, request.FILES)
         if form.is_valid():
-            # For now, just print/log the cleaned data
-            print(form.cleaned_data)
-            # TODO: Send to ConnectWise/email
-            messages.success(request, 'Your support ticket has been submitted!')
+            # Create ticket in ConnectWise
+            cw_result = create_connectwise_ticket(form.cleaned_data, request.user)
+            if cw_result:
+                messages.success(request, 'Your support ticket has been submitted and routed to our team!')
+            else:
+                messages.error(request, 'There was an error submitting your ticket to ConnectWise. Please try again or contact support.')
             return redirect('portal:support')
     else:
         form = SupportTicketForm()

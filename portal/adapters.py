@@ -78,3 +78,57 @@ def get_connectwise_tickets(user):
     except Exception:
         pass
     return [] 
+
+def create_connectwise_ticket(form_data, user):
+    """
+    Create a ticket in ConnectWise using mapped fields from the support form.
+    """
+    base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/tickets"
+    company_id = settings.CONNECTWISE_COMPANY_ID
+    public_key = settings.CONNECTWISE_PUBLIC_KEY
+    private_key = settings.CONNECTWISE_PRIVATE_KEY
+    client_id = settings.CONNECTWISE_CLIENT_ID
+
+    headers = {
+        'Authorization': f'Basic ' + requests.auth._basic_auth_str(f'{company_id}+{public_key}', private_key).split(' ')[1],
+        'clientId': client_id,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    }
+
+    # Map form fields to ConnectWise fields
+    summary = form_data['request_type']
+    if form_data.get('request_type') == 'Other' and form_data.get('request_type_other'):
+        summary = form_data['request_type_other']
+    summary = f"{summary} - {form_data['description'][:60]}"
+    contact_email = form_data.get('affected_user') or user.email
+
+    # Defaults (customize as needed)
+    payload = {
+        "summary": summary,
+        "board": {"name": "Implementation (MS)"},
+        "status": {"name": "Needs Worked"},
+        "type": {"name": "Request"},
+        "subType": {"name": form_data['request_type']},
+        "item": {"name": form_data['request_type']},
+        "priority": {"name": form_data['priority']},
+        "source": {"name": "Portal"},
+        "contactEmailAddress": contact_email,
+        "contactName": user.get_full_name() or user.username,
+        "company": {"identifier": user.tenant.domain if hasattr(user, 'tenant') and user.tenant else None},
+        "site": None,
+        "initialDescription": form_data['description'],
+    }
+
+    # Remove None values
+    payload = {k: v for k, v in payload.items() if v is not None}
+
+    try:
+        resp = requests.post(base_url, headers=headers, json=payload, timeout=10)
+        if resp.status_code in (200, 201):
+            return resp.json()
+        else:
+            print("ConnectWise ticket creation failed:", resp.status_code, resp.text)
+    except Exception as e:
+        print("ConnectWise ticket creation error:", e)
+    return None 
