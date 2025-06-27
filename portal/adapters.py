@@ -90,7 +90,7 @@ def get_connectwise_tickets(user):
 
 def get_connectwise_contact_id(email, company_identifier=None):
     """
-    Look up a ConnectWise contact by email. If not found, create it.
+    Look up a ConnectWise contact by email (main or communication item). If not found, create it.
     Returns the contact ID or None.
     """
     base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/company/contacts"
@@ -106,9 +106,10 @@ def get_connectwise_contact_id(email, company_identifier=None):
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     }
-    # Try to find contact by email
-    params = {'conditions': f"email='{email}'"}
+    # Try to find contact by email (main or communication item)
+    params = {'childconditions': f'communicationItems/value like "%{email}%" AND communicationItems/communicationType="Email"'}
     try:
+        print(f"[DEBUG] Contact lookup by childconditions: {params}")
         resp = requests.get(base_url, headers=headers, params=params, timeout=10)
         print(f"[DEBUG] Contact lookup status: {resp.status_code}")
         print(f"[DEBUG] Contact lookup response: {resp.text}")
