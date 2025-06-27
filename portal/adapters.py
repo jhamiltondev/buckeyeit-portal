@@ -154,7 +154,25 @@ def create_connectwise_ticket(form_data, user):
     if onsite_note:
         description = onsite_note + '\n\n' + description
 
-    # Mappings for ConnectWise
+    # Board/item/status mapping
+    REQUEST_TYPE_TO_ITEM = {
+        'Technical Issue': 'Software / Drivers',
+        'Password Reset': 'Outlook',
+        'Software Installation': 'Software / Drivers',
+        'Hardware Problem': 'Hardware - Other',
+        'Network Issue': 'Network Connectivity',
+        'General Inquiry': 'Information',
+        'Other': 'Information',
+        'New User Setup': 'New User',
+    }
+    # Use Implementation (MS) for General Inquiry/Other, else Help Desk (MS)
+    board = 'Help Desk (MS)'
+    if form_data.get('request_type') in ['General Inquiry', 'Other']:
+        board = 'Implementation (MS)'
+    item = REQUEST_TYPE_TO_ITEM.get(form_data.get('request_type'), 'Software / Drivers')
+    status = 'Pre-Process'  # Valid for both boards
+
+    # Priority mapping (as before)
     PRIORITY_MAP = {
         'Low (e.g., minor inconvenience)': 'Priority 4 - Low',
         'Medium (e.g., workarounds exist)': 'Priority 3 - Medium',
@@ -165,27 +183,15 @@ def create_connectwise_ticket(form_data, user):
         'High': 'Priority 2 - High',
         'Emergency': 'Priority 1 - Critical',
     }
-    SUBTYPE_MAP = {
-        'Technical Issue': 'Software',
-        'Password Reset': 'Email',
-        'Software Installation': 'Software',
-        'Hardware Problem': 'Laptop / Workstation',
-        'Network Issue': 'Network',
-        'General Inquiry': 'Email',
-        'Other': 'Email',
-        'New User Setup': 'Email',
-    }
-    # Use safe defaults if not found
     priority = PRIORITY_MAP.get(form_data.get('priority'), 'Priority 3 - Medium')
-    subtype = SUBTYPE_MAP.get(form_data.get('request_type'), 'Email')
 
     payload = {
         "summary": summary,
-        "board": {"name": "Help Desk (MS)"},
-        "status": {"name": "New"},
+        "board": {"name": board},
+        "status": {"name": status},
         "type": {"name": "Incident"},
-        "subType": {"name": subtype},
-        "item": {"name": subtype},
+        "subType": {"name": item},
+        "item": {"name": item},
         "priority": {"name": priority},
         "source": {"name": "Portal"},
         "contactId": contact_id,
