@@ -3,6 +3,7 @@ from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from .models import Tenant
 import requests
 from django.conf import settings
+import base64
 
 class NoNewUsersAccountAdapter(DefaultAccountAdapter):
     def is_open_for_signup(self, request):
@@ -49,9 +50,10 @@ def get_connectwise_tickets(user):
     client_id = settings.CONNECTWISE_CLIENT_ID
 
     # Auth header
-    auth = f'{company_id}+{public_key}:{private_key}'
+    auth_string = f"{company_id}+{public_key}:{private_key}"
+    auth_b64 = base64.b64encode(auth_string.encode()).decode()
     headers = {
-        'Authorization': f'Basic ' + requests.auth._basic_auth_str(f'{company_id}+{public_key}', private_key).split(' ')[1],
+        'Authorization': f'Basic {auth_b64}',
         'clientId': client_id,
         'Accept': 'application/json',
     }
@@ -89,8 +91,10 @@ def get_connectwise_contact_id(email, company_identifier=None):
     public_key = settings.CONNECTWISE_PUBLIC_KEY
     private_key = settings.CONNECTWISE_PRIVATE_KEY
     client_id = settings.CONNECTWISE_CLIENT_ID
+    auth_string = f"{company_id}+{public_key}:{private_key}"
+    auth_b64 = base64.b64encode(auth_string.encode()).decode()
     headers = {
-        'Authorization': f'Basic ' + requests.auth._basic_auth_str(f'{company_id}+{public_key}', private_key).split(' ')[1],
+        'Authorization': f'Basic {auth_b64}',
         'clientId': client_id,
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -125,8 +129,10 @@ def create_connectwise_ticket(form_data, user):
     public_key = settings.CONNECTWISE_PUBLIC_KEY
     private_key = settings.CONNECTWISE_PRIVATE_KEY
     client_id = settings.CONNECTWISE_CLIENT_ID
+    auth_string = f"{company_id}+{public_key}:{private_key}"
+    auth_b64 = base64.b64encode(auth_string.encode()).decode()
     headers = {
-        'Authorization': f'Basic ' + requests.auth._basic_auth_str(f'{company_id}+{public_key}', private_key).split(' ')[1],
+        'Authorization': f'Basic {auth_b64}',
         'clientId': client_id,
         'Accept': 'application/json',
         'Content-Type': 'application/json',
