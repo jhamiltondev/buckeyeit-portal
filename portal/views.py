@@ -26,7 +26,7 @@ def dashboard(request, tenant_slug=None):
         resp = requests.get(
             'https://newsapi.org/v2/top-headlines',
             params={
-                'category': 'technology',
+                'q': 'Microsoft OR cybersecurity OR security OR outage OR patch OR vulnerability OR Azure OR "Office 365"',
                 'language': 'en',
                 'pageSize': 5,
                 'apiKey': '26ab5bf6cc45491ea78cd09939f00f92',
