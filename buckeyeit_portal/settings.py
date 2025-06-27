@@ -198,7 +198,7 @@ JAZZMIN_SETTINGS = {
 }
 
 # ConnectWise API credentials (move to environment variables for production!)
-CONNECTWISE_SITE = "https://api-na.myconnectwise.net"
+CONNECTWISE_SITE = "http://na.myconnectwise.net/2025.8"
 CONNECTWISE_COMPANY_ID = "buckeyeitser"
 CONNECTWISE_PUBLIC_KEY = "6btb8DTHkwheGf3d"
 CONNECTWISE_PRIVATE_KEY = "sKnSZdrNmU8zeFiQ"
