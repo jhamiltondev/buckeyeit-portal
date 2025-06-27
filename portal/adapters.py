@@ -141,11 +141,9 @@ def create_connectwise_ticket(form_data, user):
         summary = form_data['request_type_other']
     summary = f"{summary} - {form_data['description'][:60]}"
     contact_email = form_data.get('affected_user') or user.email
-    # Use tenant.name as company identifier if available
     company_identifier = None
     if hasattr(user, 'tenant') and user.tenant:
         company_identifier = user.tenant.name or user.tenant.domain
-    # Look up or create contact
     contact_id = get_connectwise_contact_id(contact_email, company_identifier)
     onsite_note = ''
     if form_data.get('onsite_or_remote') == 'Onsite Visit Requested':
@@ -155,26 +153,40 @@ def create_connectwise_ticket(form_data, user):
     description = form_data['description']
     if onsite_note:
         description = onsite_note + '\n\n' + description
-    # Map only valid ConnectWise subtypes
-    VALID_SUBTYPES = [
-        "Technical Issue",
-        "Password Reset",
-        "Software Installation",
-        "Hardware Problem",
-        "Network Issue",
-        "General Inquiry"
-    ]
-    subtype = form_data['request_type']
-    if subtype not in VALID_SUBTYPES:
-        subtype = "General Inquiry"
+
+    # Mappings for ConnectWise
+    PRIORITY_MAP = {
+        'Low (e.g., minor inconvenience)': 'Priority 4 - Low',
+        'Medium (e.g., workarounds exist)': 'Priority 3 - Medium',
+        'High (e.g., unable to work)': 'Priority 2 - High',
+        'Emergency (e.g., business down)': 'Priority 1 - Critical',
+        'Low': 'Priority 4 - Low',
+        'Medium': 'Priority 3 - Medium',
+        'High': 'Priority 2 - High',
+        'Emergency': 'Priority 1 - Critical',
+    }
+    SUBTYPE_MAP = {
+        'Technical Issue': 'Software',
+        'Password Reset': 'Email',
+        'Software Installation': 'Software',
+        'Hardware Problem': 'Laptop / Workstation',
+        'Network Issue': 'Network',
+        'General Inquiry': 'Email',
+        'Other': 'Email',
+        'New User Setup': 'Email',
+    }
+    # Use safe defaults if not found
+    priority = PRIORITY_MAP.get(form_data.get('priority'), 'Priority 3 - Medium')
+    subtype = SUBTYPE_MAP.get(form_data.get('request_type'), 'Email')
+
     payload = {
         "summary": summary,
-        "board": {"name": "Implementation (MS)"},
-        "status": {"name": "Needs Worked"},
-        "type": {"name": "Request"},
+        "board": {"name": "Help Desk (MS)"},
+        "status": {"name": "New"},
+        "type": {"name": "Incident"},
         "subType": {"name": subtype},
-        "item": {"name": form_data['request_type']},
-        "priority": {"name": form_data['priority']},
+        "item": {"name": subtype},
+        "priority": {"name": priority},
         "source": {"name": "Portal"},
         "contactId": contact_id,
         "contactEmailAddress": contact_email,
@@ -197,7 +209,7 @@ def create_connectwise_ticket(form_data, user):
     except Exception as e:
         print("ConnectWise ticket creation error:", e)
     print("[DEBUG] create_connectwise_ticket finished for user:", user.email)
-    return None 
+    return None
 
 def test_connectwise_fetch_by_email(email):
     """Standalone test for ConnectWise ticket fetch by email (no Django ORM)."""
