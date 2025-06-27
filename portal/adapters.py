@@ -60,10 +60,10 @@ def get_connectwise_tickets(user):
     if hasattr(user, 'tenant') and getattr(user.tenant, 'vip', False):
         # VIP: all tickets for the domain
         domain = user.email.split('@')[-1]
-        conditions = f"contact/email contains '{domain}'"
+        conditions = f"contactEmail contains '{domain}'"
     else:
         # Standard: only their tickets
-        conditions = f"contact/email='{user.email}'"
+        conditions = f"contactEmail='{user.email}'"
 
     params = {
         'conditions': conditions,
@@ -167,8 +167,11 @@ def create_connectwise_ticket(form_data, user):
         "initialDescription": description,
     }
     payload = {k: v for k, v in payload.items() if v is not None}
+    print("[DEBUG] Submitting ConnectWise ticket with payload:", payload)
     try:
         resp = requests.post(base_url, headers=headers, json=payload, timeout=10)
+        print("[DEBUG] ConnectWise response status:", resp.status_code)
+        print("[DEBUG] ConnectWise response text:", resp.text)
         if resp.status_code in (200, 201):
             return resp.json()
         else:
@@ -176,3 +179,79 @@ def create_connectwise_ticket(form_data, user):
     except Exception as e:
         print("ConnectWise ticket creation error:", e)
     return None 
+
+def test_connectwise_fetch_by_email(email):
+    """Standalone test for ConnectWise ticket fetch by email (no Django ORM)."""
+    import os
+    from django.conf import settings
+    import requests
+    base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/tickets"
+    company_id = settings.CONNECTWISE_COMPANY_ID
+    public_key = settings.CONNECTWISE_PUBLIC_KEY
+    private_key = settings.CONNECTWISE_PRIVATE_KEY
+    client_id = settings.CONNECTWISE_CLIENT_ID
+    headers = {
+        'Authorization': f'Basic ' + requests.auth._basic_auth_str(f'{company_id}+{public_key}', private_key).split(' ')[1],
+        'clientId': client_id,
+        'Accept': 'application/json',
+    }
+    params = {
+        'conditions': f"contactEmail='{email}'",
+        'orderBy': 'dateEntered desc',
+        'pageSize': 10,
+    }
+    try:
+        resp = requests.get(base_url, headers=headers, params=params, timeout=10)
+        print('[DEBUG] ConnectWise fetch status:', resp.status_code)
+        print('[DEBUG] ConnectWise fetch response:', resp.text)
+        if resp.status_code == 200:
+            return resp.json()
+    except Exception as e:
+        print('[DEBUG] ConnectWise fetch error:', e)
+    return [] 
+
+def test_connectwise_fetch_by_contact_email(email):
+    """Standalone test: Look up contact by email, then fetch tickets by contactId."""
+    from django.conf import settings
+    import requests
+    # Step 1: Look up contact by email
+    contacts_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/companies/contacts"
+    company_id = settings.CONNECTWISE_COMPANY_ID
+    public_key = settings.CONNECTWISE_PUBLIC_KEY
+    private_key = settings.CONNECTWISE_PRIVATE_KEY
+    client_id = settings.CONNECTWISE_CLIENT_ID
+    headers = {
+        'Authorization': f'Basic ' + requests.auth._basic_auth_str(f'{company_id}+{public_key}', private_key).split(' ')[1],
+        'clientId': client_id,
+        'Accept': 'application/json',
+    }
+    params = {'conditions': f"email='{email}'"}
+    try:
+        resp = requests.get(contacts_url, headers=headers, params=params, timeout=10)
+        print('[DEBUG] Contact lookup status:', resp.status_code)
+        print('[DEBUG] Contact lookup response:', resp.text)
+        if resp.status_code == 200 and resp.json():
+            contact_id = resp.json()[0]['id']
+            print(f'[DEBUG] Found contactId: {contact_id}')
+        else:
+            print('[DEBUG] No contact found for email.')
+            return []
+    except Exception as e:
+        print('[DEBUG] Contact lookup error:', e)
+        return []
+    # Step 2: Fetch tickets by contactId
+    tickets_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/tickets"
+    params = {
+        'conditions': f"contactId={contact_id}",
+        'orderBy': 'dateEntered desc',
+        'pageSize': 10,
+    }
+    try:
+        resp = requests.get(tickets_url, headers=headers, params=params, timeout=10)
+        print('[DEBUG] Ticket fetch status:', resp.status_code)
+        print('[DEBUG] Ticket fetch response:', resp.text)
+        if resp.status_code == 200:
+            return resp.json()
+    except Exception as e:
+        print('[DEBUG] Ticket fetch error:', e)
+    return [] 
