@@ -14,3 +14,4 @@ dj-database-url
 django-jazzmin
 whitenoise
 django-import-export
+django-widget-tweaks
