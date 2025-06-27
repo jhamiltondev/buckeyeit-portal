@@ -60,7 +60,7 @@
                     <h6 class="fw-bold mb-3"><i class="fa fa-bolt text-primary me-2"></i>Quick Actions</h6>
                     <div class="d-flex flex-wrap gap-2 justify-content-start justify-content-md-between">
                         <a href="{% url 'portal:submit_ticket' %}" class="btn btn-outline-primary quick-action flex-fill mb-2"><i class="fa fa-edit me-1"></i> Submit Ticket</a>
-                        <a href="{% url 'portal:view_tickets' %}" class="btn btn-outline-secondary quick-action flex-fill mb-2"><i class="fa fa-folder-open me-1"></i> View Open Tickets</a>
+                        <a href="{% url 'portal:support' %}" class="btn btn-outline-secondary quick-action flex-fill mb-2"><i class="fa fa-folder-open me-1"></i> View Open Tickets</a>
                         {% if is_vip %}
                         <a href="/admin/auth/user/" class="btn btn-outline-info quick-action flex-fill mb-2"><i class="fa fa-users-cog me-1"></i> Manage Users</a>
                         {% endif %}
