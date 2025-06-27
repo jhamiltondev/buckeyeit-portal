@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import get_resolver
 from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument
 from django.contrib.admin.views.decorators import staff_member_required
+import requests
 
 # Create your views here.
 
@@ -18,11 +19,37 @@ def dashboard(request, tenant_slug=None):
     is_vip = getattr(tenant, 'vip', False) if tenant else False
     announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')
     tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')[:5]
+
+    # Fetch live tech news
+    tech_news = []
+    try:
+        resp = requests.get(
+            'https://newsapi.org/v2/top-headlines',
+            params={
+                'category': 'technology',
+                'language': 'en',
+                'pageSize': 5,
+                'apiKey': '26ab5bf6cc45491ea78cd09939f00f92',
+            },
+            timeout=5
+        )
+        if resp.status_code == 200:
+            data = resp.json()
+            for article in data.get('articles', []):
+                tech_news.append({
+                    'title': article.get('title'),
+                    'url': article.get('url'),
+                    'source': article.get('source', {}).get('name'),
+                })
+    except Exception:
+        tech_news = []
+
     return render(request, 'portal/dashboard.html', {
         'is_vip': is_vip,
         'tenant': tenant,
         'announcements': announcements,
         'tickets': tickets,
+        'tech_news': tech_news,
     })
 
 def login_view(request):
