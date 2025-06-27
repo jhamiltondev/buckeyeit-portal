@@ -103,6 +103,16 @@ def create_connectwise_ticket(form_data, user):
     summary = f"{summary} - {form_data['description'][:60]}"
     contact_email = form_data.get('affected_user') or user.email
 
+    # Add onsite/remote note to description
+    onsite_note = ''
+    if form_data.get('onsite_or_remote') == 'Onsite Visit Requested':
+        onsite_note = 'User requests onsite visit.'
+    elif form_data.get('onsite_or_remote') == 'Remote Support':
+        onsite_note = 'User requests remote support.'
+    description = form_data['description']
+    if onsite_note:
+        description = onsite_note + '\n\n' + description
+
     # Defaults (customize as needed)
     payload = {
         "summary": summary,
@@ -117,7 +127,7 @@ def create_connectwise_ticket(form_data, user):
         "contactName": user.get_full_name() or user.username,
         "company": {"identifier": user.tenant.domain if hasattr(user, 'tenant') and user.tenant else None},
         "site": None,
-        "initialDescription": form_data['description'],
+        "initialDescription": description,
     }
 
     # Remove None values
