@@ -2,30 +2,64 @@
 {% load static %}
 {% block title %}Submit a Ticket{% endblock %}
 {% block content %}
-<div class="container-fluid">
+<div class="container-fluid animate__animated animate__fadeIn">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow-sm animate__animated animate__fadeInDown mt-4">
+        <div class="col-lg-7">
+            <div class="card shadow-sm mt-4">
                 <div class="card-body">
-                    <h4 class="fw-bold mb-3"><i class="fa fa-edit text-primary me-2"></i>Submit a Support Ticket</h4>
-                    <form method="post" action="">
+                    <h4 class="fw-bold mb-3"><i class="fa fa-edit text-primary me-2"></i>New Support Ticket</h4>
+                    <form method="post" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label for="subject" class="form-label">Subject</label>
-                            <input type="text" class="form-control" id="subject" name="subject" required>
+                            {{ form.request_type.label_tag }}
+                            {{ form.request_type|add_class:'form-select' }}
+                        </div>
+                        <div class="mb-3" id="other-type-group" style="display:none;">
+                            {{ form.request_type_other.label_tag }}
+                            {{ form.request_type_other|add_class:'form-control' }}
                         </div>
                         <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+                            {{ form.onsite_or_remote.label_tag }}
+                            {{ form.onsite_or_remote|add_class:'form-select' }}
                         </div>
-                        <!-- Optional: Add file upload or priority fields here -->
+                        <div class="mb-3">
+                            {{ form.priority.label_tag }}
+                            {{ form.priority|add_class:'form-select' }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.description.label_tag }}
+                            {{ form.description|add_class:'form-control' }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.attachment.label_tag }}
+                            {{ form.attachment|add_class:'form-control' }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.affected_user.label_tag }}
+                            {{ form.affected_user|add_class:'form-control' }}
+                            <div class="form-text">{{ form.affected_user.help_text }}</div>
+                        </div>
                         <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane me-1"></i>Submit Ticket</button>
-                        <a href="{% url 'portal:support' %}" class="btn btn-link">Cancel</a>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var typeSelect = document.getElementById('id_request_type');
+        var otherGroup = document.getElementById('other-type-group');
+        function toggleOther() {
+            if (typeSelect.value === 'Other') {
+                otherGroup.style.display = '';
+            } else {
+                otherGroup.style.display = 'none';
+                document.getElementById('id_request_type_other').value = '';
+            }
+        }
+        typeSelect.addEventListener('change', toggleOther);
+        toggleOther();
+    });
+</script>
 {% endblock %} 

@@ -11,6 +11,7 @@ from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseAr
 from django.contrib.admin.views.decorators import staff_member_required
 import requests
 from .adapters import get_connectwise_tickets
+from .forms import SupportTicketForm
 
 # Create your views here.
 
@@ -101,7 +102,17 @@ def support_view(request):
 
 @login_required
 def submit_ticket_view(request):
-    return render(request, 'portal/submit_ticket.html')
+    if request.method == 'POST':
+        form = SupportTicketForm(request.POST, request.FILES)
+        if form.is_valid():
+            # For now, just print/log the cleaned data
+            print(form.cleaned_data)
+            # TODO: Send to ConnectWise/email
+            messages.success(request, 'Your support ticket has been submitted!')
+            return redirect('portal:support')
+    else:
+        form = SupportTicketForm()
+    return render(request, 'portal/submit_ticket.html', {'form': form})
 
 @login_required
 def knowledge_base_view(request):
