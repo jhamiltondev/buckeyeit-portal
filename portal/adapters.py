@@ -165,13 +165,40 @@ def create_connectwise_ticket(form_data, user):
         'Other': 'Information',
         'New User Setup': 'New User',
     }
+    # Valid subtypes for Help Desk (MS)
+    HELPDESK_SUBTYPES = [
+        'Account Managment',
+        'Backup (BDR) Appliance',
+        'Battery Replacement',
+        'Email',
+        'Internet',
+        'Laptop / Workstation',
+        'Network',
+        'Phone System',
+        'Printer Setup',
+        'Security',
+        'Server',
+        'Software',
+        'Spec New Equipment',
+        'Subscription Mgmt',
+    ]
+    # Map request_type to valid subType for Help Desk (MS)
+    REQUEST_TYPE_TO_SUBTYPE = {
+        'Technical Issue': 'Software',
+        'Password Reset': 'Email',
+        'Software Installation': 'Software',
+        'Hardware Problem': 'Laptop / Workstation',
+        'Network Issue': 'Network',
+        'General Inquiry': 'Email',
+        'Other': 'Email',
+        'New User Setup': 'Account Managment',
+    }
     # Use Implementation (MS) for General Inquiry/Other, else Help Desk (MS)
     board = 'Help Desk (MS)'
     if form_data.get('request_type') in ['General Inquiry', 'Other']:
         board = 'Implementation (MS)'
     item = REQUEST_TYPE_TO_ITEM.get(form_data.get('request_type'), 'Software / Drivers')
     status = 'Pre-Process'  # Valid for both boards
-
     # Priority mapping (as before)
     PRIORITY_MAP = {
         'Low (e.g., minor inconvenience)': 'Priority 4 - Low',
@@ -184,13 +211,19 @@ def create_connectwise_ticket(form_data, user):
         'Emergency': 'Priority 1 - Critical',
     }
     priority = PRIORITY_MAP.get(form_data.get('priority'), 'Priority 3 - Medium')
-
+    # Determine subType
+    if board == 'Help Desk (MS)':
+        subtype = REQUEST_TYPE_TO_SUBTYPE.get(form_data.get('request_type'), 'Email')
+        if subtype not in HELPDESK_SUBTYPES:
+            subtype = 'Email'
+    else:
+        subtype = item
+    # Build payload
     payload = {
         "summary": summary,
         "board": {"name": board},
         "status": {"name": status},
         "type": {"name": "Incident"},
-        "subType": {"name": item},
         "item": {"name": item},
         "priority": {"name": priority},
         "source": {"name": "Portal"},
@@ -201,6 +234,8 @@ def create_connectwise_ticket(form_data, user):
         "site": None,
         "initialDescription": description,
     }
+    if subtype:
+        payload["subType"] = {"name": subtype}
     payload = {k: v for k, v in payload.items() if v is not None}
     print("[DEBUG] Submitting ConnectWise ticket with payload:", payload)
     try:
