@@ -3,6 +3,20 @@
 {% load widget_tweaks %}
 {% block title %}Submit a Ticket{% endblock %}
 {% block content %}
+{% if form.errors %}
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+        {% for field in form %}
+            {% for error in field.errors %}
+                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
 <div class="container-fluid animate__animated animate__fadeIn">
     <div class="row justify-content-center">
         <div class="col-lg-7">

@@ -10,7 +10,7 @@ from django.urls import get_resolver
 from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument
 from django.contrib.admin.views.decorators import staff_member_required
 import requests
-from .adapters import get_connectwise_tickets, create_connectwise_ticket
+from .adapters import get_connectwise_tickets, create_connectwise_ticket, get_connectwise_ticket_notes, post_connectwise_ticket_note
 from .forms import SupportTicketForm
 
 # Create your views here.
@@ -20,8 +20,10 @@ def dashboard(request, tenant_slug=None):
     tenant = getattr(request.user, 'tenant', None)
     is_vip = getattr(tenant, 'vip', False) if tenant else False
     announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')
-    tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')[:5]
-
+    tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')[:3]
+    cw_tickets = get_connectwise_tickets(request.user)
+    # Only show top 3 recent ConnectWise tickets
+    cw_tickets = cw_tickets[:3] if cw_tickets else []
     # Fetch live tech news
     tech_news = []
     try:
@@ -48,12 +50,12 @@ def dashboard(request, tenant_slug=None):
         print('NewsAPI error:', e)
         tech_news = []
     print('Tech news fetched:', tech_news)
-
     return render(request, 'portal/dashboard.html', {
         'is_vip': is_vip,
         'tenant': tenant,
         'announcements': announcements,
         'tickets': tickets,
+        'cw_tickets': cw_tickets,
         'tech_news': tech_news,
     })
 
@@ -99,8 +101,25 @@ def debug_urls(request):
 @login_required
 def support_view(request):
     tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')
-    cw_tickets = get_connectwise_tickets(request.user)
-    return render(request, 'portal/support.html', {'tickets': tickets, 'cw_tickets': cw_tickets})
+    # Only show open ConnectWise tickets
+    cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close']]
+    # Handle reply form POST
+    if request.method == 'POST' and request.POST.get('reply_ticket_id'):
+        ticket_id = request.POST.get('reply_ticket_id')
+        reply_text = request.POST.get('reply_text')
+        if ticket_id and reply_text:
+            result = post_connectwise_ticket_note(ticket_id, reply_text, user_name=request.user.get_full_name() or request.user.username)
+            if result:
+                messages.success(request, 'Your reply has been posted to the ticket!')
+            else:
+                messages.error(request, 'There was an error posting your reply. Please try again.')
+        return redirect('portal:support')
+    # Fetch notes for each ConnectWise ticket
+    cw_ticket_notes = {}
+    for t in cw_tickets:
+        if t.get('id'):
+            cw_ticket_notes[t['id']] = get_connectwise_ticket_notes(t['id'])
+    return render(request, 'portal/support.html', {'tickets': tickets, 'cw_tickets': cw_tickets, 'cw_ticket_notes': cw_ticket_notes})
 
 @login_required
 def submit_ticket_view(request):

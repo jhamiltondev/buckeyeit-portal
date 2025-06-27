@@ -74,16 +74,21 @@
             <div class="card shadow-sm animate__animated animate__fadeInUp h-100">
                 <div class="card-body">
                     <h6 class="fw-bold mb-3"><i class="fa fa-ticket-alt text-success me-2"></i>Recent Tickets</h6>
-                    {% if tickets %}
+                    {% if open_tickets %}
                         <ul class="list-group list-group-flush">
-                            {% for ticket in tickets %}
+                            {% for ticket in open_tickets %}
                                 <li class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-md-center align-items-start">
-                                    <span><i class="fa fa-circle {% if ticket.status == 'open' %}text-warning{% elif ticket.status == 'in_progress' %}text-info{% else %}text-success{% endif %} me-2"></i>{{ ticket.subject }}</span>
-                                    <span class="badge {% if ticket.status == 'open' %}bg-warning text-dark{% elif ticket.status == 'in_progress' %}bg-info text-dark{% else %}bg-success{% endif %} mt-2 mt-md-0">{{ ticket.get_status_display }}</span>
-                                    <span class="text-muted small mt-2 mt-md-0">{{ ticket.created_at|date:'Y-m-d' }}</span>
+                                    <span><i class="fa fa-circle text-warning me-2"></i>{{ ticket.subject|default:ticket.summary }}</span>
+                                    <span class="badge bg-warning text-dark mt-2 mt-md-0">Open</span>
+                                    <span class="text-muted small mt-2 mt-md-0">{{ ticket.created_at|default:ticket.dateEntered|date:'Y-m-d' }}</span>
                                 </li>
                             {% endfor %}
                         </ul>
+                        {% if has_more_tickets %}
+                            <div class="mt-2 text-end">
+                                <a href="{% url 'portal:all_tickets' %}" class="btn btn-outline-primary btn-sm">View All Tickets</a>
+                            </div>
+                        {% endif %}
                     {% else %}
                         <div class="alert alert-secondary py-2 px-3 mb-0">No Recent Tickets</div>
                     {% endif %}
