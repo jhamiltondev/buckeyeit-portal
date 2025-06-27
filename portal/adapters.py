@@ -286,3 +286,44 @@ def test_connectwise_fetch_by_contact_email(email):
     except Exception as e:
         print('[DEBUG] Ticket fetch error:', e)
     return [] 
+
+def debug_list_board_statuses_and_items(board_name="Help Desk (MS)"):
+    """Fetch and print all valid statuses and items for a given board name from ConnectWise."""
+    from django.conf import settings
+    import requests
+    import base64
+    company_id = settings.CONNECTWISE_COMPANY_ID
+    public_key = settings.CONNECTWISE_PUBLIC_KEY
+    private_key = settings.CONNECTWISE_PRIVATE_KEY
+    client_id = settings.CONNECTWISE_CLIENT_ID
+    auth_string = f"{company_id}+{public_key}:{private_key}"
+    auth_b64 = base64.b64encode(auth_string.encode()).decode()
+    headers = {
+        'Authorization': f'Basic {auth_b64}',
+        'clientId': client_id,
+        'Accept': 'application/json',
+    }
+    # 1. Get all boards, find the board ID for the given name
+    boards_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/boards"
+    resp = requests.get(boards_url, headers=headers, timeout=30)
+    boards = resp.json()
+    board_id = None
+    for b in boards:
+        if b.get('name') == board_name:
+            board_id = b.get('id')
+            break
+    if not board_id:
+        print(f"[DEBUG] Board '{board_name}' not found.")
+        return
+    # 2. Get statuses
+    statuses_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/boards/{board_id}/statuses"
+    resp = requests.get(statuses_url, headers=headers, timeout=30)
+    print(f"[DEBUG] Statuses for board '{board_name}':")
+    for s in resp.json():
+        print("-", s.get('name'))
+    # 3. Get items
+    items_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/boards/{board_id}/items"
+    resp = requests.get(items_url, headers=headers, timeout=30)
+    print(f"[DEBUG] Items for board '{board_name}':")
+    for i in resp.json():
+        print("-", i.get('name')) 
