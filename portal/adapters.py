@@ -122,6 +122,7 @@ def get_connectwise_contact_id(email, company_identifier=None):
     return None
 
 def create_connectwise_ticket(form_data, user):
+    print("[DEBUG] create_connectwise_ticket called for user:", user.email)
     base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/tickets"
     company_id = settings.CONNECTWISE_COMPANY_ID
     public_key = settings.CONNECTWISE_PUBLIC_KEY
@@ -189,11 +190,13 @@ def create_connectwise_ticket(form_data, user):
         print("[DEBUG] ConnectWise response status:", resp.status_code)
         print("[DEBUG] ConnectWise response text:", resp.text)
         if resp.status_code in (200, 201):
+            print("[DEBUG] Ticket created successfully.")
             return resp.json()
         else:
             print("ConnectWise ticket creation failed:", resp.status_code, resp.text)
     except Exception as e:
         print("ConnectWise ticket creation error:", e)
+    print("[DEBUG] create_connectwise_ticket finished for user:", user.email)
     return None 
 
 def test_connectwise_fetch_by_email(email):
