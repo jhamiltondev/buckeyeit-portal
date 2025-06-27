@@ -195,3 +195,10 @@ JAZZMIN_SETTINGS = {
     "custom_css": None,
     "custom_js": None,
 }
+
+# ConnectWise API credentials (move to environment variables for production!)
+CONNECTWISE_SITE = "https://na.myconnectwise.net"
+CONNECTWISE_COMPANY_ID = "buckeyeitser"
+CONNECTWISE_PUBLIC_KEY = "d3oNPUMCjzbkOj47"
+CONNECTWISE_PRIVATE_KEY = "LPAtfIRn8GCiRez3"
+CONNECTWISE_CLIENT_ID = "173d3199-c79d-4219-88ba-96140f77942e"

@@ -10,6 +10,7 @@ from django.urls import get_resolver
 from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument
 from django.contrib.admin.views.decorators import staff_member_required
 import requests
+from .adapters import get_connectwise_tickets
 
 # Create your views here.
 
@@ -95,7 +96,8 @@ def debug_urls(request):
 @login_required
 def support_view(request):
     tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'portal/support.html', {'tickets': tickets})
+    cw_tickets = get_connectwise_tickets(request.user)
+    return render(request, 'portal/support.html', {'tickets': tickets, 'cw_tickets': cw_tickets})
 
 @login_required
 def submit_ticket_view(request):
