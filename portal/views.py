@@ -270,6 +270,15 @@ def connectwise_ticket_detail(request, ticket_id):
     if user_email != ticket_email and user_domain not in ticket_email:
         raise Http404("Not authorized to view this ticket")
     notes = get_connectwise_ticket_notes(ticket_id)
+    # Enhance notes with display_name
+    for note in notes:
+        user = User.objects.filter(username=note.get('enteredBy')).first()
+        if not user:
+            user = User.objects.filter(email__iexact=note.get('enteredBy')).first()
+        if user:
+            note['display_name'] = user.get_full_name() or user.username
+        else:
+            note['display_name'] = note.get('enteredBy')
     notes_split = split_ticket_notes(notes)
     if request.method == 'POST' and request.POST.get('reply_text'):
         reply_text = request.POST.get('reply_text')

@@ -32,7 +32,7 @@
                                     <div class="inbox-message mb-3 p-2 rounded bg-light border">
                                         <div class="small text-secondary mb-1">
                                             <i class="fa fa-user-circle me-1"></i>
-                                            {{ note.enteredBy }}
+                                            {{ note.display_name }}
                                             <span class="mx-2">|</span>
                                             <i class="fa fa-clock me-1"></i>
                                             {{ note.dateCreated|slice:":10" }} {{ note.timeCreated|default:"" }}
@@ -48,7 +48,7 @@
                                     <div class="inbox-message mb-3 p-2 rounded bg-light border">
                                         <div class="small text-secondary mb-1">
                                             <i class="fa fa-user-circle me-1"></i>
-                                            {{ note.enteredBy }}
+                                            {{ note.display_name }}
                                             <span class="mx-2">|</span>
                                             <i class="fa fa-clock me-1"></i>
                                             {{ note.dateCreated|slice:":10" }} {{ note.timeCreated|default:"" }}
