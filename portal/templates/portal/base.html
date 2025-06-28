@@ -402,12 +402,15 @@
         <div class="header-actions ms-auto">
             <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode"><i class="fa fa-moon"></i></button>
             <div class="dropdown me-2">
-                <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link position-relative" href="?mark_notifications_read=1" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-bell"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ notifications|length }}</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="min-width: 300px;">
-                    <li class="dropdown-header">Notifications</li>
+                    <li class="dropdown-header d-flex justify-content-between align-items-center">
+                        <span>Notifications</span>
+                        <a href="?mark_notifications_read=1" class="btn btn-link btn-sm p-0 text-danger ms-2" style="font-size:0.95em;">Clear All</a>
+                    </li>
                     {% if notifications %}
                         {% for note in notifications %}
                             <li><a class="dropdown-item small" href="{% url 'portal:connectwise_ticket_detail' note.ticket_id %}"><strong>{{ note.enteredBy }}</strong>: {{ note.text|truncatechars:60 }}</a></li>
