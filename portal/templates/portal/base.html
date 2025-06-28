@@ -611,6 +611,35 @@
                 helpWidgetBtn.focus();
             }
         });
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateNotifications() {
+                fetch('/api/notifications/')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update notification count
+                        const badge = document.querySelector('.fa-bell + .badge, .fa-bell ~ .badge, .fa-bell .badge');
+                        if (badge) badge.textContent = data.count;
+                        // Update dropdown
+                        const dropdown = document.querySelector('.dropdown-menu[aria-labelledby="notificationDropdown"]');
+                        if (dropdown) {
+                            let html = '<li class="dropdown-header d-flex justify-content-between align-items-center">';
+                            html += '<span>Notifications</span>';
+                            html += '<a href="?mark_notifications_read=1" class="btn btn-link btn-sm p-0 text-danger ms-2" style="font-size:0.95em;">Clear All</a>';
+                            html += '</li>';
+                            if (data.notifications.length > 0) {
+                                data.notifications.forEach(note => {
+                                    html += `<li><a class="dropdown-item small" href="/tickets/${note.ticket_id}/"><strong>${note.enteredBy}</strong>: ${note.text.substring(0,60)}</a></li>`;
+                                });
+                            } else {
+                                html += '<li><span class="dropdown-item small text-muted">No new notifications</span></li>';
+                            }
+                            dropdown.innerHTML = html;
+                        }
+                    });
+            }
+            setInterval(updateNotifications, 30000); // 30 seconds
+            updateNotifications(); // Initial load
+        });
     </script>
     {% block extra_js %}{% endblock %}
 </body>

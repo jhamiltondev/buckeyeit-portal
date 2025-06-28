@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.views import LogoutView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
 from django.urls import get_resolver
 from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument
 from django.contrib.admin.views.decorators import staff_member_required
@@ -42,23 +42,43 @@ def dashboard(request, tenant_slug=None):
     for i, article in enumerate(tech_news):
         logger.debug(f"Tech news article {i+1}: {article.get('title', 'No title')[:50]}... from {article.get('source', 'Unknown')}")
     
-    # Fetch recent notifications (notes not by user, last 7 days)
+    # --- Notification logic ---
     notifications = []
     user_email = request.user.email.lower()
+    read_ids = request.session.get('read_notifications', [])
     for t in cw_tickets:
         notes = get_connectwise_ticket_notes(t['id'])
         for note in notes:
-            if note.get('enteredBy', '').lower() != user_email and note.get('dateCreated'):
-                # Only show notes from last 7 days
-                note_date = note.get('dateCreated', '')[:10]
-                try:
-                    note_dt = datetime.strptime(note_date, '%Y-%m-%d')
-                    if note_dt >= datetime.now() - timedelta(days=7):
-                        note['ticket_id'] = t['id']
-                        notifications.append(note)
-                except Exception:
+            # Only show notes from last 7 days
+            note_date = note.get('dateCreated', '')[:10]
+            try:
+                note_dt = datetime.strptime(note_date, '%Y-%m-%d')
+                if note_dt < datetime.now() - timedelta(days=7):
                     continue
+            except Exception:
+                continue
+            # Only notify if:
+            # 1. Tech replied (not user)
+            # 2. Status changed
+            # 3. Owner/tech assigned/changed
+            is_tech_reply = note.get('enteredBy', '').lower() != user_email and not note.get('text', '').lower().startswith('from:')
+            is_status_change = note.get('detailDescriptionFlag') and 'status' in note.get('text', '').lower()
+            is_owner_change = note.get('detailDescriptionFlag') and 'assigned' in note.get('text', '').lower()
+            is_remote_support = 'user has requested remote support' in note.get('text', '').lower()
+            if (is_tech_reply or is_status_change or is_owner_change) and not is_remote_support:
+                note_id = f"{t['id']}_{note.get('id', note.get('dateCreated'))}"
+                if note_id not in read_ids:
+                    note['ticket_id'] = t['id']
+                    note['notification_id'] = note_id
+                    notifications.append(note)
     notifications = sorted(notifications, key=lambda n: n.get('dateCreated', ''), reverse=True)[:10]
+    
+    # Mark as read if requested
+    if request.GET.get('mark_notifications_read') == '1':
+        read_ids = list(set(read_ids + [n['notification_id'] for n in notifications]))
+        request.session['read_notifications'] = read_ids
+        request.session.modified = True
+        return redirect('portal:dashboard')
     
     context = {
         'is_vip': is_vip,
@@ -69,7 +89,6 @@ def dashboard(request, tenant_slug=None):
         'notifications': notifications,
         'user': request.user,
     }
-    
     logger.info(f"Dashboard context prepared - Tech news: {len(tech_news)}, Tickets: {len(cw_tickets)}, Notifications: {len(notifications)}")
     return render(request, 'portal/dashboard.html', context)
 
@@ -303,3 +322,36 @@ def connectwise_ticket_detail(request, ticket_id):
                 messages.error(request, 'There was an error sending your remote support request. Please try again.')
             return redirect('portal:connectwise_ticket_detail', ticket_id=ticket_id)
     return render(request, 'portal/connectwise_ticket_detail.html', {'ticket': ticket, 'notes': notes_split['discussion']})
+
+@login_required
+def notifications_api(request):
+    user_email = request.user.email.lower()
+    cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
+    notifications = []
+    read_ids = request.session.get('read_notifications', [])
+    for t in cw_tickets:
+        notes = get_connectwise_ticket_notes(t['id'])
+        for note in notes:
+            note_date = note.get('dateCreated', '')[:10]
+            try:
+                note_dt = datetime.strptime(note_date, '%Y-%m-%d')
+                if note_dt < datetime.now() - timedelta(days=7):
+                    continue
+            except Exception:
+                continue
+            is_tech_reply = note.get('enteredBy', '').lower() != user_email and not note.get('text', '').lower().startswith('from:')
+            is_status_change = note.get('detailDescriptionFlag') and 'status' in note.get('text', '').lower()
+            is_owner_change = note.get('detailDescriptionFlag') and 'assigned' in note.get('text', '').lower()
+            is_remote_support = 'user has requested remote support' in note.get('text', '').lower()
+            if (is_tech_reply or is_status_change or is_owner_change) and not is_remote_support:
+                note_id = f"{t['id']}_{note.get('id', note.get('dateCreated'))}"
+                if note_id not in read_ids:
+                    notifications.append({
+                        'ticket_id': t['id'],
+                        'notification_id': note_id,
+                        'enteredBy': note.get('enteredBy'),
+                        'text': note.get('text'),
+                        'dateCreated': note.get('dateCreated'),
+                    })
+    notifications = sorted(notifications, key=lambda n: n.get('dateCreated', ''), reverse=True)[:10]
+    return JsonResponse({'notifications': notifications, 'count': len(notifications)})
