@@ -325,13 +325,18 @@ def connectwise_ticket_detail(request, ticket_id):
 
 @login_required
 def notifications_api(request):
+    """API endpoint for notifications - used by live update JavaScript"""
     user_email = request.user.email.lower()
-    cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
-    notifications = []
     read_ids = request.session.get('read_notifications', [])
+    
+    # Get recent tickets and their notes
+    cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
+    
+    notifications = []
     for t in cw_tickets:
         notes = get_connectwise_ticket_notes(t['id'])
         for note in notes:
+            # Only show notes from last 7 days
             note_date = note.get('dateCreated', '')[:10]
             try:
                 note_dt = datetime.strptime(note_date, '%Y-%m-%d')
@@ -339,19 +344,87 @@ def notifications_api(request):
                     continue
             except Exception:
                 continue
+            
+            # Only notify if:
+            # 1. Tech replied (not user)
+            # 2. Status changed
+            # 3. Owner/tech assigned/changed
             is_tech_reply = note.get('enteredBy', '').lower() != user_email and not note.get('text', '').lower().startswith('from:')
             is_status_change = note.get('detailDescriptionFlag') and 'status' in note.get('text', '').lower()
             is_owner_change = note.get('detailDescriptionFlag') and 'assigned' in note.get('text', '').lower()
             is_remote_support = 'user has requested remote support' in note.get('text', '').lower()
+            
             if (is_tech_reply or is_status_change or is_owner_change) and not is_remote_support:
                 note_id = f"{t['id']}_{note.get('id', note.get('dateCreated'))}"
                 if note_id not in read_ids:
-                    notifications.append({
-                        'ticket_id': t['id'],
-                        'notification_id': note_id,
-                        'enteredBy': note.get('enteredBy'),
-                        'text': note.get('text'),
-                        'dateCreated': note.get('dateCreated'),
-                    })
+                    note['ticket_id'] = t['id']
+                    note['notification_id'] = note_id
+                    notifications.append(note)
+    
     notifications = sorted(notifications, key=lambda n: n.get('dateCreated', ''), reverse=True)[:10]
-    return JsonResponse({'notifications': notifications, 'count': len(notifications)})
+    
+    return JsonResponse({
+        'count': len(notifications),
+        'notifications': notifications
+    })
+
+@login_required
+def dashboard_tickets_api(request):
+    """API endpoint for dashboard recent tickets - used by live update JavaScript"""
+    # Only open ConnectWise tickets
+    cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
+    cw_tickets = sorted(cw_tickets, key=lambda t: t.get('dateEntered', ''), reverse=True)[:5]
+    
+    return JsonResponse({
+        'tickets': cw_tickets
+    })
+
+@login_required
+def dashboard_tech_news_api(request):
+    """API endpoint for dashboard tech news - used by live update JavaScript"""
+    tech_news = get_tech_news()
+    
+    return JsonResponse({
+        'articles': tech_news
+    })
+
+@login_required
+def dashboard_announcements_api(request):
+    """API endpoint for dashboard announcements - used by live update JavaScript"""
+    announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')
+    
+    announcements_data = []
+    for announcement in announcements:
+        announcements_data.append({
+            'title': announcement.title,
+            'message': announcement.message,
+            'created_at': announcement.created_at.strftime('%Y-%m-%d %H:%M')
+        })
+    
+    return JsonResponse({
+        'announcements': announcements_data
+    })
+
+@login_required
+def support_tickets_api(request):
+    """API endpoint for support page tickets - used by live update JavaScript"""
+    # Only show open ConnectWise tickets
+    cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close']]
+    
+    # Add status color for badges
+    for ticket in cw_tickets:
+        status_name = ticket.get('status', {}).get('name', '')
+        if status_name == 'Needs Worked':
+            ticket['status_color'] = 'warning'
+        elif status_name == 'Working Issue Now':
+            ticket['status_color'] = 'info'
+        elif status_name == 'Pending Close':
+            ticket['status_color'] = 'primary'
+        elif status_name == 'Closed':
+            ticket['status_color'] = 'success'
+        else:
+            ticket['status_color'] = 'secondary'
+    
+    return JsonResponse({
+        'tickets': cw_tickets
+    })
