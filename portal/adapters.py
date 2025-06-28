@@ -439,8 +439,7 @@ def post_connectwise_ticket_note(ticket_id, text, user_name=None):
         'resolutionFlag': False,
         'customerUpdatedFlag': True,
     }
-    if user_name:
-        payload['enteredBy'] = user_name
+    # Do NOT include 'enteredBy' in the payload; ConnectWise sets this automatically
     try:
         resp = requests.post(base_url, headers=headers, json=payload, timeout=15)
         if resp.status_code in (200, 201):
