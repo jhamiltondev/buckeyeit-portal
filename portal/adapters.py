@@ -475,3 +475,12 @@ def get_connectwise_ticket(ticket_id):
     except Exception as e:
         print(f"[DEBUG] Exception fetching ticket {ticket_id}: {e}")
     return None 
+
+def split_ticket_notes(notes):
+    """
+    Split notes into 'discussion' (customer-facing) and 'internal' (technician-only).
+    Returns a dict with 'discussion' and 'internal' lists.
+    """
+    discussion = [n for n in notes if not n.get('internalAnalysisFlag') and not n.get('resolutionFlag')]
+    internal = [n for n in notes if n.get('internalAnalysisFlag') or n.get('resolutionFlag')]
+    return {'discussion': discussion, 'internal': internal} 

@@ -10,7 +10,7 @@ from django.urls import get_resolver
 from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument
 from django.contrib.admin.views.decorators import staff_member_required
 import requests
-from .adapters import get_connectwise_tickets, create_connectwise_ticket, get_connectwise_ticket_notes, post_connectwise_ticket_note, get_connectwise_ticket
+from .adapters import get_connectwise_tickets, create_connectwise_ticket, get_connectwise_ticket_notes, post_connectwise_ticket_note, get_connectwise_ticket, split_ticket_notes
 from .forms import SupportTicketForm
 from datetime import datetime, timedelta
 
@@ -248,12 +248,15 @@ def connectwise_ticket_detail(request, ticket_id):
     if user_email != ticket_email and user_domain not in ticket_email:
         raise Http404("Not authorized to view this ticket")
     notes = get_connectwise_ticket_notes(ticket_id)
+    notes_split = split_ticket_notes(notes)
     if request.method == 'POST' and request.POST.get('reply_text'):
         reply_text = request.POST.get('reply_text')
+        print(f"[DEBUG] User {request.user.email} replying to ticket {ticket_id}: {reply_text}")
         result = post_connectwise_ticket_note(ticket_id, reply_text, user_name=request.user.get_full_name() or request.user.username)
+        print(f"[DEBUG] post_connectwise_ticket_note result: {result}")
         if result:
             messages.success(request, 'Your reply has been posted to the ticket!')
         else:
             messages.error(request, 'There was an error posting your reply. Please try again.')
         return redirect('portal:connectwise_ticket_detail', ticket_id=ticket_id)
-    return render(request, 'portal/connectwise_ticket_detail.html', {'ticket': ticket, 'notes': notes})
+    return render(request, 'portal/connectwise_ticket_detail.html', {'ticket': ticket, 'notes': notes_split['discussion'], 'internal_notes': notes_split['internal']})
