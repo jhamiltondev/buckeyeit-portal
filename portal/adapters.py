@@ -450,3 +450,28 @@ def post_connectwise_ticket_note(ticket_id, text, user_name=None):
     except Exception as e:
         print(f"[DEBUG] Exception posting note for ticket {ticket_id}: {e}")
     return None 
+
+def get_connectwise_ticket(ticket_id):
+    """
+    Fetch a single ConnectWise ticket by ID.
+    Returns a ticket dict or None.
+    """
+    base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/tickets/{ticket_id}"
+    company_id = settings.CONNECTWISE_COMPANY_ID
+    public_key = settings.CONNECTWISE_PUBLIC_KEY
+    private_key = settings.CONNECTWISE_PRIVATE_KEY
+    client_id = settings.CONNECTWISE_CLIENT_ID
+    auth_string = f"{company_id}+{public_key}:{private_key}"
+    auth_b64 = base64.b64encode(auth_string.encode()).decode()
+    headers = {
+        'Authorization': f'Basic {auth_b64}',
+        'clientId': client_id,
+        'Accept': 'application/json',
+    }
+    try:
+        resp = requests.get(base_url, headers=headers, timeout=15)
+        if resp.status_code == 200:
+            return resp.json()
+    except Exception as e:
+        print(f"[DEBUG] Exception fetching ticket {ticket_id}: {e}")
+    return None 

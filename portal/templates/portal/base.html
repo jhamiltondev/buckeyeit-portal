@@ -402,42 +402,28 @@
         <div class="header-actions ms-auto">
             <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode"><i class="fa fa-moon"></i></button>
             <div class="dropdown me-2">
-                <span class="notification-bell position-relative dropdown-toggle" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications" role="button">
+                <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-bell"></i>
-                    <span class="notification-dot"></span>
-                </span>
-                <div class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="notificationDropdown">
-                    <div class="notification-item">
-                        <i class="fa fa-bullhorn text-warning fa-fw mt-1"></i>
-                        <div>
-                            <div class="notification-title">Welcome to the new Buckeye IT Portal!</div>
-                            <div class="notification-time">Just now</div>
-                        </div>
-                    </div>
-                    <div class="notification-item">
-                        <i class="fa fa-ticket-alt text-primary fa-fw mt-1"></i>
-                        <div>
-                            <div class="notification-title">Your ticket #1234 has been updated.</div>
-                            <div class="notification-time">2 hours ago</div>
-                        </div>
-                    </div>
-                    <div class="notification-item">
-                        <i class="fa fa-info-circle text-info fa-fw mt-1"></i>
-                        <div>
-                            <div class="notification-title">Knowledge Base now live!</div>
-                            <div class="notification-time">Yesterday</div>
-                        </div>
-                    </div>
-                </div>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ notifications|length }}</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="min-width: 300px;">
+                    <li class="dropdown-header">Notifications</li>
+                    {% if notifications %}
+                        {% for note in notifications %}
+                            <li><a class="dropdown-item small" href="{% url 'portal:connectwise_ticket_detail' note.ticket_id %}"><strong>{{ note.enteredBy }}</strong>: {{ note.text|truncatechars:60 }}</a></li>
+                        {% endfor %}
+                    {% else %}
+                        <li><span class="dropdown-item small text-muted">No new notifications</span></li>
+                    {% endif %}
+                </ul>
             </div>
             <div class="dropdown">
-                <a class="user-dropdown dropdown-toggle d-flex align-items-center" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://ui-avatars.com/api/?name={{ request.user.get_full_name|urlencode }}&background=0D8ABC&color=fff&size=36" class="user-avatar" alt="User Avatar">
-                    <span class="d-none d-md-inline">{{ request.user.first_name }}</span>
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-user-circle me-1"></i> {{ user.get_full_name|default:user.username }}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li><a class="dropdown-item" href="{% url 'portal:profile' %}"><i class="fa fa-user me-2"></i>My Profile</a></li>
-                    <li><a class="dropdown-item" href="{% url 'portal:logout' %}"><i class="fa fa-sign-out-alt me-2"></i>Logout</a></li>
+                    <li><a class="dropdown-item" href="{% url 'portal:profile' %}"><i class="fa fa-user me-1"></i> Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'portal:logout' %}"><i class="fa fa-sign-out-alt me-1"></i> Logout</a></li>
                 </ul>
             </div>
         </div>

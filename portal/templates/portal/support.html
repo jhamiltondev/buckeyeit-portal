@@ -61,7 +61,7 @@
                                 {# ConnectWise tickets #}
                                 {% for ticket in cw_tickets %}
                                 <tr>
-                                    <td>{{ ticket.summary }} <span class="badge bg-secondary ms-1">ConnectWise</span>
+                                    <td><a href="{% url 'portal:connectwise_ticket_detail' ticket.id %}" class="text-decoration-none fw-bold">{{ ticket.summary }}</a> <span class="badge bg-secondary ms-1">ConnectWise</span>
                                         {% if ticket.id in cw_ticket_notes %}
                                             <div class="mt-2 inbox-messages">
                                                 <div class="fw-bold small text-muted mb-1">Messages/Updates:</div>

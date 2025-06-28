@@ -5,13 +5,14 @@ from django.contrib import messages
 from django.contrib.auth.views import LogoutView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.urls import get_resolver
 from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument
 from django.contrib.admin.views.decorators import staff_member_required
 import requests
-from .adapters import get_connectwise_tickets, create_connectwise_ticket, get_connectwise_ticket_notes, post_connectwise_ticket_note
+from .adapters import get_connectwise_tickets, create_connectwise_ticket, get_connectwise_ticket_notes, post_connectwise_ticket_note, get_connectwise_ticket
 from .forms import SupportTicketForm
+from datetime import datetime, timedelta
 
 # Create your views here.
 
@@ -20,10 +21,9 @@ def dashboard(request, tenant_slug=None):
     tenant = getattr(request.user, 'tenant', None)
     is_vip = getattr(tenant, 'vip', False) if tenant else False
     announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')
-    tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')[:3]
-    cw_tickets = get_connectwise_tickets(request.user)
-    # Only show top 3 recent ConnectWise tickets
-    cw_tickets = cw_tickets[:3] if cw_tickets else []
+    # Only open ConnectWise tickets
+    cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
+    cw_tickets = sorted(cw_tickets, key=lambda t: t.get('dateEntered', ''), reverse=True)[:5]
     # Fetch live tech news
     tech_news = []
     try:
@@ -50,13 +50,31 @@ def dashboard(request, tenant_slug=None):
         print('NewsAPI error:', e)
         tech_news = []
     print('Tech news fetched:', tech_news)
+    # Fetch recent notifications (notes not by user, last 7 days)
+    notifications = []
+    user_email = request.user.email.lower()
+    for t in cw_tickets:
+        notes = get_connectwise_ticket_notes(t['id'])
+        for note in notes:
+            if note.get('enteredBy', '').lower() != user_email and note.get('dateCreated'):
+                # Only show notes from last 7 days
+                note_date = note.get('dateCreated', '')[:10]
+                try:
+                    note_dt = datetime.strptime(note_date, '%Y-%m-%d')
+                    if note_dt >= datetime.now() - timedelta(days=7):
+                        note['ticket_id'] = t['id']
+                        notifications.append(note)
+                except Exception:
+                    continue
+    notifications = sorted(notifications, key=lambda n: n.get('dateCreated', ''), reverse=True)[:10]
     return render(request, 'portal/dashboard.html', {
         'is_vip': is_vip,
         'tenant': tenant,
         'announcements': announcements,
-        'tickets': tickets,
         'cw_tickets': cw_tickets,
         'tech_news': tech_news,
+        'notifications': notifications,
+        'user': request.user,
     })
 
 def login_view(request):
@@ -217,3 +235,25 @@ def all_tickets_view(request):
         if t.get('id'):
             cw_ticket_notes[t['id']] = get_connectwise_ticket_notes(t['id'])
     return render(request, 'portal/all_tickets.html', {'tickets': local_open, 'cw_tickets': cw_open, 'cw_ticket_notes': cw_ticket_notes})
+
+@login_required
+def connectwise_ticket_detail(request, ticket_id):
+    ticket = get_connectwise_ticket(ticket_id)
+    if not ticket:
+        raise Http404("Ticket not found")
+    # Security: Only allow if user is contact or domain matches
+    user_email = request.user.email.lower()
+    user_domain = user_email.split('@')[-1]
+    ticket_email = (ticket.get('contactEmailAddress') or '').lower()
+    if user_email != ticket_email and user_domain not in ticket_email:
+        raise Http404("Not authorized to view this ticket")
+    notes = get_connectwise_ticket_notes(ticket_id)
+    if request.method == 'POST' and request.POST.get('reply_text'):
+        reply_text = request.POST.get('reply_text')
+        result = post_connectwise_ticket_note(ticket_id, reply_text, user_name=request.user.get_full_name() or request.user.username)
+        if result:
+            messages.success(request, 'Your reply has been posted to the ticket!')
+        else:
+            messages.error(request, 'There was an error posting your reply. Please try again.')
+        return redirect('portal:connectwise_ticket_detail', ticket_id=ticket_id)
+    return render(request, 'portal/connectwise_ticket_detail.html', {'ticket': ticket, 'notes': notes})

@@ -22,4 +22,5 @@ urlpatterns = [
     path('company-info/', company_info_view, name='company_info'),
     path('announcements/', announcements_view, name='announcements'),
     path('support/all/', views.all_tickets_view, name='all_tickets'),
+    path('support/ticket/<int:ticket_id>/', views.connectwise_ticket_detail, name='connectwise_ticket_detail'),
 ] 
