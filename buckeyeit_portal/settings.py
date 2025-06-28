@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'buckeyeit_portal.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgres://USER :PASSWORD@HOST:5432/DBNAME',
+        default='postgres://buckeyeit:weareself12!@buckeyeitsql.postgres.database.azure.com:5432/postgres',
         conn_max_age=600,
         ssl_require=True
     )
