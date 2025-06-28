@@ -22,9 +22,6 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="discussion-tab" data-bs-toggle="tab" data-bs-target="#discussion" type="button" role="tab" aria-controls="discussion" aria-selected="true">Messages/Updates</button>
                             </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="internal-tab" data-bs-toggle="tab" data-bs-target="#internal" type="button" role="tab" aria-controls="internal" aria-selected="false">Internal Notes</button>
-                            </li>
                         </ul>
                         <div class="tab-content" id="ticketNotesTabsContent">
                             <div class="tab-pane fade show active" id="discussion" role="tabpanel" aria-labelledby="discussion-tab">
@@ -43,24 +40,19 @@
                                     <div class="small text-muted">No messages yet.</div>
                                 {% endfor %}
                             </div>
-                            <div class="tab-pane fade" id="internal" role="tabpanel" aria-labelledby="internal-tab">
-                                {% for note in internal_notes %}
-                                    <div class="inbox-message mb-3 p-2 rounded bg-light border">
-                                        <div class="small text-secondary mb-1">
-                                            <i class="fa fa-user-circle me-1"></i>
-                                            {{ note.display_name }}
-                                            <span class="mx-2">|</span>
-                                            <i class="fa fa-clock me-1"></i>
-                                            {{ note.dateCreated|slice:":10" }} {{ note.timeCreated|default:"" }}
-                                        </div>
-                                        <div>{{ note.text }}</div>
-                                    </div>
-                                {% empty %}
-                                    <div class="small text-muted">No internal notes yet.</div>
-                                {% endfor %}
-                            </div>
                         </div>
                     </div>
+                    <form method="post" class="mb-3">
+                        {% csrf_token %}
+                        <button type="submit" name="request_remote_support" value="1" class="btn btn-danger mb-3">
+                            <i class="fa fa-headset me-1"></i> Request Remote Support
+                        </button>
+                    </form>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-info">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
                     <form method="post" class="inbox-reply-form mb-2">
                         {% csrf_token %}
                         <div class="input-group">

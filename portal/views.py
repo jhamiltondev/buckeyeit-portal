@@ -280,14 +280,24 @@ def connectwise_ticket_detail(request, ticket_id):
         else:
             note['display_name'] = note.get('enteredBy')
     notes_split = split_ticket_notes(notes)
-    if request.method == 'POST' and request.POST.get('reply_text'):
-        reply_text = request.POST.get('reply_text')
-        print(f"[DEBUG] User {request.user.email} replying to ticket {ticket_id}: {reply_text}")
-        result = post_connectwise_ticket_note(ticket_id, reply_text, user_name=request.user.get_full_name() or request.user.username)
-        print(f"[DEBUG] post_connectwise_ticket_note result: {result}")
-        if result:
-            messages.success(request, 'Your reply has been posted to the ticket!')
-        else:
-            messages.error(request, 'There was an error posting your reply. Please try again.')
-        return redirect('portal:connectwise_ticket_detail', ticket_id=ticket_id)
-    return render(request, 'portal/connectwise_ticket_detail.html', {'ticket': ticket, 'notes': notes_split['discussion'], 'internal_notes': notes_split['internal']})
+    if request.method == 'POST':
+        if request.POST.get('reply_text'):
+            reply_text = request.POST.get('reply_text')
+            print(f"[DEBUG] User {request.user.email} replying to ticket {ticket_id}: {reply_text}")
+            result = post_connectwise_ticket_note(ticket_id, reply_text, user_name=request.user.get_full_name() or request.user.username)
+            print(f"[DEBUG] post_connectwise_ticket_note result: {result}")
+            if result:
+                messages.success(request, 'Your reply has been posted to the ticket!')
+            else:
+                messages.error(request, 'There was an error posting your reply. Please try again.')
+            return redirect('portal:connectwise_ticket_detail', ticket_id=ticket_id)
+        elif request.POST.get('request_remote_support'):
+            # Post a note to ConnectWise
+            remote_note = 'User has requested remote support. (ScreenConnect: https://buckeyeit.screenconnect.com/Host#Access)'
+            result = post_connectwise_ticket_note(ticket_id, remote_note, user_name=request.user.get_full_name() or request.user.username)
+            if result:
+                messages.success(request, 'Your remote support request has been sent! (Coming Soon: This will launch a remote session automatically.)')
+            else:
+                messages.error(request, 'There was an error sending your remote support request. Please try again.')
+            return redirect('portal:connectwise_ticket_detail', ticket_id=ticket_id)
+    return render(request, 'portal/connectwise_ticket_detail.html', {'ticket': ticket, 'notes': notes_split['discussion']})
