@@ -1,0 +1,135 @@
+{% extends "portal/base.html" %}
+{% block title %}Tech News Debug{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-3"><i class="fa fa-bug text-warning me-2"></i>Tech News Debug Information</h4>
+                    
+                    <div class="alert alert-info">
+                        <strong>Debug Info:</strong> This page shows diagnostic information for the tech news functionality.
+                        <br><small>Generated at: {{ debug_info.timestamp }}</small>
+                    </div>
+                    
+                    <!-- API Diagnostic -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="fa fa-plug me-2"></i>NewsAPI Connection Diagnostic</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>API Key Valid:</span>
+                                            <span class="badge {% if debug_info.diagnostic.api_key_valid %}bg-success{% else %}bg-danger{% endif %}">
+                                                {{ debug_info.diagnostic.api_key_valid|yesno:"Yes,No" }}
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>API Key Length:</span>
+                                            <span>{{ debug_info.diagnostic.api_key_length }}</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Base URL:</span>
+                                            <span class="text-break">{{ debug_info.diagnostic.base_url }}</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Timeout:</span>
+                                            <span>{{ debug_info.diagnostic.timeout }}s</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Test Status Code:</span>
+                                            <span class="badge {% if debug_info.diagnostic.test_successful %}bg-success{% else %}bg-danger{% endif %}">
+                                                {{ debug_info.diagnostic.test_status_code|default:"N/A" }}
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>API Working:</span>
+                                            <span class="badge {% if debug_info.diagnostic.api_working %}bg-success{% else %}bg-danger{% endif %}">
+                                                {{ debug_info.diagnostic.api_working|yesno:"Yes,No" }}
+                                            </span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Total Results:</span>
+                                            <span>{{ debug_info.diagnostic.total_results|default:"N/A" }}</span>
+                                        </li>
+                                        {% if debug_info.diagnostic.error_message %}
+                                        <li class="list-group-item">
+                                            <strong>Error Message:</strong>
+                                            <div class="text-danger small mt-1">{{ debug_info.diagnostic.error_message }}</div>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tech News Results -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="fa fa-newspaper me-2"></i>Tech News Results ({{ debug_info.tech_news_count }} articles)</h6>
+                        </div>
+                        <div class="card-body">
+                            {% if debug_info.tech_news_articles %}
+                                <div class="row">
+                                    {% for article in debug_info.tech_news_articles %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ article.title|truncatechars:80 }}</h6>
+                                                <p class="card-text small text-muted">
+                                                    <strong>Source:</strong> {{ article.source }}<br>
+                                                    <strong>URL:</strong> <a href="{{ article.url }}" target="_blank" class="text-break">{{ article.url|truncatechars:50 }}</a><br>
+                                                    {% if article.image %}
+                                                    <strong>Image:</strong> <a href="{{ article.image }}" target="_blank" class="text-break">{{ article.image|truncatechars:50 }}</a>
+                                                    {% else %}
+                                                    <strong>Image:</strong> <span class="text-muted">None</span>
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-warning">
+                                    <i class="fa fa-exclamation-triangle me-2"></i>
+                                    No tech news articles were fetched. Check the diagnostic information above for potential issues.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- User Info -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0"><i class="fa fa-user me-2"></i>User Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>User Email:</strong> {{ debug_info.user_email }}</p>
+                            <p><strong>Debug URL:</strong> <code>{{ request.build_absolute_uri }}</code></p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <a href="{% url 'portal:dashboard' %}" class="btn btn-primary">
+                            <i class="fa fa-arrow-left me-2"></i>Back to Dashboard
+                        </a>
+                        <a href="{{ request.path }}" class="btn btn-outline-secondary">
+                            <i class="fa fa-refresh me-2"></i>Refresh Debug Info
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

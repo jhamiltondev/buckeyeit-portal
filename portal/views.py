@@ -13,43 +13,35 @@ import requests
 from .adapters import get_connectwise_tickets, create_connectwise_ticket, get_connectwise_ticket_notes, post_connectwise_ticket_note, get_connectwise_ticket, split_ticket_notes
 from .forms import SupportTicketForm
 from datetime import datetime, timedelta
+import logging
+from .tech_news import get_tech_news, test_news_api
+
+# Set up logger for views
+logger = logging.getLogger('portal.views')
 
 # Create your views here.
 
 @login_required
 def dashboard(request, tenant_slug=None):
+    logger.info(f"Dashboard accessed by user: {request.user.email}")
+    
     tenant = getattr(request.user, 'tenant', None)
     is_vip = getattr(tenant, 'vip', False) if tenant else False
     announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')
+    
     # Only open ConnectWise tickets
     cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
     cw_tickets = sorted(cw_tickets, key=lambda t: t.get('dateEntered', ''), reverse=True)[:5]
-    # Fetch live tech news
-    tech_news = []
-    try:
-        resp = requests.get(
-            'https://newsapi.org/v2/top-headlines',
-            params={
-                'q': 'Microsoft OR cybersecurity OR security OR outage OR patch OR vulnerability OR Azure OR "Office 365"',
-                'language': 'en',
-                'pageSize': 5,
-                'apiKey': '26ab5bf6cc45491ea78cd09939f00f92',
-            },
-            timeout=5
-        )
-        if resp.status_code == 200:
-            data = resp.json()
-            for article in data.get('articles', []):
-                tech_news.append({
-                    'title': article.get('title'),
-                    'url': article.get('url'),
-                    'source': article.get('source', {}).get('name'),
-                    'image': article.get('urlToImage'),
-                })
-    except Exception as e:
-        print('NewsAPI error:', e)
-        tech_news = []
-    print('Tech news fetched:', tech_news)
+    
+    # Fetch live tech news using the new service
+    logger.info("Fetching tech news for dashboard")
+    tech_news = get_tech_news()
+    logger.info(f"Tech news fetched: {len(tech_news)} articles")
+    
+    # Log tech news details for debugging
+    for i, article in enumerate(tech_news):
+        logger.debug(f"Tech news article {i+1}: {article.get('title', 'No title')[:50]}... from {article.get('source', 'Unknown')}")
+    
     # Fetch recent notifications (notes not by user, last 7 days)
     notifications = []
     user_email = request.user.email.lower()
@@ -67,7 +59,8 @@ def dashboard(request, tenant_slug=None):
                 except Exception:
                     continue
     notifications = sorted(notifications, key=lambda n: n.get('dateCreated', ''), reverse=True)[:10]
-    return render(request, 'portal/dashboard.html', {
+    
+    context = {
         'is_vip': is_vip,
         'tenant': tenant,
         'announcements': announcements,
@@ -75,7 +68,10 @@ def dashboard(request, tenant_slug=None):
         'tech_news': tech_news,
         'notifications': notifications,
         'user': request.user,
-    })
+    }
+    
+    logger.info(f"Dashboard context prepared - Tech news: {len(tech_news)}, Tickets: {len(cw_tickets)}, Notifications: {len(notifications)}")
+    return render(request, 'portal/dashboard.html', context)
 
 def login_view(request):
     if request.method == 'POST':
@@ -224,6 +220,32 @@ def announcements_view(request):
     return render(request, 'portal/announcements.html', {
         'pinned': pinned,
         'feed': feed,
+    })
+
+@login_required
+def debug_tech_news(request):
+    """Debug view to test tech news functionality"""
+    logger.info("Debug tech news view accessed")
+    
+    # Test NewsAPI connection
+    diagnostic = test_news_api()
+    
+    # Fetch tech news
+    tech_news = get_tech_news()
+    
+    # Prepare debug information
+    debug_info = {
+        'diagnostic': diagnostic,
+        'tech_news_count': len(tech_news),
+        'tech_news_articles': tech_news,
+        'user_email': request.user.email,
+        'timestamp': datetime.now().isoformat(),
+    }
+    
+    logger.info(f"Debug tech news info: {debug_info}")
+    
+    return render(request, 'portal/debug_tech_news.html', {
+        'debug_info': debug_info,
     })
 
 @login_required

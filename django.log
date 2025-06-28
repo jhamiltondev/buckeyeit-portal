@@ -1,0 +1,67 @@
+INFO 2025-06-28 13:15:51,563 autoreload 115304 46452 Watching for file changes with StatReloader
+INFO 2025-06-28 13:16:32,495 tech_news 109520 105764 test_news_api() called
+INFO 2025-06-28 13:16:32,495 tech_news 109520 105764 Testing NewsAPI connection
+DEBUG 2025-06-28 13:16:32,495 tech_news 109520 105764 Making test request to NewsAPI
+INFO 2025-06-28 13:16:33,054 tech_news 109520 105764 NewsAPI test successful
+INFO 2025-06-28 13:16:33,054 tech_news 109520 105764 NewsAPI diagnostic: {'api_key_valid': True, 'api_key_length': 32, 'base_url': 'https://newsapi.org/v2/top-headlines', 'timeout': 10, 'test_status_code': 200, 'test_successful': True, 'api_working': True, 'total_results': 51}
+INFO 2025-06-28 13:16:33,057 tech_news 109520 105764 get_tech_news() called
+INFO 2025-06-28 13:16:33,057 tech_news 109520 105764 Starting tech news fetch from NewsAPI
+DEBUG 2025-06-28 13:16:33,057 tech_news 109520 105764 NewsAPI request parameters: {'q': 'Microsoft OR cybersecurity OR security OR outage OR patch OR vulnerability OR Azure OR "Office 365" OR "Windows Update" OR "data breach"', 'language': 'en', 'pageSize': 5, 'apiKey': '26ab5bf6cc45491ea78cd09939f00f92', 'sortBy': 'publishedAt'}
+DEBUG 2025-06-28 13:16:33,057 tech_news 109520 105764 NewsAPI request URL: https://newsapi.org/v2/top-headlines
+INFO 2025-06-28 13:16:33,058 tech_news 109520 105764 Making HTTP request to NewsAPI
+INFO 2025-06-28 13:16:33,450 tech_news 109520 105764 NewsAPI response status code: 200
+DEBUG 2025-06-28 13:16:33,452 tech_news 109520 105764 NewsAPI response headers: {'Date': 'Sat, 28 Jun 2025 17:16:44 GMT', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '46', 'Connection': 'keep-alive', 'CF-RAY': '956ed56aba7d0c55-ATL', 'Cache-Control': 'no-cache', 'Pragma': 'no-cache', 'Expires': '-1', 'X-Cached-Result': 'false', 'cf-cache-status': 'DYNAMIC', 'Report-To': '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=JjJkFRjfzxGz7lvCAVUH5%2FHzkKojoOICdwrkT0hygjlITu4eWePG6cZnwajOWBdxZjE%2FLPPCb4ROW6e13BU%2Bw26kvmFZtXpPvo5zlRPWhLjD2Jh4bsfp2Ty0ck7D"}],"group":"cf-nel","max_age":604800}', 'NEL': '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}', 'Server': 'cloudflare', 'server-timing': 'cfL4;desc="?proto=TCP&rtt=67241&min_rtt=65353&rtt_var=21855&sent=5&recv=6&lost=0&retrans=0&sent_bytes=2842&recv_bytes=1010&delivery_rate=54154&cwnd=252&unsent_bytes=0&cid=e56b0496202c53ba&ts=268&x=0"'}
+INFO 2025-06-28 13:16:33,454 tech_news 109520 105764 NewsAPI response received successfully. Total results: 0
+DEBUG 2025-06-28 13:16:33,456 tech_news 109520 105764 NewsAPI response data: {'status': 'ok', 'totalResults': 0, 'articles': []}
+INFO 2025-06-28 13:16:33,456 tech_news 109520 105764 Processing 0 articles from NewsAPI
+INFO 2025-06-28 13:16:33,457 tech_news 109520 105764 Successfully processed 0 articles
+INFO 2025-06-28 13:16:59,051 autoreload 115304 46452 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\tech_news.py changed, reloading.
+INFO 2025-06-28 13:17:00,125 autoreload 112380 83396 Watching for file changes with StatReloader
+INFO 2025-06-28 13:17:05,687 tech_news 89468 105012 test_news_api() called
+INFO 2025-06-28 13:17:05,688 tech_news 89468 105012 Testing NewsAPI connection
+DEBUG 2025-06-28 13:17:05,688 tech_news 89468 105012 Making test request to NewsAPI
+INFO 2025-06-28 13:17:06,146 tech_news 89468 105012 NewsAPI test successful
+INFO 2025-06-28 13:17:06,146 tech_news 89468 105012 NewsAPI diagnostic: {'api_key_valid': True, 'api_key_length': 32, 'base_url': 'https://newsapi.org/v2/top-headlines', 'timeout': 10, 'test_status_code': 200, 'test_successful': True, 'api_working': True, 'total_results': 51}
+INFO 2025-06-28 13:17:06,149 tech_news 89468 105012 get_tech_news() called
+INFO 2025-06-28 13:17:06,151 tech_news 89468 105012 Starting tech news fetch from NewsAPI
+INFO 2025-06-28 13:17:06,151 tech_news 89468 105012 Trying search query 1/4: technology OR tech OR software OR computer OR internet
+DEBUG 2025-06-28 13:17:06,153 tech_news 89468 105012 NewsAPI request parameters: {'q': 'technology OR tech OR software OR computer OR internet', 'language': 'en', 'pageSize': 5, 'apiKey': '26ab5bf6cc45491ea78cd09939f00f92', 'sortBy': 'publishedAt'}
+DEBUG 2025-06-28 13:17:06,153 tech_news 89468 105012 NewsAPI request URL: https://newsapi.org/v2/top-headlines
+INFO 2025-06-28 13:17:06,153 tech_news 89468 105012 Making HTTP request to NewsAPI
+INFO 2025-06-28 13:17:06,559 tech_news 89468 105012 NewsAPI response status code: 200
+DEBUG 2025-06-28 13:17:06,560 tech_news 89468 105012 NewsAPI response headers: {'Date': 'Sat, 28 Jun 2025 17:17:17 GMT', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '46', 'Connection': 'keep-alive', 'CF-RAY': '956ed639b8a353f6-ATL', 'Cache-Control': 'no-cache', 'Pragma': 'no-cache', 'Expires': '-1', 'X-Cached-Result': 'false', 'cf-cache-status': 'DYNAMIC', 'Report-To': '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=xqbdrpPjboI%2BbtA5FyYxZmt37B9Jz%2FAhG0TgTs%2F2NO4fHZSSGb162K5UeYm%2Bh71F6CNHJ%2FbgpKLINWQ4%2BxILP1scej3u4ybQzDVAnEW0bNbVEXjLntBJpZAXbw%2Ft"}],"group":"cf-nel","max_age":604800}', 'NEL': '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}', 'Server': 'cloudflare', 'server-timing': 'cfL4;desc="?proto=TCP&rtt=60977&min_rtt=58502&rtt_var=18563&sent=5&recv=6&lost=0&retrans=0&sent_bytes=2842&recv_bytes=916&delivery_rate=63780&cwnd=252&unsent_bytes=0&cid=6f973a9184818dfb&ts=264&x=0"'}
+INFO 2025-06-28 13:17:06,561 tech_news 89468 105012 NewsAPI response received successfully. Total results: 0
+DEBUG 2025-06-28 13:17:06,561 tech_news 89468 105012 NewsAPI response data: {'status': 'ok', 'totalResults': 0, 'articles': []}
+INFO 2025-06-28 13:17:06,561 tech_news 89468 105012 Processing 0 articles from NewsAPI
+WARNING 2025-06-28 13:17:06,562 tech_news 89468 105012 No articles found with query: technology OR tech OR software OR computer OR internet
+INFO 2025-06-28 13:17:06,562 tech_news 89468 105012 Trying search query 2/4: Microsoft OR cybersecurity OR security
+DEBUG 2025-06-28 13:17:06,567 tech_news 89468 105012 NewsAPI request parameters: {'q': 'Microsoft OR cybersecurity OR security', 'language': 'en', 'pageSize': 5, 'apiKey': '26ab5bf6cc45491ea78cd09939f00f92', 'sortBy': 'publishedAt'}
+DEBUG 2025-06-28 13:17:06,568 tech_news 89468 105012 NewsAPI request URL: https://newsapi.org/v2/top-headlines
+INFO 2025-06-28 13:17:06,569 tech_news 89468 105012 Making HTTP request to NewsAPI
+INFO 2025-06-28 13:17:06,946 tech_news 89468 105012 NewsAPI response status code: 200
+DEBUG 2025-06-28 13:17:06,948 tech_news 89468 105012 NewsAPI response headers: {'Date': 'Sat, 28 Jun 2025 17:17:18 GMT', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '46', 'Connection': 'keep-alive', 'CF-RAY': '956ed63c3a46bca8-ATL', 'Cache-Control': 'no-cache', 'Pragma': 'no-cache', 'Expires': '-1', 'X-Cached-Result': 'false', 'cf-cache-status': 'DYNAMIC', 'Report-To': '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=CBFpeIZaZdkcWO7edfz0V0zslE20wrtsnMn5R%2BJA7G5E6wPIob9lm06zvQDfhpe7NG4HLGYuDHVay%2BFyaG8QKkoStsuzas3e%2BG5%2FemFidEQ1OLpc5km7vJoiM7Xs"}],"group":"cf-nel","max_age":604800}', 'NEL': '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}', 'Server': 'cloudflare', 'server-timing': 'cfL4;desc="?proto=TCP&rtt=60588&min_rtt=59560&rtt_var=17647&sent=5&recv=6&lost=0&retrans=0&sent_bytes=2842&recv_bytes=900&delivery_rate=69218&cwnd=252&unsent_bytes=0&cid=12e50e1e8a9730a2&ts=240&x=0"'}
+INFO 2025-06-28 13:17:06,951 tech_news 89468 105012 NewsAPI response received successfully. Total results: 0
+DEBUG 2025-06-28 13:17:06,953 tech_news 89468 105012 NewsAPI response data: {'status': 'ok', 'totalResults': 0, 'articles': []}
+INFO 2025-06-28 13:17:06,955 tech_news 89468 105012 Processing 0 articles from NewsAPI
+WARNING 2025-06-28 13:17:06,958 tech_news 89468 105012 No articles found with query: Microsoft OR cybersecurity OR security
+INFO 2025-06-28 13:17:06,959 tech_news 89468 105012 Trying search query 3/4: technology
+DEBUG 2025-06-28 13:17:06,960 tech_news 89468 105012 NewsAPI request parameters: {'q': 'technology', 'language': 'en', 'pageSize': 5, 'apiKey': '26ab5bf6cc45491ea78cd09939f00f92', 'sortBy': 'publishedAt'}
+DEBUG 2025-06-28 13:17:06,962 tech_news 89468 105012 NewsAPI request URL: https://newsapi.org/v2/top-headlines
+INFO 2025-06-28 13:17:06,963 tech_news 89468 105012 Making HTTP request to NewsAPI
+INFO 2025-06-28 13:17:07,358 tech_news 89468 105012 NewsAPI response status code: 200
+DEBUG 2025-06-28 13:17:07,361 tech_news 89468 105012 NewsAPI response headers: {'Date': 'Sat, 28 Jun 2025 17:17:18 GMT', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '46', 'Connection': 'keep-alive', 'CF-RAY': '956ed63eba6144dd-ATL', 'Cache-Control': 'no-cache', 'Pragma': 'no-cache', 'Expires': '-1', 'X-Cached-Result': 'false', 'cf-cache-status': 'DYNAMIC', 'Report-To': '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=bLgfFjYvR5FrADGqoaY5V91ySm5DyP8FeVFQPKhQGfCOSgsTGnLDIXdlqY6rzcSyhtO%2FM%2Bg9U3Bsi0an2CVvuUHrnjJIjSuSkdQVFgA1dR4r%2FS8nCncOlgMUeUw8"}],"group":"cf-nel","max_age":604800}', 'NEL': '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}', 'Server': 'cloudflare', 'server-timing': 'cfL4;desc="?proto=TCP&rtt=61063&min_rtt=58985&rtt_var=20196&sent=5&recv=6&lost=0&retrans=0&sent_bytes=2843&recv_bytes=872&delivery_rate=60791&cwnd=252&unsent_bytes=0&cid=8b93beb03c520011&ts=251&x=0"'}
+INFO 2025-06-28 13:17:07,364 tech_news 89468 105012 NewsAPI response received successfully. Total results: 0
+DEBUG 2025-06-28 13:17:07,365 tech_news 89468 105012 NewsAPI response data: {'status': 'ok', 'totalResults': 0, 'articles': []}
+INFO 2025-06-28 13:17:07,367 tech_news 89468 105012 Processing 0 articles from NewsAPI
+WARNING 2025-06-28 13:17:07,368 tech_news 89468 105012 No articles found with query: technology
+INFO 2025-06-28 13:17:07,370 tech_news 89468 105012 Trying search query 4/4: computer
+DEBUG 2025-06-28 13:17:07,371 tech_news 89468 105012 NewsAPI request parameters: {'q': 'computer', 'language': 'en', 'pageSize': 5, 'apiKey': '26ab5bf6cc45491ea78cd09939f00f92', 'sortBy': 'publishedAt'}
+DEBUG 2025-06-28 13:17:07,371 tech_news 89468 105012 NewsAPI request URL: https://newsapi.org/v2/top-headlines
+INFO 2025-06-28 13:17:07,372 tech_news 89468 105012 Making HTTP request to NewsAPI
+INFO 2025-06-28 13:17:07,769 tech_news 89468 105012 NewsAPI response status code: 200
+DEBUG 2025-06-28 13:17:07,771 tech_news 89468 105012 NewsAPI response headers: {'Date': 'Sat, 28 Jun 2025 17:17:19 GMT', 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': '46', 'Connection': 'keep-alive', 'CF-RAY': '956ed6415d53708f-ATL', 'Cache-Control': 'no-cache', 'Pragma': 'no-cache', 'Expires': '-1', 'X-Cached-Result': 'false', 'cf-cache-status': 'DYNAMIC', 'Report-To': '{"endpoints":[{"url":"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=EQL92dQigWoAhR89VN17AyIlqq5SlF87qTuDsHVTIFhy98gWtgTYdNErSNtcj38QTTdfqwLtZnw%2BcXdckcJnutLMOdKbRPY0P7GIhfNmDsB%2BgWzZn3nRfN5Zsfty"}],"group":"cf-nel","max_age":604800}', 'NEL': '{"success_fraction":0,"report_to":"cf-nel","max_age":604800}', 'Server': 'cloudflare', 'server-timing': 'cfL4;desc="?proto=TCP&rtt=62807&min_rtt=53383&rtt_var=21314&sent=5&recv=6&lost=0&retrans=0&sent_bytes=2841&recv_bytes=870&delivery_rate=69552&cwnd=252&unsent_bytes=0&cid=0286141a08e064d8&ts=235&x=0"'}
+INFO 2025-06-28 13:17:07,773 tech_news 89468 105012 NewsAPI response received successfully. Total results: 0
+DEBUG 2025-06-28 13:17:07,776 tech_news 89468 105012 NewsAPI response data: {'status': 'ok', 'totalResults': 0, 'articles': []}
+INFO 2025-06-28 13:17:07,778 tech_news 89468 105012 Processing 0 articles from NewsAPI
+WARNING 2025-06-28 13:17:07,780 tech_news 89468 105012 No articles found with query: computer
+WARNING 2025-06-28 13:17:07,782 tech_news 89468 105012 All search queries failed to return articles
