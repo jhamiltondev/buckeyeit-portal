@@ -93,33 +93,39 @@
     </div>
     <!-- Tech News Slideshow BELOW main cards -->
     {% if tech_news %}
-    <div id="techNewsCarousel" class="carousel slide mb-4" data-bs-ride="carousel" data-bs-interval="7000">
-      <div class="carousel-inner">
-        {% for news in tech_news %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-          <div class="card shadow-sm h-100 d-flex flex-row align-items-stretch">
-            {% if news.image %}
-            <div class="col-md-4 p-0 d-none d-md-block">
-              <img src="{{ news.image }}" class="img-fluid rounded-start h-100 w-100 object-fit-cover" alt="News image" style="object-fit:cover; min-height:180px;">
+    <div class="row mb-4 justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm animate__animated animate__fadeInUp h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3"><i class="fa fa-newspaper text-primary me-2"></i>Latest IT News</h6>
+                    <div id="techNewsCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for article in tech_news %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <div class="d-flex align-items-center">
+                                    {% if article.image %}
+                                    <img src="{{ article.image }}" alt="News Image" class="rounded me-3" style="width: 100px; height: 60px; object-fit: cover;">
+                                    {% endif %}
+                                    <div>
+                                        <a href="{{ article.url }}" target="_blank" class="fw-bold text-decoration-none">{{ article.title }}</a>
+                                        <div class="small text-muted">{{ article.source }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#techNewsCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#techNewsCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-            {% endif %}
-            <div class="col p-4 d-flex flex-column justify-content-center">
-              <h5 class="card-title mb-2">{{ news.title }}</h5>
-              <p class="card-text"><small class="text-muted">{{ news.source }}</small></p>
-              <a href="{{ news.url }}" target="_blank" class="btn btn-primary btn-sm mt-2">Read More</a>
-            </div>
-          </div>
         </div>
-        {% endfor %}
-      </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#techNewsCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#techNewsCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
     </div>
     {% endif %}
 </div>
