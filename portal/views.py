@@ -207,3 +207,13 @@ def announcements_view(request):
         'pinned': pinned,
         'feed': feed,
     })
+
+@login_required
+def all_tickets_view(request):
+    local_open = Ticket.objects.filter(user=request.user).exclude(status__in=['resolved']).order_by('-created_at')
+    cw_open = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
+    cw_ticket_notes = {}
+    for t in cw_open:
+        if t.get('id'):
+            cw_ticket_notes[t['id']] = get_connectwise_ticket_notes(t['id'])
+    return render(request, 'portal/all_tickets.html', {'tickets': local_open, 'cw_tickets': cw_open, 'cw_ticket_notes': cw_ticket_notes})
