@@ -1,5 +1,7 @@
 {% extends "portal/base.html" %}
 {% load static %}
+{% load widget_tweaks %}
+{% load dict_extras %}
 {% block title %}Support{% endblock %}
 {% block content %}
 <div class="container-fluid">
@@ -63,7 +65,7 @@
                                         {% if ticket.id in cw_ticket_notes %}
                                             <div class="mt-2 inbox-messages">
                                                 <div class="fw-bold small text-muted mb-1">Messages/Updates:</div>
-                                                {% with notes=cw_ticket_notes[ticket.id] %}
+                                                {% with notes=cw_ticket_notes|dict_get:ticket.id %}
                                                     {% for note in notes %}
                                                         <div class="inbox-message mb-2 p-2 rounded bg-light border">
                                                             <div class="small text-secondary mb-1">
