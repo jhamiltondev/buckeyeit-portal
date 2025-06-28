@@ -283,8 +283,10 @@ def connectwise_ticket_detail(request, ticket_id):
     if request.method == 'POST':
         if request.POST.get('reply_text'):
             reply_text = request.POST.get('reply_text')
+            user_display = f"From: {request.user.get_full_name() or request.user.username} ({request.user.email})\n"
+            note_text = user_display + reply_text
             print(f"[DEBUG] User {request.user.email} replying to ticket {ticket_id}: {reply_text}")
-            result = post_connectwise_ticket_note(ticket_id, reply_text, user_name=request.user.get_full_name() or request.user.username)
+            result = post_connectwise_ticket_note(ticket_id, note_text, user_name=request.user.get_full_name() or request.user.username)
             print(f"[DEBUG] post_connectwise_ticket_note result: {result}")
             if result:
                 messages.success(request, 'Your reply has been posted to the ticket!')
@@ -293,7 +295,7 @@ def connectwise_ticket_detail(request, ticket_id):
             return redirect('portal:connectwise_ticket_detail', ticket_id=ticket_id)
         elif request.POST.get('request_remote_support'):
             # Post a note to ConnectWise
-            remote_note = 'User has requested remote support. (ScreenConnect: https://buckeyeit.screenconnect.com/Host#Access)'
+            remote_note = f"From: {request.user.get_full_name() or request.user.username} ({request.user.email})\nUser has requested remote support. (ScreenConnect: https://buckeyeit.screenconnect.com/Host#Access)"
             result = post_connectwise_ticket_note(ticket_id, remote_note, user_name=request.user.get_full_name() or request.user.username)
             if result:
                 messages.success(request, 'Your remote support request has been sent! (Coming Soon: This will launch a remote session automatically.)')
