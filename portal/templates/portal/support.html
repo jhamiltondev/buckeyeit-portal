@@ -63,20 +63,22 @@
                                         {% if ticket.id in cw_ticket_notes %}
                                             <div class="mt-2 inbox-messages">
                                                 <div class="fw-bold small text-muted mb-1">Messages/Updates:</div>
-                                                {% for note in cw_ticket_notes[ticket.id] %}
-                                                    <div class="inbox-message mb-2 p-2 rounded bg-light border">
-                                                        <div class="small text-secondary mb-1">
-                                                            <i class="fa fa-user-circle me-1"></i>
-                                                            {{ note.enteredBy }}
-                                                            <span class="mx-2">|</span>
-                                                            <i class="fa fa-clock me-1"></i>
-                                                            {{ note.dateCreated|slice:":10" }} {{ note.timeCreated|default:"" }}
+                                                {% with notes=cw_ticket_notes[ticket.id] %}
+                                                    {% for note in notes %}
+                                                        <div class="inbox-message mb-2 p-2 rounded bg-light border">
+                                                            <div class="small text-secondary mb-1">
+                                                                <i class="fa fa-user-circle me-1"></i>
+                                                                {{ note.enteredBy }}
+                                                                <span class="mx-2">|</span>
+                                                                <i class="fa fa-clock me-1"></i>
+                                                                {{ note.dateCreated|slice:":10" }} {{ note.timeCreated|default:"" }}
+                                                            </div>
+                                                            <div>{{ note.text }}</div>
                                                         </div>
-                                                        <div>{{ note.text }}</div>
-                                                    </div>
-                                                {% empty %}
-                                                    <div class="small text-muted">No messages yet.</div>
-                                                {% endfor %}
+                                                    {% empty %}
+                                                        <div class="small text-muted">No messages yet.</div>
+                                                    {% endfor %}
+                                                {% endwith %}
                                                 <form method="post" class="mt-2 inbox-reply-form">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="reply_ticket_id" value="{{ ticket.id }}" />
