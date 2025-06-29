@@ -49,6 +49,8 @@ def dashboard(request, tenant_slug=None):
     for t in cw_tickets:
         notes = get_connectwise_ticket_notes(t['id'])
         for note in notes:
+            # DEBUG: Print all note fields for inspection
+            logger.info(f"[DEBUG][Notifications] Ticket {t['id']} Note: {note}")
             # Only show notes from last 7 days
             note_date = note.get('dateCreated', '')[:10]
             try:
@@ -336,6 +338,8 @@ def notifications_api(request):
     for t in cw_tickets:
         notes = get_connectwise_ticket_notes(t['id'])
         for note in notes:
+            # DEBUG: Print all note fields for inspection
+            logger.info(f"[DEBUG][Notifications] Ticket {t['id']} Note: {note}")
             # Only show notes from last 7 days
             note_date = note.get('dateCreated', '')[:10]
             try:
