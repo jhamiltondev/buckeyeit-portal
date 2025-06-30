@@ -81,7 +81,7 @@
             border-top-right-radius: 18px;
             border-bottom-right-radius: 18px;
             box-shadow: 2px 0 12px rgba(0,0,0,0.08);
-            padding-top: 2rem !important;
+            padding-top: 3.5rem !important;
             transition: width 0.3s, left 0.3s, box-shadow 0.3s, visibility 0.3s;
             width: 240px;
             position: fixed;
@@ -391,6 +391,14 @@
         .dark-mode .help-modal {
             color: #eee;
         }
+        @keyframes toastSlideIn {
+            0% { transform: translateY(-40px); opacity: 0; }
+            60% { transform: translateY(12px); opacity: 1; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .toast.custom-slide-in {
+            animation: toastSlideIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
     </style>
 </head>
 <body>
@@ -478,8 +486,8 @@
         <div class="small text-muted mt-2">Our team is here to help you 24/7.</div>
     </div>
     <!-- Toast Notification Container -->
-    <div aria-live="polite" aria-atomic="true" class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
-        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div aria-live="polite" aria-atomic="true" class="position-fixed start-50 translate-middle-x p-3" style="z-index: 1080; top: 64px; left: 0; right: 0; width: 100%; pointer-events: none; display: flex; justify-content: center; align-items: flex-start;">
+        <div id="liveToast" class="toast custom-slide-in" role="alert" aria-live="assertive" aria-atomic="true" style="min-width: 320px; pointer-events: auto;">
             <div class="toast-header">
                 <strong class="me-auto" id="toastTitle">Notification</strong>
                 <small>Just now</small>
