@@ -3,7 +3,129 @@
 {% block title %}Admin Dashboard | Buckeye IT{% endblock %}
 
 {% block content %}
-    <h1>Custom Admin Dashboard</h1>
-    <p>Welcome to the new Buckeye IT custom admin portal!</p>
-    <p>This is a starting point. Sidebar, widgets, and full UI coming next.</p>
+<div class="container-fluid">
+    <!-- Welcome Banner -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm mb-3" style="background: #fff0f0; border-left: 6px solid #b71c1c;">
+                <div class="card-body d-flex flex-wrap flex-md-nowrap align-items-center justify-content-between">
+                    <div class="fw-bold" style="font-size:1.25rem;">Welcome Back, {{ request.user.get_full_name|default:request.user.username }}! <span class="text-muted" style="font-size:1rem;">[Tenant: Buckeye IT]</span></div>
+                    <div class="d-flex flex-wrap gap-3 mt-3 mt-md-0">
+                        <span class="badge bg-secondary">System Status: Operational</span>
+                        <span class="badge bg-warning text-dark">Security Warnings: None</span>
+                        <span class="badge bg-light text-dark border">Last Login: {{ request.user.last_login|date:'M d, Y H:i' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Quick Actions & Portal Insights -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header fw-bold bg-white">Quick Actions</div>
+                <div class="card-body d-grid gap-2">
+                    <button class="btn btn-outline-success">Approve New User</button>
+                    <button class="btn btn-outline-primary">Run Automation Test</button>
+                    <button class="btn btn-outline-danger">Post Announcement</button>
+                    <button class="btn btn-outline-secondary">Open Platform Settings</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header fw-bold bg-white">Portal Insights</div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-6">Total Users:</div>
+                        <div class="col-6 fw-bold">147</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">Total Tenants:</div>
+                        <div class="col-6 fw-bold">18</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">Open Tickets:</div>
+                        <div class="col-6 fw-bold">12</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">KB Articles:</div>
+                        <div class="col-6 fw-bold">63</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Recent Admin Activity -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold bg-white">Recent Admin Activity (Audit Log Preview)</div>
+                <div class="card-body">
+                    <ul class="mb-0" style="list-style: disc inside;">
+                        <li>John reset user password for jsmith@reedminerals</li>
+                        <li>Automation failed for tenant Wyandot County</li>
+                        <li>Jane approved new user for Buckeye IT</li>
+                        <li>System health check completed</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- System Integrations & Automation Failures -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header fw-bold bg-white">System Integrations</div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-6">ConnectWise:</div>
+                        <div class="col-6 fw-bold text-success">Connected</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">Pax8:</div>
+                        <div class="col-6 fw-bold text-success">Valid Key</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">OpenAI:</div>
+                        <div class="col-6 fw-bold text-warning">Expiring Soon</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header fw-bold bg-white">Automation Failures</div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-6">Reed Minerals:</div>
+                        <div class="col-6 fw-bold text-danger">Reset Failed</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">Wyandot:</div>
+                        <div class="col-6 fw-bold text-danger">Termination Failed</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">Crawford:</div>
+                        <div class="col-6 fw-bold text-success">User Provisioned</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Coming Soon / Feature Roadmap -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold bg-white">Coming Soon / Feature Roadmap</div>
+                <div class="card-body">
+                    <ul class="mb-0" style="list-style: disc inside;">
+                        <li>Role Manager rollout July 2025</li>
+                        <li>SSO tenant mapping in testing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %} 
