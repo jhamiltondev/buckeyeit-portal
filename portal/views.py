@@ -10,7 +10,7 @@ from django.urls import get_resolver
 from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument
 from django.contrib.admin.views.decorators import staff_member_required
 import requests
-from .adapters import get_connectwise_tickets, create_connectwise_ticket, get_connectwise_ticket_notes, post_connectwise_ticket_note, get_connectwise_ticket, split_ticket_notes
+from .adapters import get_connectwise_tickets, create_connectwise_ticket, get_connectwise_ticket_notes, post_connectwise_ticket_note, get_connectwise_ticket, split_ticket_notes, get_connectwise_contact_id
 from .forms import SupportTicketForm
 from datetime import datetime, timedelta
 import logging
@@ -150,13 +150,14 @@ def support_view(request):
             ticket['status_color'] = 'success'
         else:
             ticket['status_color'] = 'secondary'
-    # Fetch closed tickets directly from ConnectWise API using conditions
-    from portal.adapters import get_connectwise_tickets as get_cw_tickets_api
-    thirty_days_ago = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%dT%H:%M:%S')
-    # Build conditions for closed statuses and date
-    closed_conditions = f"contactEmail='{request.user.email}' and (status/name='Closed' or status/name='Closed - Silent' or status/name='Pending Close') and dateEntered>='{thirty_days_ago}'"
-    closed_cw_tickets = get_cw_tickets_api(request.user, extra_conditions=closed_conditions)
-    closed_cw_tickets = sorted(closed_cw_tickets, key=lambda t: t.get('dateEntered', ''), reverse=True)
+    # Fetch closed tickets using contact ID and correct conditions
+    from portal.adapters import get_connectwise_contact_id, get_connectwise_tickets as get_cw_tickets_api
+    contact_id = get_connectwise_contact_id(request.user.email)
+    closed_cw_tickets = []
+    if contact_id:
+        closed_conditions = f'(status/name="Closed" OR status/name="Closed - Silent" OR status/name="Pending Close") AND contact/id={contact_id}'
+        closed_cw_tickets = get_cw_tickets_api(request.user, extra_conditions=closed_conditions)
+        closed_cw_tickets = sorted(closed_cw_tickets, key=lambda t: t.get('dateEntered', ''), reverse=True)
     return render(request, 'portal/support.html', {
         'cw_tickets': cw_tickets,
         'closed_cw_tickets': closed_cw_tickets
