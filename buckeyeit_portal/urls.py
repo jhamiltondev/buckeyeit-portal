@@ -51,7 +51,6 @@ def root_redirect(request):
     return redirect('portal:login')
 
 urlpatterns = [
-    path('admin/', custom_admin_view),
     path('accounts/', include('allauth.urls')),
     path('adminpanel/', include('adminpanel.urls', namespace='adminpanel')),
     path('', root_redirect, name='root-redirect'),

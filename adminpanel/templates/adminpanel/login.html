@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Buckeye IT Admin Center</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(90deg, #1976d2 0%, #1565c0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .admin-login-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+            padding: 2.5rem 2rem 2rem 2rem;
+            max-width: 400px;
+            width: 100%;
+        }
+        .admin-login-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1976d2;
+        }
+        .btn-primary {
+            background-color: #1976d2;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #1565c0;
+        }
+        .form-label {
+            font-weight: 600;
+        }
+        .form-control:focus {
+            border-color: #1976d2;
+            box-shadow: 0 0 0 0.2rem rgba(25,118,210,0.15);
+        }
+        .login-error {
+            color: #c8102e;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-login-card">
+        <div class="admin-login-title">
+            <i class="fas fa-shield-alt me-2"></i>Buckeye IT Admin Center
+        </div>
+        {% if form.errors %}
+            <div class="login-error">Invalid username or password.</div>
+        {% endif %}
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Username</label>
+                <input type="text" name="username" autofocus required class="form-control" id="id_username" placeholder="Enter your username">
+            </div>
+            <div class="mb-3">
+                <label for="id_password" class="form-label">Password</label>
+                <input type="password" name="password" required class="form-control" id="id_password" placeholder="Enter your password">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+    </div>
+</body>
+</html> 
