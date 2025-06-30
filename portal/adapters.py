@@ -482,4 +482,13 @@ def split_ticket_notes(notes):
     """
     discussion = [n for n in notes if not n.get('internalAnalysisFlag') and not n.get('resolutionFlag')]
     internal = [n for n in notes if n.get('internalAnalysisFlag') or n.get('resolutionFlag')]
+    
+    # Debug logging
+    print(f"[DEBUG] split_ticket_notes: Total notes: {len(notes)}")
+    print(f"[DEBUG] split_ticket_notes: Discussion notes: {len(discussion)}")
+    print(f"[DEBUG] split_ticket_notes: Internal notes: {len(internal)}")
+    
+    for i, note in enumerate(notes):
+        print(f"[DEBUG] Note {i}: internalAnalysisFlag={note.get('internalAnalysisFlag')}, resolutionFlag={note.get('resolutionFlag')}, enteredBy={note.get('enteredBy')}")
+    
     return {'discussion': discussion, 'internal': internal} 

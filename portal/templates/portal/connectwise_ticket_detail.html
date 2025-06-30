@@ -22,7 +22,18 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="discussion-tab" data-bs-toggle="tab" data-bs-target="#discussion" type="button" role="tab" aria-controls="discussion" aria-selected="true">Messages/Updates</button>
                             </li>
+                            {% if is_tech %}
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="internal-tab" data-bs-toggle="tab" data-bs-target="#internal" type="button" role="tab" aria-controls="internal" aria-selected="false">Internal Notes</button>
+                            </li>
+                            {% endif %}
                         </ul>
+                        {% if is_tech %}
+                        <div class="alert alert-info alert-sm mb-3">
+                            <i class="fa fa-info-circle me-1"></i>
+                            <strong>Tech View:</strong> "Messages/Updates" are visible to customers. "Internal Notes" are technician-only and hidden from customers.
+                        </div>
+                        {% endif %}
                         <div class="tab-content" id="ticketNotesTabsContent">
                             <div class="tab-pane fade show active" id="discussion" role="tabpanel" aria-labelledby="discussion-tab">
                                 {% for note in notes %}
@@ -40,6 +51,25 @@
                                     <div class="small text-muted">No messages yet.</div>
                                 {% endfor %}
                             </div>
+                            {% if is_tech %}
+                            <div class="tab-pane fade" id="internal" role="tabpanel" aria-labelledby="internal-tab">
+                                {% for note in internal_notes %}
+                                    <div class="inbox-message mb-3 p-2 rounded bg-warning bg-opacity-10 border border-warning">
+                                        <div class="small text-secondary mb-1">
+                                            <i class="fa fa-user-shield me-1"></i>
+                                            {{ note.display_name }}
+                                            <span class="mx-2">|</span>
+                                            <i class="fa fa-clock me-1"></i>
+                                            {{ note.dateCreated|slice:":10" }} {{ note.timeCreated|default:"" }}
+                                            <span class="badge bg-warning text-dark ms-2">Internal</span>
+                                        </div>
+                                        <div>{{ note.text }}</div>
+                                    </div>
+                                {% empty %}
+                                    <div class="small text-muted">No internal notes.</div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                     <form method="post" class="mb-3">

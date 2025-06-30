@@ -301,6 +301,10 @@ def connectwise_ticket_detail(request, ticket_id):
         else:
             note['display_name'] = note.get('enteredBy') or 'Tech'
     notes_split = split_ticket_notes(notes)
+    
+    # Determine if user is a tech/admin (for internal notes access)
+    is_tech = request.user.is_staff or request.user.is_superuser
+    
     if request.method == 'POST':
         if request.POST.get('reply_text'):
             reply_text = request.POST.get('reply_text')
@@ -323,7 +327,12 @@ def connectwise_ticket_detail(request, ticket_id):
             else:
                 messages.error(request, 'There was an error sending your remote support request. Please try again.')
             return redirect('portal:connectwise_ticket_detail', ticket_id=ticket_id)
-    return render(request, 'portal/connectwise_ticket_detail.html', {'ticket': ticket, 'notes': notes_split['discussion']})
+    return render(request, 'portal/connectwise_ticket_detail.html', {
+        'ticket': ticket, 
+        'notes': notes_split['discussion'],
+        'internal_notes': notes_split['internal'],
+        'is_tech': is_tech
+    })
 
 @login_required
 def notifications_api(request):
