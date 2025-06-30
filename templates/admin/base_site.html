@@ -4,6 +4,7 @@
 <aside class="custom-admin-sidebar" id="customSidebar">
     <nav>
         <div class="sidebar-header">
+            <button id="sidebarCollapse" class="sidebar-collapse-toggle" title="Toggle Sidebar"><i class="fas fa-bars"></i></button>
             <button id="nightModeToggle" class="night-mode-toggle" title="Toggle Night Mode"><i class="fas fa-moon"></i></button>
         </div>
         <ul class="sidebar-menu">
@@ -48,7 +49,7 @@
     </nav>
 </aside>
 <script>
-    // Accordion sidebar: only one section open at a time
+    // Accordion sidebar: only one section open at a time, fix lingering submenus
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.sidebar-section').forEach(function(section) {
             var link = section.querySelector('.sidebar-link');
@@ -59,10 +60,12 @@
                 if (!section.dataset.section || section.dataset.section !== 'users') {
                     submenu.style.maxHeight = '0';
                     submenu.style.overflow = 'hidden';
+                    submenu.style.display = 'none';
                 } else {
                     submenu.classList.add('open');
                     caret.classList.add('open');
                     section.classList.add('open');
+                    submenu.style.display = 'block';
                 }
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -74,6 +77,7 @@
                             if (otherSub) {
                                 otherSub.classList.remove('open');
                                 otherSub.style.maxHeight = '0';
+                                otherSub.style.display = 'none';
                             }
                             if (otherCaret) {
                                 otherCaret.classList.remove('open');
@@ -84,11 +88,13 @@
                     // Toggle this section
                     var isOpen = submenu.classList.toggle('open');
                     if (isOpen) {
+                        submenu.style.display = 'block';
                         submenu.style.maxHeight = submenu.scrollHeight + 'px';
                         caret.classList.add('open');
                         section.classList.add('open');
                     } else {
                         submenu.style.maxHeight = '0';
+                        submenu.style.display = 'none';
                         caret.classList.remove('open');
                         section.classList.remove('open');
                     }
@@ -98,6 +104,7 @@
         // Expand open submenus on load
         document.querySelectorAll('.sidebar-submenu.open').forEach(function(submenu) {
             submenu.style.maxHeight = submenu.scrollHeight + 'px';
+            submenu.style.display = 'block';
         });
 
         // Night mode toggle
@@ -122,12 +129,20 @@
         if (localStorage.getItem('adminNightMode') === '1') {
             setNightMode(true);
         }
+
+        // Sidebar collapse/expand
+        var collapseBtn = document.getElementById('sidebarCollapse');
+        var mainContent = document.getElementById('mainContentWrapper');
+        collapseBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            html.classList.toggle('sidebar-collapsed');
+        });
     });
 </script>
 {% endblock %}
 
 {% block content %}
-    <div class="custom-dashboard-widgets">
+    <div class="custom-dashboard-widgets" id="mainContentWrapper">
         <!-- Placeholder for custom dashboard widgets, stats, or quick links -->
     </div>
     {{ block.super }}
@@ -147,17 +162,29 @@
             z-index: 1000;
             padding-top: 60px;
             box-shadow: 2px 0 8px rgba(0,0,0,0.08);
-            transition: background 0.3s;
+            transition: background 0.3s, width 0.3s;
         }
-        .night-mode .custom-admin-sidebar {
-            background: #23272f;
-            color: #fff;
+        .custom-admin-sidebar.collapsed {
+            width: 60px;
         }
         .sidebar-header {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
-            padding: 8px 18px 0 0;
+            padding: 8px 18px 0 10px;
+        }
+        .sidebar-collapse-toggle {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.2rem;
+            cursor: pointer;
+            outline: none;
+            margin-right: 8px;
+            transition: color 0.2s;
+        }
+        .sidebar-collapse-toggle:hover, .sidebar-collapse-toggle:focus {
+            color: #3ea6ff;
         }
         .night-mode-toggle {
             background: none;
@@ -227,6 +254,11 @@
             margin: 0;
             background: none;
             transition: max-height 0.3s cubic-bezier(0.4,0,0.2,1);
+            overflow: hidden;
+            display: none;
+        }
+        .sidebar-submenu.open {
+            display: block;
         }
         .sidebar-submenu li a {
             display: flex;
@@ -260,17 +292,57 @@
         .night-mode .sidebar-divider {
             border-top: 1px solid #444;
         }
-        .custom-dashboard-widgets {
+        .custom-dashboard-widgets, .content, .main, #content, .container-fluid {
             margin-left: 270px;
             margin-top: 30px;
+            transition: margin-left 0.3s;
+        }
+        .sidebar-collapsed .custom-admin-sidebar {
+            width: 60px;
+        }
+        .sidebar-collapsed .custom-dashboard-widgets, .sidebar-collapsed .content, .sidebar-collapsed .main, .sidebar-collapsed #content, .sidebar-collapsed .container-fluid {
+            margin-left: 70px;
+        }
+        .night-mode, .night-mode body, .night-mode .content, .night-mode .main, .night-mode #content, .night-mode .container-fluid {
+            background: #181a1f !important;
+            color: #e0e0e0 !important;
+        }
+        .night-mode .card, .night-mode .module, .night-mode .dashboard-module, .night-mode .panel, .night-mode .box, .night-mode .module caption, .night-mode .module table {
+            background: #23272f !important;
+            color: #e0e0e0 !important;
+            border-color: #23272f !important;
+        }
+        .night-mode .dashboard-module .module caption {
+            color: #e0e0e0 !important;
+        }
+        .night-mode .dashboard-module .module table {
+            background: #23272f !important;
+        }
+        .night-mode .dashboard-module .module th, .night-mode .dashboard-module .module td {
+            color: #e0e0e0 !important;
+        }
+        .night-mode .dashboard-module .module th {
+            background: #23272f !important;
+        }
+        .night-mode .dashboard-module .module td {
+            background: #23272f !important;
+        }
+        .night-mode .sidebar-header, .night-mode .sidebar-collapse-toggle, .night-mode .night-mode-toggle {
+            color: #b0b8c1;
         }
         @media (max-width: 900px) {
             .custom-admin-sidebar {
                 width: 200px;
                 padding-top: 50px;
             }
-            .custom-dashboard-widgets {
+            .sidebar-collapsed .custom-admin-sidebar {
+                width: 50px;
+            }
+            .custom-dashboard-widgets, .content, .main, #content, .container-fluid {
                 margin-left: 210px;
+            }
+            .sidebar-collapsed .custom-dashboard-widgets, .sidebar-collapsed .content, .sidebar-collapsed .main, .sidebar-collapsed #content, .sidebar-collapsed .container-fluid {
+                margin-left: 60px;
             }
         }
     </style>
