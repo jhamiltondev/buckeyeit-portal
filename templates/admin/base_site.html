@@ -1,40 +1,43 @@
 {% extends "admin/base_site.html" %}
 
 {% block sidebar %}
-<aside class="custom-admin-sidebar">
+<aside class="custom-admin-sidebar" id="customSidebar">
     <nav>
+        <div class="sidebar-header">
+            <button id="nightModeToggle" class="night-mode-toggle" title="Toggle Night Mode"><i class="fas fa-moon"></i></button>
+        </div>
         <ul class="sidebar-menu">
-            <li class="sidebar-section">
-                <a href="#" class="sidebar-link"><i class="fas fa-user"></i> Users</a>
+            <li class="sidebar-section" data-section="users">
+                <a href="#" class="sidebar-link"><i class="fas fa-user"></i> Users <span class="sidebar-caret"></span></a>
                 <ul class="sidebar-submenu">
                     <li><a href="{% url 'admin:portal_user_changelist' %}"><i class="fas fa-user"></i> Active Users</a></li>
                     <li><a href="{% url 'admin:auth_group_changelist' %}"><i class="fas fa-users"></i> Groups</a></li>
                 </ul>
             </li>
-            <li class="sidebar-section">
-                <a href="#" class="sidebar-link"><i class="fas fa-building"></i> Tenants</a>
+            <li class="sidebar-section" data-section="tenants">
+                <a href="#" class="sidebar-link"><i class="fas fa-building"></i> Tenants <span class="sidebar-caret"></span></a>
                 <ul class="sidebar-submenu">
                     <li><a href="{% url 'admin:portal_tenant_changelist' %}"><i class="fas fa-building"></i> All Tenants</a></li>
                     <li><a href="{% url 'admin:portal_tenantdocument_changelist' %}"><i class="fas fa-file-upload"></i> Tenant Documents</a></li>
                 </ul>
             </li>
-            <li class="sidebar-section">
-                <a href="#" class="sidebar-link"><i class="fas fa-book"></i> Knowledge Base</a>
+            <li class="sidebar-section" data-section="kb">
+                <a href="#" class="sidebar-link"><i class="fas fa-book"></i> Knowledge Base <span class="sidebar-caret"></span></a>
                 <ul class="sidebar-submenu">
                     <li><a href="{% url 'admin:portal_knowledgebasearticle_changelist' %}"><i class="fas fa-file-alt"></i> Articles</a></li>
                     <li><a href="{% url 'admin:portal_knowledgebasecategory_changelist' %}"><i class="fas fa-folder-open"></i> Categories</a></li>
                 </ul>
             </li>
-            <li class="sidebar-section">
-                <a href="#" class="sidebar-link"><i class="fas fa-headset"></i> Support</a>
+            <li class="sidebar-section" data-section="support">
+                <a href="#" class="sidebar-link"><i class="fas fa-headset"></i> Support <span class="sidebar-caret"></span></a>
                 <ul class="sidebar-submenu">
                     <li><a href="{% url 'admin:portal_ticket_changelist' %}"><i class="fas fa-ticket-alt"></i> Tickets</a></li>
                     <li><a href="{% url 'admin:portal_announcement_changelist' %}"><i class="fas fa-bullhorn"></i> Announcements</a></li>
                 </ul>
             </li>
             <li class="sidebar-divider"></li>
-            <li class="sidebar-section">
-                <a href="#" class="sidebar-link"><i class="fas fa-shield-alt"></i> Admin Centers</a>
+            <li class="sidebar-section" data-section="admincenters">
+                <a href="#" class="sidebar-link"><i class="fas fa-shield-alt"></i> Admin Centers <span class="sidebar-caret"></span></a>
                 <ul class="sidebar-submenu">
                     <li><a href="{% url 'admin:socialaccount_socialaccount_changelist' %}"><i class="fas fa-user-shield"></i> Social accounts</a></li>
                     <li><a href="{% url 'admin:socialaccount_socialtoken_changelist' %}"><i class="fas fa-key"></i> Social application tokens</a></li>
@@ -44,6 +47,83 @@
         </ul>
     </nav>
 </aside>
+<script>
+    // Accordion sidebar: only one section open at a time
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.sidebar-section').forEach(function(section) {
+            var link = section.querySelector('.sidebar-link');
+            var submenu = section.querySelector('.sidebar-submenu');
+            var caret = section.querySelector('.sidebar-caret');
+            if (submenu) {
+                // Start collapsed except for Users
+                if (!section.dataset.section || section.dataset.section !== 'users') {
+                    submenu.style.maxHeight = '0';
+                    submenu.style.overflow = 'hidden';
+                } else {
+                    submenu.classList.add('open');
+                    caret.classList.add('open');
+                    section.classList.add('open');
+                }
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Close all other sections
+                    document.querySelectorAll('.sidebar-section').forEach(function(other) {
+                        if (other !== section) {
+                            var otherSub = other.querySelector('.sidebar-submenu');
+                            var otherCaret = other.querySelector('.sidebar-caret');
+                            if (otherSub) {
+                                otherSub.classList.remove('open');
+                                otherSub.style.maxHeight = '0';
+                            }
+                            if (otherCaret) {
+                                otherCaret.classList.remove('open');
+                            }
+                            other.classList.remove('open');
+                        }
+                    });
+                    // Toggle this section
+                    var isOpen = submenu.classList.toggle('open');
+                    if (isOpen) {
+                        submenu.style.maxHeight = submenu.scrollHeight + 'px';
+                        caret.classList.add('open');
+                        section.classList.add('open');
+                    } else {
+                        submenu.style.maxHeight = '0';
+                        caret.classList.remove('open');
+                        section.classList.remove('open');
+                    }
+                });
+            }
+        });
+        // Expand open submenus on load
+        document.querySelectorAll('.sidebar-submenu.open').forEach(function(submenu) {
+            submenu.style.maxHeight = submenu.scrollHeight + 'px';
+        });
+
+        // Night mode toggle
+        var nightModeBtn = document.getElementById('nightModeToggle');
+        var sidebar = document.getElementById('customSidebar');
+        var html = document.documentElement;
+        function setNightMode(on) {
+            if (on) {
+                html.classList.add('night-mode');
+                localStorage.setItem('adminNightMode', '1');
+            } else {
+                html.classList.remove('night-mode');
+                localStorage.setItem('adminNightMode', '0');
+            }
+        }
+        if (nightModeBtn) {
+            nightModeBtn.addEventListener('click', function() {
+                setNightMode(!html.classList.contains('night-mode'));
+            });
+        }
+        // Restore night mode preference
+        if (localStorage.getItem('adminNightMode') === '1') {
+            setNightMode(true);
+        }
+    });
+</script>
 {% endblock %}
 
 {% block content %}
@@ -57,8 +137,8 @@
     {{ block.super }}
     <style>
         .custom-admin-sidebar {
-            background: #23272f;
-            color: #fff;
+            background: #f4f6fa;
+            color: #222;
             min-height: 100vh;
             width: 260px;
             position: fixed;
@@ -66,6 +146,30 @@
             left: 0;
             z-index: 1000;
             padding-top: 60px;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+            transition: background 0.3s;
+        }
+        .night-mode .custom-admin-sidebar {
+            background: #23272f;
+            color: #fff;
+        }
+        .sidebar-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 8px 18px 0 0;
+        }
+        .night-mode-toggle {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.2rem;
+            cursor: pointer;
+            outline: none;
+            transition: color 0.2s;
+        }
+        .night-mode-toggle:hover, .night-mode-toggle:focus {
+            color: #3ea6ff;
         }
         .sidebar-menu {
             list-style: none;
@@ -75,38 +179,99 @@
         .sidebar-section > .sidebar-link {
             display: flex;
             align-items: center;
-            font-weight: 600;
-            padding: 12px 24px;
-            color: #fff;
+            font-weight: 700;
+            padding: 14px 24px 14px 20px;
+            color: #3ea6ff;
             text-decoration: none;
-            font-size: 1.08rem;
+            font-size: 1.13rem;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            border-radius: 6px;
+        }
+        .sidebar-section.open > .sidebar-link {
+            background: #e6eaf2;
+            color: #23272f;
+            box-shadow: 0 2px 8px rgba(62,166,255,0.08);
+        }
+        .night-mode .sidebar-section.open > .sidebar-link {
+            background: #1a1d22;
+            color: #fff;
+        }
+        .sidebar-section > .sidebar-link:hover, .sidebar-section > .sidebar-link:focus {
+            background: #e6eaf2;
+            color: #23272f;
+        }
+        .night-mode .sidebar-section > .sidebar-link:hover, .night-mode .sidebar-section > .sidebar-link:focus {
+            background: #1a1d22;
+            color: #fff;
         }
         .sidebar-section > .sidebar-link i {
-            margin-right: 10px;
+            margin-right: 12px;
+            font-size: 1.18rem;
+        }
+        .sidebar-caret {
+            margin-left: auto;
+            border: solid #3ea6ff;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 3px;
+            transform: rotate(45deg);
+            transition: transform 0.2s;
+        }
+        .sidebar-caret.open {
+            transform: rotate(-135deg);
         }
         .sidebar-submenu {
             list-style: none;
-            padding-left: 32px;
+            padding-left: 36px;
             margin: 0;
+            background: none;
+            transition: max-height 0.3s cubic-bezier(0.4,0,0.2,1);
         }
         .sidebar-submenu li a {
             display: flex;
             align-items: center;
-            color: #b0b8c1;
-            padding: 7px 0;
+            color: #4a4a4a;
+            padding: 8px 0;
             text-decoration: none;
-            font-size: 0.98rem;
+            font-size: 1.01rem;
+            border-radius: 4px;
+            transition: background 0.15s, color 0.15s;
+        }
+        .sidebar-submenu li a:hover, .sidebar-submenu li a:focus {
+            background: #dde3ee;
+            color: #23272f;
+        }
+        .night-mode .sidebar-submenu li a {
+            color: #b0b8c1;
+        }
+        .night-mode .sidebar-submenu li a:hover, .night-mode .sidebar-submenu li a:focus {
+            background: #2a2e36;
+            color: #fff;
         }
         .sidebar-submenu li a i {
-            margin-right: 8px;
+            margin-right: 10px;
+            font-size: 1.08rem;
         }
         .sidebar-divider {
-            border-top: 1px solid #444;
+            border-top: 1px solid #d3d7e3;
             margin: 18px 0;
+        }
+        .night-mode .sidebar-divider {
+            border-top: 1px solid #444;
         }
         .custom-dashboard-widgets {
             margin-left: 270px;
             margin-top: 30px;
+        }
+        @media (max-width: 900px) {
+            .custom-admin-sidebar {
+                width: 200px;
+                padding-top: 50px;
+            }
+            .custom-dashboard-widgets {
+                margin-left: 210px;
+            }
         }
     </style>
 {% endblock %} 
