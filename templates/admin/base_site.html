@@ -141,9 +141,6 @@
 {% endblock %}
 
 {% block content %}
-    <div class="custom-dashboard-widgets" id="mainContentWrapper">
-        <!-- Placeholder for custom dashboard widgets, stats, or quick links -->
-    </div>
     {{ block.super }}
 {% endblock %}
 
@@ -292,17 +289,17 @@
             border-top: 1px solid #444;
         }
         /* Main content and header shift with sidebar */
-        .custom-dashboard-widgets, .content, .main, #content, .container-fluid, .jazzmin-wrapper, .navbar {
+        .jazzmin-wrapper, .navbar {
             margin-left: 270px;
             transition: margin-left 0.3s;
         }
         .sidebar-collapsed .custom-admin-sidebar {
             width: 60px;
         }
-        .sidebar-collapsed .custom-dashboard-widgets, .sidebar-collapsed .content, .sidebar-collapsed .main, .sidebar-collapsed #content, .sidebar-collapsed .container-fluid, .sidebar-collapsed .jazzmin-wrapper, .sidebar-collapsed .navbar {
+        .sidebar-collapsed .jazzmin-wrapper, .sidebar-collapsed .navbar {
             margin-left: 70px;
         }
-        .night-mode, .night-mode body, .night-mode .content, .night-mode .main, .night-mode #content, .night-mode .container-fluid, .night-mode .jazzmin-wrapper, .night-mode .navbar {
+        .night-mode, .night-mode body, .night-mode .jazzmin-wrapper, .night-mode .navbar {
             background: #181a1f !important;
             color: #e0e0e0 !important;
         }
@@ -337,10 +334,10 @@
             .sidebar-collapsed .custom-admin-sidebar {
                 width: 50px;
             }
-            .custom-dashboard-widgets, .content, .main, #content, .container-fluid, .jazzmin-wrapper, .navbar {
+            .jazzmin-wrapper, .navbar {
                 margin-left: 210px;
             }
-            .sidebar-collapsed .custom-dashboard-widgets, .sidebar-collapsed .content, .sidebar-collapsed .main, .sidebar-collapsed #content, .sidebar-collapsed .container-fluid, .sidebar-collapsed .jazzmin-wrapper, .sidebar-collapsed .navbar {
+            .sidebar-collapsed .jazzmin-wrapper, .sidebar-collapsed .navbar {
                 margin-left: 60px;
             }
         }
