@@ -350,6 +350,7 @@ def notifications_api(request):
             for note in notes:
                 note_id = f"{t['id']}_{note.get('id', note.get('dateCreated'))}"
                 all_note_ids.append(note_id)
+        print(f"[DEBUG][Notifications] Marking all as read: {all_note_ids}")
         request.session['read_notifications'] = all_note_ids
         request.session.modified = True
         return JsonResponse({'count': 0, 'notifications': []})
@@ -361,6 +362,7 @@ def notifications_api(request):
     for t in cw_tickets:
         notes = get_connectwise_ticket_notes(t['id'])
         for note in notes:
+            note_id = f"{t['id']}_{note.get('id', note.get('dateCreated'))}"
             # Only show notes from last 7 days
             note_date = note.get('dateCreated', '')[:10]
             try:
@@ -370,25 +372,27 @@ def notifications_api(request):
             except Exception:
                 continue
 
-            # Only notify if:
-            # 1. Tech replied (not user)
-            # 2. Status changed
-            # 3. Owner/tech assigned/changed
-            # Exclude user replies and remote support requests
             is_tech_reply = note.get('enteredBy', '').lower() != user_email and not note.get('text', '').lower().startswith('from:')
             is_status_change = note.get('detailDescriptionFlag') and 'status' in note.get('text', '').lower()
             is_owner_change = note.get('detailDescriptionFlag') and 'assigned' in note.get('text', '').lower()
             is_remote_support = 'user has requested remote support' in note.get('text', '').lower()
             is_user_reply = note.get('enteredBy', '').lower() == user_email or note.get('text', '').lower().startswith('from:')
 
+            print(f"[DEBUG][Notifications] Note: id={note_id}, enteredBy={note.get('enteredBy')}, text={note.get('text')}, is_tech_reply={is_tech_reply}, is_status_change={is_status_change}, is_owner_change={is_owner_change}, is_remote_support={is_remote_support}, is_user_reply={is_user_reply}")
+
             if (is_tech_reply or is_status_change or is_owner_change) and not is_remote_support and not is_user_reply:
-                note_id = f"{t['id']}_{note.get('id', note.get('dateCreated'))}"
                 if note_id not in read_ids:
                     note['ticket_id'] = t['id']
                     note['notification_id'] = note_id
                     notifications.append(note)
+                    print(f"[DEBUG][Notifications] -> ADDED to notifications: {note_id}")
+                else:
+                    print(f"[DEBUG][Notifications] -> SKIPPED (already read): {note_id}")
+            else:
+                print(f"[DEBUG][Notifications] -> FILTERED OUT: {note_id}")
 
     notifications = sorted(notifications, key=lambda n: n.get('dateCreated', ''), reverse=True)[:10]
+    print(f"[DEBUG][Notifications] Final notifications: {[n['notification_id'] for n in notifications]}")
 
     return JsonResponse({
         'count': len(notifications),
