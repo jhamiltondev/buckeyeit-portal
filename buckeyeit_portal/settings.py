@@ -199,9 +199,10 @@ JAZZMIN_SETTINGS = {
     "custom_css": None,
     "custom_js": None,
     "icons": {
-        "auth.user": "fas fa-user",
+        "portal.user": "fas fa-user",
         "auth.group": "fas fa-users",
         "portal.tenant": "fas fa-building",
+        "portal.tenantdocument": "fas fa-file-upload",
         "portal.knowledgebasearticle": "fas fa-file-alt",
         "portal.knowledgebasecategory": "fas fa-folder-open",
     },
@@ -211,15 +212,19 @@ JAZZMIN_SETTINGS = {
         "portal.KnowledgeBaseArticle",  # Knowledge Base - Articles
         "portal.KnowledgeBaseCategory",  # Knowledge Base - Categories
     ],
+    "hide_apps": ["allauth.account"],
+    "hide_models": ["allauth.account.EmailAddress"],
     "custom_links": {
         "portal.Tenant": [
-            {
-                "name": "Create Tenant",
-                "url": "admin:portal_tenant_add",
-                "icon": "fas fa-plus-circle",
-            },
+            {"name": "Create Tenant", "url": "admin:portal_tenant_add", "icon": "fas fa-plus-circle"},
         ],
     },
+    "side_menu": [
+        {"label": "Users", "icon": "fas fa-user", "models": ["portal.user", "auth.group"]},
+        {"label": "Tenants", "icon": "fas fa-building", "models": ["portal.tenant", "portal.tenantdocument"]},
+        {"label": "Knowledge Base", "icon": "fas fa-book", "models": ["portal.knowledgebasearticle", "portal.knowledgebasecategory"]},
+        {"models": ["portal.announcement", "portal.ticket"]},
+    ],
 }
 
 # ConnectWise API credentials (move to environment variables for production!)
