@@ -109,7 +109,11 @@
                                 {% for user in users %}
                                 <tr>
                                     <td>
-                                        <span class="avatar bg-primary text-white me-2">{{ user.first_name|default:user.username|first|upper }}</span>
+                                        {% if user.profile_picture %}
+                                            <img src="{{ user.profile_picture.url }}" class="rounded-circle me-2" style="width:32px; height:32px; object-fit:cover; border:2px solid #eee;" alt="Avatar">
+                                        {% else %}
+                                            <img src="https://ui-avatars.com/api/?name={{ user.get_full_name|urlencode }}&background=0D8ABC&color=fff&size=32" class="rounded-circle me-2" alt="Avatar">
+                                        {% endif %}
                                         <a href="#" onclick="editUser({{ user.id }}); return false;" class="fw-bold text-decoration-none">{{ user.get_full_name|default:user.username }}</a>
                                         <div class="text-muted small">ID: {{ user.id }}</div>
                                     </td>
@@ -118,9 +122,10 @@
                                     </td>
                                     <td>{{ user.tenant.name|default:'—' }}</td>
                                     <td>
-                                        {% if user.is_superuser %}<span class="badge bg-danger">Super Admin</span>
+                                        {% if user.is_superuser %}<span class="badge bg-danger">Superuser</span>
                                         {% elif user.is_staff %}<span class="badge bg-secondary">Admin</span>
-                                        {% else %}<span class="badge bg-secondary">User</span>{% endif %}
+                                        {% elif 'POC' in user.groups.values_list('name', flat=True) %}<span class="badge bg-primary">POC</span>
+                                        {% else %}<span class="badge bg-light text-dark border">Viewer</span>{% endif %}
                                     </td>
                                     <td>
                                         {% if user.mfa_enabled %}<span class="text-success">Enabled</span>{% else %}<span class="text-danger">Disabled</span>{% endif %}
@@ -362,9 +367,10 @@ function editUser(userId) {
         <div class="mb-3">
           <label class="form-label">Role</label>
           <select class="form-select" name="role">
-            <option value="User" ${data.role === 'User' ? 'selected' : ''}>User</option>
+            <option value="Viewer" ${data.role === 'Viewer' ? 'selected' : ''}>Viewer</option>
+            <option value="POC" ${data.role === 'POC' ? 'selected' : ''}>POC</option>
             <option value="Admin" ${data.role === 'Admin' ? 'selected' : ''}>Admin</option>
-            <option value="Super Admin" ${data.role === 'Super Admin' ? 'selected' : ''}>Super Admin</option>
+            <option value="Superuser" ${data.role === 'Superuser' ? 'selected' : ''}>Superuser</option>
           </select>
         </div>
         <div class="mb-3">

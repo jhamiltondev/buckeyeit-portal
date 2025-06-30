@@ -119,12 +119,43 @@
                 </div>
             </div>
         </div>
-        <!-- Placeholder for future panel (bottom right) -->
+        <!-- Service Insights & Helpful Links (bottom right) -->
         <div class="col-12 col-lg-6 mb-3">
-            <div class="card shadow-sm animate__animated animate__fadeInUp h-100 d-flex align-items-center justify-content-center" style="min-height: 260px;">
-                <div class="card-body text-center">
-                    <h6 class="fw-bold mb-3"><i class="fa fa-plus-circle text-secondary me-2"></i>Coming Soon</h6>
-                    <div class="text-muted">This panel is reserved for a future dashboard feature.</div>
+            <div class="row h-100">
+                <!-- Service Insights -->
+                <div class="col-12 mb-3">
+                    <div class="card shadow-sm animate__animated animate__fadeInUp h-100">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-3"><i class="fa fa-chart-line text-info me-2"></i>Service Usage Overview</h6>
+                            <div class="mb-2"><span class="me-2">🔁</span>Tickets Submitted This Month: <span class="fw-bold">{{ tickets_submitted_this_month }}</span></div>
+                            <div class="mb-2"><span class="me-2">✅</span>Tickets Resolved This Month: <span class="fw-bold">{{ tickets_resolved_this_month }}</span></div>
+                            <div class="mb-2"><span class="me-2">⏳</span>Average Resolution Time: <span class="fw-bold">{{ avg_resolution_time }} hrs</span></div>
+                            <div class="mb-2"><span class="me-2">📅</span>Oldest Open Ticket: 
+                                {% if oldest_open_ticket %}
+                                    <span class="fw-bold">#{{ oldest_open_ticket.id }}</span> ({{ oldest_open_ticket.age_days }} days)
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Helpful Links & Tools -->
+                <div class="col-12">
+                    <div class="card shadow-sm animate__animated animate__fadeInUp h-100">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-3"><i class="fa fa-link text-secondary me-2"></i>Helpful Links & Tools</h6>
+                            <ul class="list-unstyled mb-0">
+                                {% for link in helpful_links %}
+                                <li class="mb-2">
+                                    <a href="{{ link.url }}" target="_blank" class="text-decoration-none">
+                                        <i class="fa {{ link.icon }} me-2"></i>{{ link.title }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

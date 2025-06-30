@@ -32,9 +32,50 @@ def dashboard(request, tenant_slug=None):
     announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')
     
     # Only open ConnectWise tickets
-    cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
+    all_cw_tickets = get_connectwise_tickets(request.user)
+    cw_tickets = [t for t in all_cw_tickets if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
     cw_tickets = sorted(cw_tickets, key=lambda t: t.get('dateEntered', ''), reverse=True)[:5]
-    
+
+    # Service Insights calculations
+    now = datetime.now()
+    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    tickets_this_month = [t for t in all_cw_tickets if t.get('dateEntered') and datetime.strptime(t['dateEntered'][:10], '%Y-%m-%d') >= month_start]
+    tickets_submitted_this_month = len(tickets_this_month)
+    tickets_resolved_this_month = len([t for t in tickets_this_month if t.get('status', {}).get('name') in ['Closed', 'Closed - Silent', 'Pending Close']])
+    # Average resolution time (for tickets resolved this month)
+    resolution_times = []
+    for t in tickets_this_month:
+        if t.get('status', {}).get('name') in ['Closed', 'Closed - Silent', 'Pending Close']:
+            created = t.get('dateEntered')
+            closed = t.get('closedDate')
+            if created and closed:
+                try:
+                    created_dt = datetime.strptime(created[:19], '%Y-%m-%dT%H:%M:%S')
+                    closed_dt = datetime.strptime(closed[:19], '%Y-%m-%dT%H:%M:%S')
+                    resolution_times.append((closed_dt - created_dt).total_seconds())
+                except Exception:
+                    continue
+    avg_resolution_time = (sum(resolution_times) / len(resolution_times) / 3600) if resolution_times else 0
+    avg_resolution_time = round(avg_resolution_time, 1)
+    # Oldest open ticket
+    open_tickets = [t for t in all_cw_tickets if t.get('status', {}).get('name') not in ['Closed', 'Closed - Silent', 'Pending Close']]
+    oldest_open_ticket = None
+    if open_tickets:
+        oldest = min(open_tickets, key=lambda t: t.get('dateEntered', ''))
+        ticket_num = oldest.get('id', 'N/A')
+        created = oldest.get('dateEntered')
+        if created:
+            created_dt = datetime.strptime(created[:19], '%Y-%m-%dT%H:%M:%S')
+            age_days = (now - created_dt).days
+            oldest_open_ticket = {'id': ticket_num, 'age_days': age_days}
+    # Helpful Links
+    helpful_links = [
+        {'title': 'Setup MFA Guide', 'url': 'https://support.microsoft.com/en-us/account-billing/how-to-use-multi-factor-authentication-0b7a5a3b-5c9a-4e4a-8e3e-7b6c6b7e3c3e', 'icon': 'fa-shield-alt'},
+        {'title': 'Email Setup Instructions', 'url': 'https://support.microsoft.com/en-us/office/add-an-email-account-to-outlook-6e27792a-9267-4aa4-8bb6-c84ef146101b', 'icon': 'fa-envelope'},
+        {'title': 'Microsoft Service Health', 'url': 'https://status.office.com/', 'icon': 'fa-microsoft'},
+        {'title': 'Google Service Health', 'url': 'https://www.google.com/appsstatus', 'icon': 'fa-google'},
+        {'title': 'Knowledge Base', 'url': '/knowledge/', 'icon': 'fa-book'},
+    ]
     # Fetch live tech news using the new service
     logger.info("Fetching tech news for dashboard")
     tech_news = get_tech_news()
@@ -92,6 +133,11 @@ def dashboard(request, tenant_slug=None):
         'tech_news': tech_news,
         'notifications': notifications,
         'user': request.user,
+        'tickets_submitted_this_month': tickets_submitted_this_month,
+        'tickets_resolved_this_month': tickets_resolved_this_month,
+        'avg_resolution_time': avg_resolution_time,
+        'oldest_open_ticket': oldest_open_ticket,
+        'helpful_links': helpful_links,
     }
     logger.info(f"Dashboard context prepared - Tech news: {len(tech_news)}, Tickets: {len(cw_tickets)}, Notifications: {len(notifications)}")
     return render(request, 'portal/dashboard.html', context)
