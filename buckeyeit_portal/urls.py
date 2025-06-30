@@ -18,10 +18,19 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import logout
+
+def superuser_only(view_func):
+    return user_passes_test(lambda u: u.is_superuser)(view_func)
+
+# Custom admin view that redirects staff to /adminpanel/
+def custom_admin_view(request):
+    if request.user.is_authenticated and request.user.is_staff and not request.user.is_superuser:
+        return HttpResponseRedirect('/adminpanel/')
+    return admin.site.admin_view(admin.site.index)(request)
 
 def root_redirect(request):
     if request.user.is_authenticated:
@@ -42,8 +51,9 @@ def root_redirect(request):
     return redirect('portal:login')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', custom_admin_view),
     path('accounts/', include('allauth.urls')),
+    path('adminpanel/', include('adminpanel.urls', namespace='adminpanel')),
     path('', root_redirect, name='root-redirect'),
     path('', include(('portal.urls', 'portal'), namespace='portal')),
     # path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),

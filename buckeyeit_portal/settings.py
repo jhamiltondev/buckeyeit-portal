@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'portal.apps.PortalConfig',
+    'adminpanel',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -205,6 +206,8 @@ JAZZMIN_SETTINGS = {
         "portal.tenantdocument": "fas fa-file-upload",
         "portal.knowledgebasearticle": "fas fa-file-alt",
         "portal.knowledgebasecategory": "fas fa-folder-open",
+        "portal.announcement": "fas fa-bullhorn",
+        "portal.ticket": "fas fa-ticket-alt",
     },
     "order_with_respect_to": [
         "auth",  # Users & Groups
@@ -220,10 +223,29 @@ JAZZMIN_SETTINGS = {
         ],
     },
     "side_menu": [
-        {"label": "Users", "icon": "fas fa-user", "models": ["portal.user", "auth.group"]},
-        {"label": "Tenants", "icon": "fas fa-building", "models": ["portal.tenant", "portal.tenantdocument"]},
-        {"label": "Knowledge Base", "icon": "fas fa-book", "models": ["portal.knowledgebasearticle", "portal.knowledgebasecategory"]},
-        {"models": ["portal.announcement", "portal.ticket"]},
+        {"label": "Users", "icon": "fas fa-user", "models": [
+            {"model": "portal.user", "label": "Active Users"},
+            {"model": "auth.group", "label": "Groups"},
+            {"model": "portal.user", "label": "Contacts", "visible": False},
+        ]},
+        {"label": "Tenants", "icon": "fas fa-building", "models": [
+            {"model": "portal.tenant", "label": "All Tenants"},
+            {"model": "portal.tenantdocument", "label": "Tenant Documents"},
+        ]},
+        {"label": "Knowledge Base", "icon": "fas fa-book", "models": [
+            {"model": "portal.knowledgebasearticle", "label": "Articles"},
+            {"model": "portal.knowledgebasecategory", "label": "Categories"},
+        ]},
+        {"label": "Support", "icon": "fas fa-headset", "models": [
+            {"model": "portal.ticket", "label": "Tickets"},
+            {"model": "portal.announcement", "label": "Announcements"},
+        ]},
+        {"type": "divider"},
+        {"label": "Admin Centers", "icon": "fas fa-shield-alt", "models": [
+            {"model": "socialaccount.socialaccount", "label": "Social accounts"},
+            {"model": "socialaccount.socialtoken", "label": "Social application tokens"},
+            {"model": "socialaccount.socialapp", "label": "Social applications"},
+        ]},
     ],
 }
 

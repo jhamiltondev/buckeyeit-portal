@@ -485,7 +485,7 @@
                     {% endif %}
                     <div class="sidebar-divider"></div>
                     {% if request.user.is_superuser %}
-                        <li class="nav-item"><a class="nav-link text-dark" href="/admin/"><i class="fa fa-cog fa-fw"></i><span class="collapsed-text">Admin</span></a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" href="/adminpanel/"><i class="fa fa-cog fa-fw"></i><span class="collapsed-text">Admin</span></a></li>
                     {% endif %}
                     <li class="nav-item"><a class="nav-link text-dark" href="{% url 'portal:logout' %}" role="menuitem" tabindex="0"><i class="fa fa-sign-out-alt fa-fw"></i><span class="collapsed-text">Logout</span></a></li>
                 </ul>
