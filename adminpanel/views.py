@@ -124,16 +124,9 @@ def social_apps(request):
 @staff_member_required
 def users_active(request):
     User = get_user_model()
-    
-    # Get all users with related tenant data
     users = User.objects.select_related('tenant').all().order_by('first_name', 'last_name')
-    
-    # Get all tenants for filter dropdown
     tenants = Tenant.objects.all().order_by('name')
-    
-    # Count total users
     total_users = users.count()
-    
     context = {
         'users': users,
         'tenants': tenants,
@@ -209,43 +202,55 @@ def system_health(request):
 
 @staff_member_required
 def user_details(request, user_id):
-    """API endpoint for user details modal"""
     User = get_user_model()
-    try:
-        user = User.objects.select_related('tenant').get(id=user_id)
-        
-        # Get user's tickets count (placeholder for now)
-        tickets_count = 0  # Ticket.objects.filter(user=user).count()
-        
-        # Get user's groups
-        groups = list(user.groups.values_list('name', flat=True))
-        
-        # Mock recent actions (replace with real audit log later)
-        recent_actions = [
-            {'timestamp': '2025-06-30 09:12 AM', 'description': 'Logged into portal'},
-            {'timestamp': '2025-06-29 10:15 AM', 'description': 'Submitted support ticket'},
-            {'timestamp': '2025-06-28 14:30 PM', 'description': 'Updated profile'},
-        ]
-        
-        user_data = {
-            'id': user.id,
-            'full_name': user.get_full_name() or user.username,
-            'email': user.email,
-            'role': 'Super Admin' if user.is_superuser else 'Admin' if user.is_staff else 'User',
-            'tenant': user.tenant.name if user.tenant else None,
-            'mfa_enabled': user.is_superuser or user.is_staff,  # Mock MFA status
-            'last_login': user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login else None,
-            'last_ip': '192.168.1.100',  # Mock IP
-            'devices': 'Chrome on Windows',  # Mock device info
-            'tickets_count': tickets_count,
-            'automation_count': 0,  # Mock automation count
-            'groups': ', '.join(groups) if groups else '—',
-            'recent_actions': recent_actions,
-        }
-        
-        return JsonResponse(user_data)
-    except User.DoesNotExist:
-        return JsonResponse({'error': 'User not found'}, status=404)
+    user = User.objects.select_related('tenant').get(id=user_id)
+    tickets_count = 0  # Replace with Ticket.objects.filter(user=user).count() if available
+    groups = list(user.groups.values_list('name', flat=True))
+    recent_actions = [
+        {'timestamp': user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login else '', 'description': 'Logged in'},
+    ]
+    data = {
+        'id': user.id,
+        'name': user.get_full_name() or user.username,
+        'email': user.email,
+        'role': 'Super Admin' if user.is_superuser else ('Admin' if user.is_staff else 'User'),
+        'tenant': user.tenant.name if hasattr(user, 'tenant') and user.tenant else '',
+        'mfa_enabled': getattr(user, 'mfa_enabled', False),
+        'last_login': user.last_login.strftime('%b %d, %Y %I:%M%p') if user.last_login else '',
+        'is_active': user.is_active,
+        'groups': groups,
+        'tickets_count': tickets_count,
+        'recent_actions': recent_actions,
+    }
+    return JsonResponse(data)
+
+@staff_member_required
+def edit_user(request, user_id):
+    User = get_user_model()
+    user = User.objects.get(id=user_id)
+    if request.method == 'POST':
+        user.email = request.POST.get('email', user.email)
+        user.first_name = request.POST.get('first_name', user.first_name)
+        user.last_name = request.POST.get('last_name', user.last_name)
+        user.is_active = request.POST.get('is_active', user.is_active) == 'true'
+        user.save()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
+
+@staff_member_required
+def delete_user(request, user_id):
+    User = get_user_model()
+    user = User.objects.get(id=user_id)
+    user.delete()
+    return JsonResponse({'success': True})
+
+@staff_member_required
+def disable_user(request, user_id):
+    User = get_user_model()
+    user = User.objects.get(id=user_id)
+    user.is_active = False
+    user.save()
+    return JsonResponse({'success': True})
 
 class AdminLoginView(LoginView):
     template_name = 'adminpanel/login.html'

@@ -9,6 +9,9 @@ urlpatterns = [
     # Users
     path('users/active/', views.users_active, name='users_active'),
     path('users/<int:user_id>/details/', views.user_details, name='user_details'),
+    path('users/<int:user_id>/edit/', views.edit_user, name='edit_user'),
+    path('users/<int:user_id>/delete/', views.delete_user, name='delete_user'),
+    path('users/<int:user_id>/disable/', views.disable_user, name='disable_user'),
     path('users/pending/', views.users_pending, name='users_pending'),
     path('users/invitations/', views.users_invitations, name='users_invitations'),
     path('users/groups/', views.groups, name='groups'),
