@@ -135,8 +135,8 @@ def debug_urls(request):
 
 @login_required
 def support_view(request):
-    # Only show open ConnectWise tickets
-    cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close']]
+    # Only show open ConnectWise tickets (not Closed, Pending Close, or Closed - Silent)
+    cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
     # Sort tickets by dateEntered, newest first
     cw_tickets = sorted(cw_tickets, key=lambda t: t.get('dateEntered', ''), reverse=True)
     # Add status color for badges
@@ -152,8 +152,18 @@ def support_view(request):
             ticket['status_color'] = 'success'
         else:
             ticket['status_color'] = 'secondary'
+    # Fetch closed tickets (Pending Close or Closed - Silent) from last 30 days
+    now = datetime.now()
+    closed_cw_tickets = [
+        t for t in get_connectwise_tickets(request.user)
+        if t.get('status', {}).get('name') in ['Pending Close', 'Closed - Silent']
+        and t.get('dateEntered')
+        and (now - datetime.strptime(t['dateEntered'][:19], '%Y-%m-%dT%H:%M:%S')).days <= 30
+    ]
+    closed_cw_tickets = sorted(closed_cw_tickets, key=lambda t: t.get('dateEntered', ''), reverse=True)
     return render(request, 'portal/support.html', {
-        'cw_tickets': cw_tickets
+        'cw_tickets': cw_tickets,
+        'closed_cw_tickets': closed_cw_tickets
     })
 
 @login_required
