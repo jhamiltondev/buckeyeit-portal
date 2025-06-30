@@ -4,7 +4,13 @@ from import_export.admin import ImportExportModelAdmin
 
 class UserInline(admin.TabularInline):
     model = User
-    extra = 0
+    extra = 1
+    fields = ('first_name', 'last_name', 'email')
+    readonly_fields = ()
+    show_change_link = True
+    can_delete = True
+    verbose_name = 'User'
+    verbose_name_plural = 'Users'
 
 class TenantDocumentInline(admin.TabularInline):
     model = TenantDocument
