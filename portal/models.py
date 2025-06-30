@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 
 # Create your models here.
 
@@ -18,6 +20,8 @@ class Tenant(models.Model):
     main_poc_name = models.CharField(max_length=100, blank=True, help_text="Main point of contact name")
     main_poc_email = models.EmailField(blank=True, help_text="Main point of contact email")
     renewal_date = models.DateField(blank=True, null=True, help_text="Renewal or service review date")
+    users = models.ManyToManyField('portal.User', blank=True, related_name='tenants')
+    groups = models.ManyToManyField(Group, blank=True, related_name='tenants')
 
     def save(self, *args, **kwargs):
         if not self.slug:
