@@ -2,17 +2,7 @@ from django.contrib import admin
 from .models import User, Tenant, Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, TenantDocument
 from import_export.admin import ImportExportModelAdmin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User
-
-class UserInline(admin.TabularInline):
-    model = User
-    extra = 1
-    fields = ('first_name', 'last_name', 'email')
-    readonly_fields = ()
-    show_change_link = True
-    can_delete = True
-    verbose_name = 'User'
-    verbose_name_plural = 'Users'
+from django.contrib.auth.models import User, Group
 
 class TenantDocumentInline(admin.TabularInline):
     model = TenantDocument
@@ -21,9 +11,10 @@ class TenantDocumentInline(admin.TabularInline):
 
 @admin.register(Tenant)
 class TenantAdmin(admin.ModelAdmin):
-    inlines = [UserInline, TenantDocumentInline]
-    list_display = ('name', 'slug', 'vip', 'domain', 'created_at', 'renewal_date')
+    inlines = [TenantDocumentInline]
+    list_display = ('name', 'slug', 'vip', 'domain', 'created_at', 'renewal_date', 'main_poc_email')
     search_fields = ('name', 'slug', 'domain')
+    autocomplete_fields = ['users', 'groups']
     fieldsets = (
         (None, {
             'fields': ('name', 'slug', 'vip', 'domain', 'created_at', 'renewal_date')
@@ -35,12 +26,9 @@ class TenantAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     readonly_fields = ('created_at',)
 
-class CustomUserAdmin(BaseUserAdmin):
-    filter_horizontal = ('groups',)
-    exclude = ('user_permissions',)
-
+# Restore default User admin (groups + user_permissions)
 admin.site.unregister(User)
-admin.site.register(User, CustomUserAdmin)
+admin.site.register(User, BaseUserAdmin)
 
 # Register social account models
 # admin.site.register(SocialApp)
