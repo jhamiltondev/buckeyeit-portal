@@ -548,3 +548,13 @@ INFO 2025-06-30 19:03:00,822 autoreload 117036 83400 Watching for file changes w
 INFO 2025-06-30 19:03:00,855 autoreload 112504 78716 Watching for file changes with StatReloader
 INFO 2025-06-30 19:03:01,063 autoreload 123576 118384 Watching for file changes with StatReloader
 INFO 2025-06-30 19:03:26,672 autoreload 123624 110216 Watching for file changes with StatReloader
+INFO 2025-06-30 19:09:40,511 autoreload 112504 78716 C:\BuckeyeITClientPortal\buckeyeit-portal\adminpanel\views.py changed, reloading.
+INFO 2025-06-30 19:09:40,528 autoreload 123116 123188 C:\BuckeyeITClientPortal\buckeyeit-portal\adminpanel\views.py changed, reloading.
+INFO 2025-06-30 19:09:40,539 autoreload 123624 110216 C:\BuckeyeITClientPortal\buckeyeit-portal\adminpanel\views.py changed, reloading.
+INFO 2025-06-30 19:09:40,544 autoreload 117036 83400 C:\BuckeyeITClientPortal\buckeyeit-portal\adminpanel\views.py changed, reloading.
+INFO 2025-06-30 19:09:40,541 autoreload 123576 118384 C:\BuckeyeITClientPortal\buckeyeit-portal\adminpanel\views.py changed, reloading.
+INFO 2025-06-30 19:09:42,290 autoreload 118508 119340 Watching for file changes with StatReloader
+INFO 2025-06-30 19:09:42,290 autoreload 90740 123880 Watching for file changes with StatReloader
+INFO 2025-06-30 19:09:42,290 autoreload 113820 113720 Watching for file changes with StatReloader
+INFO 2025-06-30 19:09:42,292 autoreload 121904 79500 Watching for file changes with StatReloader
+INFO 2025-06-30 19:09:42,293 autoreload 81488 70232 Watching for file changes with StatReloader

@@ -79,15 +79,15 @@
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-6">ConnectWise:</div>
-                        <div class="col-6 fw-bold text-success">{{ integrations.ConnectWise }}</div>
+                        <div class="col-6 fw-bold {% if 'Connected' in integrations.ConnectWise %}text-success{% elif 'Error' in integrations.ConnectWise %}text-danger{% else %}text-warning{% endif %}">{{ integrations.ConnectWise }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">Pax8:</div>
-                        <div class="col-6 fw-bold text-success">{{ integrations.Pax8 }}</div>
+                        <div class="col-6 fw-bold {% if 'Valid Key' in integrations.Pax8 %}text-success{% else %}text-warning{% endif %}">{{ integrations.Pax8 }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">OpenAI:</div>
-                        <div class="col-6 fw-bold text-warning">{{ integrations.OpenAI }}</div>
+                        <div class="col-6 fw-bold {% if 'Valid Key' in integrations.OpenAI %}text-success{% else %}text-warning{% endif %}">{{ integrations.OpenAI }}</div>
                     </div>
                 </div>
             </div>
@@ -96,12 +96,19 @@
             <div class="card h-100 shadow-sm">
                 <div class="card-header fw-bold bg-white">Automation Failures</div>
                 <div class="card-body">
-                    {% for failure in automation_failures %}
-                        <div class="row mb-2">
-                            <div class="col-6">{{ failure.tenant }}:</div>
-                            <div class="col-6 fw-bold {% if 'Failed' in failure.status %}text-danger{% else %}text-success{% endif %}">{{ failure.status }}</div>
+                    {% if automation_failures %}
+                        {% for failure in automation_failures %}
+                            <div class="row mb-2">
+                                <div class="col-6">{{ failure.tenant }}:</div>
+                                <div class="col-6 fw-bold {% if 'Failed' in failure.status or 'Error' in failure.status %}text-danger{% elif 'operational' in failure.status %}text-success{% else %}text-warning{% endif %}">{{ failure.status }}</div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center text-success">
+                            <i class="fas fa-check-circle fa-2x mb-2"></i>
+                            <p class="mb-0">All automation systems operational</p>
                         </div>
-                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </div>
