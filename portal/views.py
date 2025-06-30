@@ -293,18 +293,24 @@ def connectwise_ticket_detail(request, ticket_id):
     notes = get_connectwise_ticket_notes(ticket_id)
     # Enhance notes with display_name
     for note in notes:
-        user = User.objects.filter(username=note.get('enteredBy')).first()
-        if not user:
-            user = User.objects.filter(email__iexact=note.get('enteredBy')).first()
-        if user:
-            note['display_name'] = user.get_full_name() or user.username
+        # If note text starts with 'From: ...', extract the name/email
+        text = note.get('text', '')
+        if text.startswith('From: '):
+            # Format: From: Name (email)\nMessage
+            first_line = text.split('\n', 1)[0]
+            display_name = first_line.replace('From: ', '').strip()
+            note['display_name'] = display_name
+        elif note.get('enteredBy'):
+            note['display_name'] = note.get('enteredBy')
+        elif note.get('createdBy'):
+            note['display_name'] = note.get('createdBy')
+        elif note.get('member', {}).get('name'):
+            note['display_name'] = note['member']['name']
         else:
-            note['display_name'] = note.get('enteredBy') or 'Tech'
+            note['display_name'] = 'Buckeye IT'
     notes_split = split_ticket_notes(notes)
-    
     # Determine if user is a tech/admin (for internal notes access)
     is_tech = request.user.is_staff or request.user.is_superuser
-    
     if request.method == 'POST':
         if request.POST.get('reply_text'):
             reply_text = request.POST.get('reply_text')
