@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import User, Tenant, Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, TenantDocument
 from import_export.admin import ImportExportModelAdmin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
 
 class UserInline(admin.TabularInline):
     model = User
@@ -33,11 +35,12 @@ class TenantAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     readonly_fields = ('created_at',)
 
-@admin.register(User)
-class UserAdmin(ImportExportModelAdmin):
-    list_display = ('username', 'email', 'is_active', 'is_staff', 'tenant')
-    search_fields = ('username', 'email')
-    list_filter = ('is_active', 'is_staff', 'tenant')
+class CustomUserAdmin(BaseUserAdmin):
+    filter_horizontal = ('groups',)
+    exclude = ('user_permissions',)
+
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)
 
 # Register social account models
 # admin.site.register(SocialApp)
@@ -70,3 +73,9 @@ class KnowledgeBaseArticleAdmin(admin.ModelAdmin):
 admin.site.register(KnowledgeBaseArticle, KnowledgeBaseArticleAdmin)
 
 admin.site.register(TenantDocument)
+
+try:
+    from allauth.account.models import EmailAddress
+    admin.site.unregister(EmailAddress)
+except Exception:
+    pass
