@@ -3,6 +3,7 @@ from .models import User, Tenant, Announcement, Ticket, KnowledgeBaseCategory, K
 from import_export.admin import ImportExportModelAdmin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User, Group
+from django.contrib.admin.sites import NotRegistered
 
 class TenantDocumentInline(admin.TabularInline):
     model = TenantDocument
@@ -26,8 +27,11 @@ class TenantAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     readonly_fields = ('created_at',)
 
-# Restore default User admin (groups + user_permissions)
-admin.site.unregister(User)
+# Safely unregister User if already registered
+try:
+    admin.site.unregister(User)
+except NotRegistered:
+    pass
 admin.site.register(User, BaseUserAdmin)
 
 # Register social account models
