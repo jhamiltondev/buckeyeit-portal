@@ -43,7 +43,7 @@
                                             {{ note.display_name }}
                                             <span class="mx-2">|</span>
                                             <i class="fa fa-clock me-1"></i>
-                                            {{ note.dateCreated|slice:":10" }} {{ note.timeCreated|default:"" }}
+                                            {{ note.dateCreated|date:'Y-m-d H:i' }}
                                         </div>
                                         <div>{{ note.text }}</div>
                                     </div>

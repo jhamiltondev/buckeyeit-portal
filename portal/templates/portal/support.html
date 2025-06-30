@@ -34,7 +34,7 @@
                 <div class="card-body">
                     <h5 class="fw-bold mb-3"><i class="fa fa-folder-open text-secondary me-2"></i>My Tickets</h5>
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>Subject</th>
@@ -42,79 +42,18 @@
                                     <th>Date</th>
                                 </tr>
                             </thead>
-                            <tbody class="support-tickets-container">
+                            <tbody>
                                 {% for ticket in tickets %}
                                 <tr>
-                                    <td>{{ ticket.subject }}</td>
-                                    <td>
-                                        {% if ticket.status == 'open' %}
-                                            <span class="badge bg-warning text-dark">Open</span>
-                                        {% elif ticket.status == 'in_progress' %}
-                                            <span class="badge bg-info text-dark">In Progress</span>
-                                        {% elif ticket.status == 'resolved' %}
-                                            <span class="badge bg-success">Resolved</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ ticket.created_at|date:"Y-m-d" }}</td>
-                                </tr>
-                                {% endfor %}
-                                {# ConnectWise tickets #}
-                                {% for ticket in cw_tickets %}
-                                <tr>
-                                    <td><a href="{% url 'portal:connectwise_ticket_detail' ticket.id %}" class="text-decoration-none fw-bold">{{ ticket.summary }}</a> <span class="badge bg-secondary ms-1">ConnectWise</span>
-                                        {% if ticket.id in cw_ticket_notes %}
-                                            <div class="mt-2 inbox-messages">
-                                                <div class="fw-bold small text-muted mb-1">Messages/Updates:</div>
-                                                {% with notes=cw_ticket_notes|dict_get:ticket.id %}
-                                                    {% for note in notes %}
-                                                        <div class="inbox-message mb-2 p-2 rounded bg-light border">
-                                                            <div class="small text-secondary mb-1">
-                                                                <i class="fa fa-user-circle me-1"></i>
-                                                                {{ note.enteredBy }}
-                                                                <span class="mx-2">|</span>
-                                                                <i class="fa fa-clock me-1"></i>
-                                                                {{ note.dateCreated|slice:":10" }} {{ note.timeCreated|default:"" }}
-                                                            </div>
-                                                            <div>{{ note.text }}</div>
-                                                        </div>
-                                                    {% empty %}
-                                                        <div class="small text-muted">No messages yet.</div>
-                                                    {% endfor %}
-                                                {% endwith %}
-                                                <form method="post" class="mt-2 inbox-reply-form">
-                                                    {% csrf_token %}
-                                                    <input type="hidden" name="reply_ticket_id" value="{{ ticket.id }}" />
-                                                    <div class="input-group">
-                                                        <input type="text" name="reply_text" class="form-control" placeholder="Type your reply..." required maxlength="2000">
-                                                        <button class="btn btn-primary" type="submit"><i class="fa fa-paper-plane"></i> Send</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if ticket.status.name == 'Needs Worked' %}
-                                            <span class="badge bg-warning text-dark">Needs Worked</span>
-                                        {% elif ticket.status.name == 'Working Issue Now' %}
-                                            <span class="badge bg-info text-dark">Working Issue Now</span>
-                                        {% elif ticket.status.name == 'Pending Close' %}
-                                            <span class="badge bg-primary">Pending Close</span>
-                                        {% elif ticket.status.name == 'Closed' %}
-                                            <span class="badge bg-success">Closed</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">{{ ticket.status.name }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ ticket.dateEntered|slice:":10" }}</td>
+                                    <td><a href="{% url 'portal:connectwise_ticket_detail' ticket.id %}">{{ ticket.summary }}</a></td>
+                                    <td>{{ ticket.status.name }}</td>
+                                    <td>{{ ticket.dateEntered|date:'Y-m-d H:i' }}</td>
                                 </tr>
                                 {% empty %}
-                                <tr>
-                                    <td colspan="3">No tickets found.</td>
-                                </tr>
+                                <tr><td colspan="3">No tickets found.</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>
-                        <!-- Later: Replace with real ticket data -->
                     </div>
                 </div>
             </div>
@@ -127,10 +66,11 @@
                 <div class="card-body">
                     <h5 class="fw-bold mb-3"><i class="fa fa-info-circle text-info me-2"></i>Ticket Status Definitions</h5>
                     <ul>
-                        <li><span class="badge bg-warning text-dark">Needs Worked</span> – Your ticket has been received and is awaiting action.</li>
-                        <li><span class="badge bg-info text-dark">Working Issue Now</span> – Our team is working on your request.</li>
-                        <li><span class="badge bg-primary">Pending Close</span> – Your issue is resolved and pending closure.</li>
-                        <li><span class="badge bg-success">Closed</span> – Your ticket is closed.</li>
+                        <li><strong>Needs Worked</strong>: Your ticket has been received and is awaiting action by a technician.</li>
+                        <li><strong>Working Issue Now</strong>: A technician is actively working on your ticket.</li>
+                        <li><strong>Pending Close</strong>: The issue is believed to be resolved and the ticket will be closed soon unless you respond.</li>
+                        <li><strong>Closed</strong>: The ticket is closed and no further action will be taken.</li>
+                        <li><strong>Waiting Client Response~</strong>: The technician is waiting for your reply or action before proceeding. Please respond to keep your ticket moving forward.</li>
                     </ul>
                 </div>
             </div>

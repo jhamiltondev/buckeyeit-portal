@@ -311,6 +311,8 @@ def connectwise_ticket_detail(request, ticket_id):
             note['display_name'] = entered_by
         else:
             note['display_name'] = 'Buckeye IT'
+    # After enhancing notes with display_name
+    notes = sorted(notes, key=lambda n: n.get('dateCreated', ''))
     notes_split = split_ticket_notes(notes)
     # Determine if user is a tech/admin (for internal notes access)
     is_tech = request.user.is_staff or request.user.is_superuser
