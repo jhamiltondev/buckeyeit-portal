@@ -217,3 +217,7 @@ INFO 2025-06-29 23:15:22,057 autoreload 87396 79576 Watching for file changes wi
 INFO 2025-06-29 23:15:24,388 autoreload 114336 110444 Watching for file changes with StatReloader
 INFO 2025-06-29 23:15:25,068 autoreload 116148 120508 Watching for file changes with StatReloader
 INFO 2025-06-29 23:15:25,108 autoreload 101936 102816 Watching for file changes with StatReloader
+INFO 2025-06-29 23:34:57,779 autoreload 87396 79576 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\adapters.py changed, reloading.
+
+INFO 2025-06-29 23:34:57,779 autoreload 101936 102816 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\adapters.py changed, reloading.
+INFO 2025-06-29 23:34:57,779 autoreload 116148 120508 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\adapters.py changed, reloading.

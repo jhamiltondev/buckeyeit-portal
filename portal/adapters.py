@@ -408,11 +408,13 @@ def get_connectwise_ticket_notes(ticket_id):
     }
     try:
         resp = requests.get(base_url, headers=headers, timeout=15)
+        print(f"[DEBUG] get_connectwise_ticket_notes API status: {resp.status_code}")
+        print(f"[DEBUG] get_connectwise_ticket_notes API response: {resp.text}")
         if resp.status_code == 200:
             return resp.json()
     except Exception as e:
         print(f"[DEBUG] Exception fetching notes for ticket {ticket_id}: {e}")
-    return [] 
+    return []
 
 def post_connectwise_ticket_note(ticket_id, text, user_name=None):
     """
