@@ -4,6 +4,7 @@ from .models import Tenant
 import requests
 from django.conf import settings
 import base64
+import requests.auth
 
 class NoNewUsersAccountAdapter(DefaultAccountAdapter):
     def is_open_for_signup(self, request):
@@ -36,11 +37,12 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         user.save()
         return user 
 
-def get_connectwise_tickets(user):
+def get_connectwise_tickets(user, extra_conditions=None):
     """
     Fetch ConnectWise tickets for the user.
     - Standard users: by contact ID (looked up by email)
     - VIP users: by domain (all tickets for their company)
+    If extra_conditions is provided, use it as the API 'conditions' parameter instead of the default logic.
     Returns a list of ticket dicts.
     """
     base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/tickets"
@@ -57,7 +59,10 @@ def get_connectwise_tickets(user):
     }
     print(f"[DEBUG] Fetching ConnectWise tickets for user: {user.email}")
     # Build query
-    if hasattr(user, 'tenant') and getattr(user.tenant, 'vip', False):
+    if extra_conditions:
+        conditions = extra_conditions
+        print(f"[DEBUG] Using extra_conditions for API: {conditions}")
+    elif hasattr(user, 'tenant') and getattr(user.tenant, 'vip', False):
         # VIP: all tickets for the domain
         domain = user.email.split('@')[-1]
         conditions = f"contactEmail contains '{domain}'"
