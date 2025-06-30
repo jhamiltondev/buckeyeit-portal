@@ -38,19 +38,19 @@
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-6">Total Users:</div>
-                        <div class="col-6 fw-bold">147</div>
+                        <div class="col-6 fw-bold">{{ user_count }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">Total Tenants:</div>
-                        <div class="col-6 fw-bold">18</div>
+                        <div class="col-6 fw-bold">{{ tenant_count }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">Open Tickets:</div>
-                        <div class="col-6 fw-bold">12</div>
+                        <div class="col-6 fw-bold">{{ open_ticket_count }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">KB Articles:</div>
-                        <div class="col-6 fw-bold">63</div>
+                        <div class="col-6 fw-bold">{{ kb_article_count }}</div>
                     </div>
                 </div>
             </div>
@@ -63,10 +63,9 @@
                 <div class="card-header fw-bold bg-white">Recent Admin Activity (Audit Log Preview)</div>
                 <div class="card-body">
                     <ul class="mb-0" style="list-style: disc inside;">
-                        <li>John reset user password for jsmith@reedminerals</li>
-                        <li>Automation failed for tenant Wyandot County</li>
-                        <li>Jane approved new user for Buckeye IT</li>
-                        <li>System health check completed</li>
+                        {% for activity in recent_admin_activity %}
+                            <li>{{ activity }}</li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
@@ -80,15 +79,15 @@
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-6">ConnectWise:</div>
-                        <div class="col-6 fw-bold text-success">Connected</div>
+                        <div class="col-6 fw-bold text-success">{{ integrations.ConnectWise }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">Pax8:</div>
-                        <div class="col-6 fw-bold text-success">Valid Key</div>
+                        <div class="col-6 fw-bold text-success">{{ integrations.Pax8 }}</div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">OpenAI:</div>
-                        <div class="col-6 fw-bold text-warning">Expiring Soon</div>
+                        <div class="col-6 fw-bold text-warning">{{ integrations.OpenAI }}</div>
                     </div>
                 </div>
             </div>
@@ -97,18 +96,12 @@
             <div class="card h-100 shadow-sm">
                 <div class="card-header fw-bold bg-white">Automation Failures</div>
                 <div class="card-body">
-                    <div class="row mb-2">
-                        <div class="col-6">Reed Minerals:</div>
-                        <div class="col-6 fw-bold text-danger">Reset Failed</div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6">Wyandot:</div>
-                        <div class="col-6 fw-bold text-danger">Termination Failed</div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6">Crawford:</div>
-                        <div class="col-6 fw-bold text-success">User Provisioned</div>
-                    </div>
+                    {% for failure in automation_failures %}
+                        <div class="row mb-2">
+                            <div class="col-6">{{ failure.tenant }}:</div>
+                            <div class="col-6 fw-bold {% if 'Failed' in failure.status %}text-danger{% else %}text-success{% endif %}">{{ failure.status }}</div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

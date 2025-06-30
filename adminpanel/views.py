@@ -1,12 +1,60 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView, LogoutView
+from portal.models import Tenant, Ticket, KnowledgeBaseArticle
+from portal.tech_news import get_tech_news
+import logging
+import requests
+from django.conf import settings
+from django.contrib.auth import get_user_model
 
 # Create your views here.
 
 @staff_member_required
 def dashboard(request):
-    return render(request, 'adminpanel/dashboard.html')
+    User = get_user_model()
+    # Portal Insights
+    user_count = User.objects.count()
+    tenant_count = Tenant.objects.count()
+    open_ticket_count = Ticket.objects.filter(status__in=["open", "in_progress"]).count()
+    kb_article_count = KnowledgeBaseArticle.objects.filter(is_active=True).count()
+
+    # Recent Admin Activity (stub: replace with real audit log if available)
+    recent_admin_activity = [
+        "John reset user password for jsmith@reedminerals",
+        "Automation failed for tenant Wyandot County",
+        "Jane approved new user for Buckeye IT",
+        "System health check completed",
+    ]
+
+    # System Integrations (stub: replace with real checks if available)
+    integrations = {
+        "ConnectWise": "Connected",
+        "Pax8": "Valid Key",
+        "OpenAI": "Expiring Soon",
+    }
+
+    # Automation Failures (stub: replace with real automation log if available)
+    automation_failures = [
+        {"tenant": "Reed Minerals", "status": "Reset Failed"},
+        {"tenant": "Wyandot", "status": "Termination Failed"},
+        {"tenant": "Crawford", "status": "User Provisioned"},
+    ]
+
+    # Tech news (optional, for future expansion)
+    # tech_news = get_tech_news()
+
+    context = {
+        "user_count": user_count,
+        "tenant_count": tenant_count,
+        "open_ticket_count": open_ticket_count,
+        "kb_article_count": kb_article_count,
+        "recent_admin_activity": recent_admin_activity,
+        "integrations": integrations,
+        "automation_failures": automation_failures,
+        # "tech_news": tech_news,
+    }
+    return render(request, 'adminpanel/dashboard.html', context)
 
 @staff_member_required
 def users(request):
