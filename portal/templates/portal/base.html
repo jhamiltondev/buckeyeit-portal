@@ -38,9 +38,14 @@
         }
         .notification-bell {
             font-size: 1.3rem;
-            color: #fff;
+            color: #fff !important;
             cursor: pointer;
             position: relative;
+            transition: color 0.2s, transform 0.2s;
+        }
+        .notification-bell:hover, .notification-bell:focus {
+            color: #ffe082 !important;
+            transform: scale(1.12);
         }
         .notification-dot {
             position: absolute;
@@ -52,8 +57,20 @@
             border-radius: 50%;
         }
         .user-dropdown {
-            color: #fff;
+            color: #fff !important;
             cursor: pointer;
+            transition: color 0.2s, text-decoration 0.2s;
+        }
+        .user-dropdown:hover, .user-dropdown:focus {
+            color: #ffe082 !important;
+            text-decoration: underline;
+        }
+        .fa-user-circle {
+            color: #fff !important;
+            transition: color 0.2s;
+        }
+        .fa-user-circle:hover, .fa-user-circle:focus {
+            color: #ffe082 !important;
         }
         .user-avatar {
             width: 36px;
@@ -410,7 +427,7 @@
         <div class="header-actions ms-auto">
             <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode"><i class="fa fa-moon"></i></button>
             <div class="dropdown me-2">
-                <a class="nav-link position-relative" href="?mark_notifications_read=1" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link position-relative notification-bell" href="?mark_notifications_read=1" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications" tabindex="0">
                     <i class="fa fa-bell"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ notifications|length }}</span>
                 </a>
@@ -429,7 +446,7 @@
                 </ul>
             </div>
             <div class="dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle user-dropdown" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="User Menu" tabindex="0">
                     <i class="fa fa-user-circle me-1"></i> {{ user.get_full_name|default:user.username }}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
