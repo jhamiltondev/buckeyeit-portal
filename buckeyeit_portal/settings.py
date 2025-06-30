@@ -198,6 +198,28 @@ JAZZMIN_SETTINGS = {
     "related_modal_active": True,
     "custom_css": None,
     "custom_js": None,
+    "icons": {
+        "auth.user": "fas fa-user",
+        "auth.group": "fas fa-users",
+        "portal.tenant": "fas fa-building",
+        "portal.knowledgebasearticle": "fas fa-file-alt",
+        "portal.knowledgebasecategory": "fas fa-folder-open",
+    },
+    "order_with_respect_to": [
+        "auth",  # Users & Groups
+        "portal.Tenant",  # Tenants
+        "portal.KnowledgeBaseArticle",  # Knowledge Base - Articles
+        "portal.KnowledgeBaseCategory",  # Knowledge Base - Categories
+    ],
+    "custom_links": {
+        "portal.Tenant": [
+            {
+                "name": "Create Tenant",
+                "url": "admin:portal_tenant_add",
+                "icon": "fas fa-plus-circle",
+            },
+        ],
+    },
 }
 
 # ConnectWise API credentials (move to environment variables for production!)
