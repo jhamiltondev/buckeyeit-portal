@@ -40,17 +40,33 @@
                                     <th>Subject</th>
                                     <th>Status</th>
                                     <th>Date</th>
+                                    <th>Submitted By</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for ticket in tickets %}
+                                {% for ticket in cw_tickets %}
                                 <tr>
                                     <td><a href="{% url 'portal:connectwise_ticket_detail' ticket.id %}">{{ ticket.summary }}</a></td>
-                                    <td>{{ ticket.status.name }}</td>
+                                    <td>
+                                        {% if ticket.status.name == 'Needs Worked' %}
+                                            <span class="badge bg-warning text-dark">Needs Worked</span>
+                                        {% elif ticket.status.name == 'Working Issue Now' %}
+                                            <span class="badge bg-info text-dark">Working Issue Now</span>
+                                        {% elif ticket.status.name == 'Pending Close' %}
+                                            <span class="badge bg-primary">Pending Close</span>
+                                        {% elif ticket.status.name == 'Closed' %}
+                                            <span class="badge bg-success">Closed</span>
+                                        {% elif ticket.status.name == 'Waiting Client Response~' %}
+                                            <span class="badge bg-secondary">Waiting Client Response~</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ ticket.status.name }}</span>
+                                        {% endif %}
+                                    </td>
                                     <td>{{ ticket.dateEntered|date:'Y-m-d H:i' }}</td>
+                                    <td>{{ ticket.contactName|default:ticket.contactEmailAddress|default:'-' }}</td>
                                 </tr>
                                 {% empty %}
-                                <tr><td colspan="3">No tickets found.</td></tr>
+                                <tr><td colspan="4">No tickets found.</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -62,15 +78,15 @@
     <div class="row mb-4">
         <!-- Ticket Status Definitions -->
         <div class="col-lg-12 mb-3">
-            <div class="card shadow-sm animate__animated animate__fadeInUp">
+            <div class="card mt-4">
+                <div class="card-header fw-bold"><i class="fa fa-info-circle text-info me-2"></i>Ticket Status Definitions</div>
                 <div class="card-body">
-                    <h5 class="fw-bold mb-3"><i class="fa fa-info-circle text-info me-2"></i>Ticket Status Definitions</h5>
                     <ul>
-                        <li><strong>Needs Worked</strong>: Your ticket has been received and is awaiting action by a technician.</li>
-                        <li><strong>Working Issue Now</strong>: A technician is actively working on your ticket.</li>
-                        <li><strong>Pending Close</strong>: The issue is believed to be resolved and the ticket will be closed soon unless you respond.</li>
-                        <li><strong>Closed</strong>: The ticket is closed and no further action will be taken.</li>
-                        <li><strong>Waiting Client Response~</strong>: The technician is waiting for your reply or action before proceeding. Please respond to keep your ticket moving forward.</li>
+                        <li><span class="badge bg-warning text-dark">Needs Worked</span> – Your ticket has been received and is awaiting action by a technician.</li>
+                        <li><span class="badge bg-info text-dark">Working Issue Now</span> – A technician is actively working on your ticket.</li>
+                        <li><span class="badge bg-primary">Pending Close</span> – The issue is believed to be resolved and the ticket will be closed soon unless you respond.</li>
+                        <li><span class="badge bg-success">Closed</span> – The ticket is closed and no further action will be taken.</li>
+                        <li><span class="badge bg-secondary">Waiting Client Response~</span> – The technician is waiting for your reply or action before proceeding. Please respond to keep your ticket moving forward.</li>
                     </ul>
                 </div>
             </div>

@@ -135,26 +135,26 @@ def debug_urls(request):
 
 @login_required
 def support_view(request):
-    tickets = Ticket.objects.filter(user=request.user).order_by('-created_at')
     # Only show open ConnectWise tickets
     cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close']]
-    # Handle reply form POST
-    if request.method == 'POST' and request.POST.get('reply_ticket_id'):
-        ticket_id = request.POST.get('reply_ticket_id')
-        reply_text = request.POST.get('reply_text')
-        if ticket_id and reply_text:
-            result = post_connectwise_ticket_note(ticket_id, reply_text, user_name=request.user.get_full_name() or request.user.username)
-            if result:
-                messages.success(request, 'Your reply has been posted to the ticket!')
-            else:
-                messages.error(request, 'There was an error posting your reply. Please try again.')
-        return redirect('portal:support')
-    # Fetch notes for each ConnectWise ticket
-    cw_ticket_notes = {}
-    for t in cw_tickets:
-        if t.get('id'):
-            cw_ticket_notes[t['id']] = get_connectwise_ticket_notes(t['id'])
-    return render(request, 'portal/support.html', {'tickets': tickets, 'cw_tickets': cw_tickets, 'cw_ticket_notes': cw_ticket_notes})
+    # Sort tickets by dateEntered, newest first
+    cw_tickets = sorted(cw_tickets, key=lambda t: t.get('dateEntered', ''), reverse=True)
+    # Add status color for badges
+    for ticket in cw_tickets:
+        status_name = ticket.get('status', {}).get('name', '')
+        if status_name == 'Needs Worked':
+            ticket['status_color'] = 'warning'
+        elif status_name == 'Working Issue Now':
+            ticket['status_color'] = 'info'
+        elif status_name == 'Pending Close':
+            ticket['status_color'] = 'primary'
+        elif status_name == 'Closed':
+            ticket['status_color'] = 'success'
+        else:
+            ticket['status_color'] = 'secondary'
+    return render(request, 'portal/support.html', {
+        'cw_tickets': cw_tickets
+    })
 
 @login_required
 def submit_ticket_view(request):
