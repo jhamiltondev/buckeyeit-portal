@@ -15,6 +15,8 @@ from .forms import SupportTicketForm
 from datetime import datetime, timedelta
 import logging
 from .tech_news import get_tech_news, test_news_api
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
 # Set up logger for views
 logger = logging.getLogger('portal.views')
@@ -206,9 +208,45 @@ def knowledge_article_view(request, article_id):
 def profile_view(request):
     user = request.user
     tenant = getattr(user, 'tenant', None)
+    password_errors = []
+    profile_success = False
+    password_success = False
+    if request.method == 'POST':
+        # Profile update
+        if 'full_name' in request.POST:
+            full_name = request.POST.get('full_name', '').strip()
+            phone = request.POST.get('phone', '').strip()
+            if full_name:
+                names = full_name.split(' ', 1)
+                user.first_name = names[0]
+                user.last_name = names[1] if len(names) > 1 else ''
+            user.phone = phone
+            user.save()
+            profile_success = True
+        # Password change
+        if 'current_password' in request.POST and 'new_password' in request.POST and 'confirm_password' in request.POST:
+            current_password = request.POST.get('current_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+            if not user.check_password(current_password):
+                password_errors.append('Current password is incorrect.')
+            elif new_password != confirm_password:
+                password_errors.append('New password and confirmation do not match.')
+            else:
+                try:
+                    validate_password(new_password, user=user)
+                except ValidationError as e:
+                    password_errors.extend(e.messages)
+                else:
+                    user.set_password(new_password)
+                    user.save()
+                    password_success = True
     return render(request, 'portal/profile.html', {
         'user': user,
         'tenant': tenant,
+        'password_errors': password_errors,
+        'profile_success': profile_success,
+        'password_success': password_success,
     })
 
 @login_required
