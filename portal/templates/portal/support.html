@@ -92,6 +92,47 @@
             </div>
         </div>
     </div>
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-3">
+            <div class="card shadow-sm animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3 mt-5"><i class="fa fa-archive text-secondary me-2"></i>Closed Tickets (Last 30 Days)</h5>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Submitted By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticket in closed_cw_tickets %}
+                                <tr>
+                                    <td><a href="{% url 'portal:connectwise_ticket_detail' ticket.id %}">{{ ticket.summary }}</a></td>
+                                    <td>
+                                        {% if ticket.status.name == 'Pending Close' %}
+                                            <span class="badge bg-primary">Pending Close</span>
+                                        {% elif ticket.status.name == 'Closed - Silent' %}
+                                            <span class="badge bg-dark">Closed - Silent</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ ticket.status.name }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ ticket.dateEntered|date:'Y-m-d H:i' }}</td>
+                                    <td>{{ ticket.contactName|default:ticket.contactEmailAddress|default:'-' }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="4">No closed tickets found in the last 30 days.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 <style>
