@@ -53,5 +53,14 @@ admin.site.register(Announcement, AnnouncementAdmin)
 
 admin.site.register(Ticket)
 admin.site.register(KnowledgeBaseCategory)
-admin.site.register(KnowledgeBaseArticle)
+
+class KnowledgeBaseArticleAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'view_count', 'is_active', 'created_at', 'thumbnail')
+    list_filter = ('category', 'is_active')
+    search_fields = ('title', 'content')
+    fields = ('title', 'category', 'content', 'thumbnail', 'is_active')
+    readonly_fields = ('view_count', 'created_at', 'updated_at')
+
+admin.site.register(KnowledgeBaseArticle, KnowledgeBaseArticleAdmin)
+
 admin.site.register(TenantDocument)

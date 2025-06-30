@@ -137,9 +137,7 @@ def debug_urls(request):
 def support_view(request):
     # Only show open ConnectWise tickets (not Closed, Pending Close, or Closed - Silent)
     cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
-    # Sort tickets by dateEntered, newest first
     cw_tickets = sorted(cw_tickets, key=lambda t: t.get('dateEntered', ''), reverse=True)
-    # Add status color for badges
     for ticket in cw_tickets:
         status_name = ticket.get('status', {}).get('name', '')
         if status_name == 'Needs Worked':
@@ -152,14 +150,12 @@ def support_view(request):
             ticket['status_color'] = 'success'
         else:
             ticket['status_color'] = 'secondary'
-    # Fetch closed tickets (Pending Close or Closed - Silent) from last 30 days
-    now = datetime.now()
-    closed_cw_tickets = [
-        t for t in get_connectwise_tickets(request.user)
-        if t.get('status', {}).get('name') in ['Pending Close', 'Closed - Silent']
-        and t.get('dateEntered')
-        and (now - datetime.strptime(t['dateEntered'][:19], '%Y-%m-%dT%H:%M:%S')).days <= 30
-    ]
+    # Fetch closed tickets directly from ConnectWise API using conditions
+    from portal.adapters import get_connectwise_tickets as get_cw_tickets_api
+    thirty_days_ago = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%dT%H:%M:%S')
+    # Build conditions for closed statuses and date
+    closed_conditions = f"contactEmail='{request.user.email}' and (status/name='Closed' or status/name='Closed - Silent' or status/name='Pending Close') and dateEntered>='{thirty_days_ago}'"
+    closed_cw_tickets = get_cw_tickets_api(request.user, extra_conditions=closed_conditions)
     closed_cw_tickets = sorted(closed_cw_tickets, key=lambda t: t.get('dateEntered', ''), reverse=True)
     return render(request, 'portal/support.html', {
         'cw_tickets': cw_tickets,
@@ -190,6 +186,7 @@ def submit_ticket_view(request):
 @login_required
 def knowledge_base_view(request):
     categories = KnowledgeBaseCategory.objects.all()
+    # Trending articles are global (most viewed by all users)
     articles = KnowledgeBaseArticle.objects.filter(is_active=True).order_by('-view_count')[:5]
     return render(request, 'portal/knowledge_base.html', {
         'categories': categories,
