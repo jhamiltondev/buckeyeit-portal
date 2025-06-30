@@ -2,6 +2,7 @@ import logging
 import requests
 from typing import List, Dict, Optional
 from django.conf import settings
+import datetime
 
 # Set up logger for tech news
 logger = logging.getLogger('portal.tech_news')
@@ -23,57 +24,70 @@ class TechNewsService:
             List[Dict]: List of news articles with title, url, source, and image
         """
         logger.info("Starting tech news fetch from NewsAPI")
-        # Use a broad query for maximum results
-        params = {
-            'q': 'technology',
-            'apiKey': self.api_key,
-            'language': 'en',
-            'pageSize': self.max_articles,
-        }
-        try:
-            resp = requests.get(self.base_url, params=params, timeout=self.timeout)
-            logger.info(f"NewsAPI status: {resp.status_code}")
-            if resp.status_code == 200:
-                articles = resp.json().get('articles', [])
-                if articles:
-                    logger.info(f"Fetched {len(articles)} articles for query 'technology'")
-                    return [
-                        {
-                            'title': a.get('title'),
-                            'url': a.get('url'),
-                            'source': a.get('source', {}).get('name'),
-                            'image': a.get('urlToImage'),
-                        }
-                        for a in articles if a.get('title')
-                    ][:self.max_articles]
+        # Use a broader set of queries for more variety
+        queries = [
+            'technology OR tech OR software OR computer OR internet',
+            'Microsoft OR cybersecurity OR security',
+            'cloud computing OR AI OR artificial intelligence OR data breach',
+            'IT news OR digital transformation OR SaaS OR cloud',
+        ]
+        for q in queries:
+            params = {
+                'q': q,
+                'apiKey': self.api_key,
+                'language': 'en',
+                'pageSize': self.max_articles,
+                'sortBy': 'publishedAt',
+            }
+            try:
+                resp = requests.get(self.base_url, params=params, timeout=self.timeout)
+                logger.info(f"NewsAPI status: {resp.status_code}")
+                if resp.status_code == 200:
+                    articles = resp.json().get('articles', [])
+                    if articles:
+                        logger.info(f"Fetched {len(articles)} articles for query '{q}'")
+                        return [
+                            {
+                                'title': a.get('title'),
+                                'url': a.get('url'),
+                                'source': a.get('source', {}).get('name'),
+                                'image': a.get('urlToImage'),
+                            }
+                            for a in articles if a.get('title')
+                        ][:self.max_articles]
+                    else:
+                        logger.warning(f"No articles found. NewsAPI response: {resp.json()}")
                 else:
-                    logger.warning(f"No articles found. NewsAPI response: {resp.json()}")
-            else:
-                logger.error(f"NewsAPI error: {resp.status_code} {resp.text}")
-        except Exception as e:
-            logger.error(f"Exception fetching news: {e}")
+                    logger.error(f"NewsAPI error: {resp.status_code} {resp.text}")
+            except Exception as e:
+                logger.error(f"Exception fetching news: {e}")
         # Static fallback if no news found
         logger.warning("No tech news found from NewsAPI. Using static fallback.")
-        return [
+        # Rotate fallback articles each week
+        week = datetime.datetime.utcnow().isocalendar()[1]
+        fallback_articles = [
             {
                 'title': 'Microsoft launches new AI-powered security tools',
                 'url': 'https://www.microsoft.com/security/blog/',
                 'source': 'Microsoft Security Blog',
-                'image': 'https://news.microsoft.com/wp-content/uploads/prod/sites/626/2023/05/AI-security.jpg',
+                'image': '/static/portal/assets/tech1.png',
             },
             {
                 'title': '5 Ways to Protect Your Business from Ransomware',
                 'url': 'https://www.cisa.gov/news-events/news/5-ways-protect-your-business-ransomware',
                 'source': 'CISA',
-                'image': 'https://www.cisa.gov/sites/default/files/styles/featured_image/public/2023-06/ransomware.jpg',
+                'image': '/static/portal/assets/tech2.png',
             },
             {
                 'title': 'The Future of Cloud Computing in 2025',
                 'url': 'https://www.techrepublic.com/article/future-of-cloud-computing/',
                 'source': 'TechRepublic',
-                'image': 'https://www.techrepublic.com/wp-content/uploads/2023/01/cloud-future.jpg',
+                'image': '/static/portal/assets/tech3.png',
             },
         ]
+        # Rotate articles each week
+        rotated = fallback_articles[week % 3:] + fallback_articles[:week % 3]
+        return rotated
     
     def _process_article(self, article: Dict, index: int) -> Optional[Dict]:
         """

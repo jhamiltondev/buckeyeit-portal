@@ -119,3 +119,53 @@ INFO 2025-06-28 19:26:16,364 autoreload 110812 89268 C:\BuckeyeITClientPortal\bu
 INFO 2025-06-28 19:26:18,047 autoreload 104544 113616 Watching for file changes with StatReloader
 INFO 2025-06-28 19:26:18,054 autoreload 85408 110180 Watching for file changes with StatReloader
 INFO 2025-06-28 19:26:18,215 autoreload 117424 107748 Watching for file changes with StatReloader
+INFO 2025-06-28 19:27:08,795 autoreload 85408 110180 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 19:27:09,086 autoreload 104544 113616 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 19:27:09,173 autoreload 117424 107748 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 19:27:12,352 autoreload 110004 118168 Watching for file changes with StatReloader
+INFO 2025-06-28 19:27:12,432 autoreload 87868 82868 Watching for file changes with StatReloader
+INFO 2025-06-28 19:27:12,452 autoreload 98132 107968 Watching for file changes with StatReloader
+INFO 2025-06-28 20:05:48,509 autoreload 87868 82868 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 20:05:48,723 autoreload 98132 107968 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 20:05:51,247 autoreload 110004 118168 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 20:05:55,979 autoreload 81892 110760 Watching for file changes with StatReloader
+INFO 2025-06-28 20:05:55,980 autoreload 110252 115488 Watching for file changes with StatReloader
+INFO 2025-06-28 20:05:56,150 autoreload 91632 6512 Watching for file changes with StatReloader
+INFO 2025-06-28 20:06:03,817 autoreload 91632 6512 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 20:06:03,823 autoreload 81892 110760 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 20:06:03,824 autoreload 110252 115488 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 20:06:05,376 autoreload 77032 114372 Watching for file changes with StatReloader
+INFO 2025-06-28 20:06:05,379 autoreload 95052 105696 Watching for file changes with StatReloader
+INFO 2025-06-28 20:06:05,393 autoreload 58860 99344 Watching for file changes with StatReloader
+INFO 2025-06-28 20:06:23,659 autoreload 58860 99344 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 20:06:23,688 autoreload 77032 114372 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 20:06:23,689 autoreload 95052 105696 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 20:06:25,151 autoreload 91232 118124 Watching for file changes with StatReloader
+INFO 2025-06-28 20:06:25,151 autoreload 109924 113824 Watching for file changes with StatReloader
+INFO 2025-06-28 20:06:25,158 autoreload 113052 101672 Watching for file changes with StatReloader
+INFO 2025-06-28 20:12:00,903 autoreload 113052 101672 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 20:12:01,053 autoreload 91232 118124 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 20:12:01,060 autoreload 109924 113824 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-06-28 20:12:02,864 autoreload 114732 105576 Watching for file changes with StatReloader
+INFO 2025-06-28 20:12:02,864 autoreload 53668 57632 Watching for file changes with StatReloader
+INFO 2025-06-28 20:12:02,865 autoreload 63900 109020 Watching for file changes with StatReloader
+INFO 2025-06-28 20:24:46,367 autoreload 63900 109020 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-06-28 20:24:46,606 autoreload 53668 57632 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-06-28 20:24:46,607 autoreload 114732 105576 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-06-28 20:25:06,001 autoreload 112792 109372 Watching for file changes with StatReloader
+INFO 2025-06-28 20:25:07,160 autoreload 110364 117256 Watching for file changes with StatReloader
+INFO 2025-06-28 20:25:07,212 autoreload 96556 118000 Watching for file changes with StatReloader
+INFO 2025-06-29 18:14:45,645 autoreload 110364 117256 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\tech_news.py changed, reloading.
+INFO 2025-06-29 18:14:45,644 autoreload 96556 118000 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\tech_news.py changed, reloading.
+INFO 2025-06-29 18:14:45,648 autoreload 112792 109372 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\tech_news.py changed, reloading.
+INFO 2025-06-29 18:14:47,972 autoreload 11708 111580 Watching for file changes with StatReloader
+INFO 2025-06-29 18:14:47,977 autoreload 108928 115260 Watching for file changes with StatReloader
+INFO 2025-06-29 18:14:48,009 autoreload 81196 103928 Watching for file changes with StatReloader
+INFO 2025-06-29 18:14:50,981 autoreload 108928 115260 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-06-29 18:14:50,982 autoreload 81196 103928 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-06-29 18:14:50,985 autoreload 11708 111580 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-06-29 18:14:52,511 autoreload 112740 91532 Watching for file changes with StatReloader
+INFO 2025-06-29 18:14:52,511 autoreload 115984 117192 Watching for file changes with StatReloader
+INFO 2025-06-29 22:14:01,967 autoreload 112740 91532 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\tech_news.py changed, reloading.
+INFO 2025-06-29 22:14:01,967 autoreload 115984 117192 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\tech_news.py changed, reloading.
+INFO 2025-06-29 22:14:01,968 autoreload 112600 79336 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\tech_news.py changed, reloading.

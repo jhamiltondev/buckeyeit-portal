@@ -477,6 +477,19 @@
         <button class="btn btn-outline-primary w-100 mt-2" id="startTourBtn" tabindex="0"><i class="fa fa-magic me-1"></i> Take a Tour</button>
         <div class="small text-muted mt-2">Our team is here to help you 24/7.</div>
     </div>
+    <!-- Toast Notification Container -->
+    <div aria-live="polite" aria-atomic="true" class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto" id="toastTitle">Notification</strong>
+                <small>Just now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toastBody">
+                <!-- Notification text here -->
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/shepherd.js@11.1.0/dist/js/shepherd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -612,6 +625,13 @@
             }
         });
         document.addEventListener('DOMContentLoaded', function() {
+            let lastNotificationIds = [];
+            function showToast(title, message) {
+                document.getElementById('toastTitle').textContent = title;
+                document.getElementById('toastBody').textContent = message;
+                var toast = new bootstrap.Toast(document.getElementById('liveToast'));
+                toast.show();
+            }
             function updateNotifications() {
                 fetch('/api/notifications/')
                     .then(response => response.json())
@@ -628,13 +648,23 @@
                             html += '</li>';
                             if (data.notifications.length > 0) {
                                 data.notifications.forEach(note => {
-                                    html += `<li><a class="dropdown-item small" href="/tickets/${note.ticket_id}/"><strong>${note.enteredBy}</strong>: ${note.text.substring(0,60)}</a></li>`;
+                                    const enteredBy = note.enteredBy || note.display_name || 'System';
+                                    html += `<li><a class="dropdown-item small" href="/tickets/${note.ticket_id}/"><strong>${enteredBy}</strong>: ${note.text.substring(0,60)}</a></li>`;
                                 });
                             } else {
                                 html += '<li><span class="dropdown-item small text-muted">No new notifications</span></li>';
                             }
                             dropdown.innerHTML = html;
                         }
+                        // Show toast for new notifications
+                        const newIds = data.notifications.map(n => n.notification_id);
+                        data.notifications.forEach(note => {
+                            if (!lastNotificationIds.includes(note.notification_id)) {
+                                const enteredBy = note.enteredBy || note.display_name || 'System';
+                                showToast(enteredBy, note.text.substring(0, 80));
+                            }
+                        });
+                        lastNotificationIds = newIds;
                     });
             }
 
@@ -674,7 +704,7 @@
                                 let html = '';
                                 data.articles.forEach(article => {
                                     html += '<div class="d-flex align-items-center mb-3">';
-                                    html += `<img src="${article.image || '/static/portal/assets/news-fallback.png'}" alt="News Image" class="rounded me-3" style="width: 80px; height: 60px; object-fit: cover; background: #eee;" onerror="this.onerror=null;this.src='/static/portal/assets/news-fallback.png';">`;
+                                    html += `<img src="{{ article.image|img_fallback }}" alt="News Image" class="rounded me-3" style="width: 80px; height: 60px; object-fit: cover; background: #eee;" onerror="this.onerror=null;this.src='/static/portal/assets/news-fallback.png';">`;
                                     html += '<div>';
                                     html += `<a href="${article.url}" target="_blank" class="fw-bold d-block text-primary">${article.title}</a>`;
                                     html += `<div class="small text-muted">${article.source}</div>`;

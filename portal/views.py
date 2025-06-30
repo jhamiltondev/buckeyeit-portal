@@ -299,7 +299,7 @@ def connectwise_ticket_detail(request, ticket_id):
         if user:
             note['display_name'] = user.get_full_name() or user.username
         else:
-            note['display_name'] = note.get('enteredBy')
+            note['display_name'] = note.get('enteredBy') or 'Tech'
     notes_split = split_ticket_notes(notes)
     if request.method == 'POST':
         if request.POST.get('reply_text'):
