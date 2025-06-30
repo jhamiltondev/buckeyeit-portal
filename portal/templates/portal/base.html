@@ -796,6 +796,24 @@
                 }
             `;
             document.head.appendChild(style);
+
+            function markNotificationsRead() {
+                fetch('/api/notifications/?mark_notifications_read=1')
+                    .then(() => {
+                        lastNotificationIds = []; // Clear the local memory
+                        // Optionally, update the UI to show no notifications
+                    });
+            }
+            // Attach to dropdown open and "Clear All" click
+            const notificationDropdown = document.getElementById('notificationDropdown');
+            if (notificationDropdown) {
+                notificationDropdown.addEventListener('show.bs.dropdown', markNotificationsRead);
+            }
+            document.addEventListener('click', function(e) {
+                if (e.target && e.target.matches('.dropdown-menu [href*="mark_notifications_read=1"]')) {
+                    markNotificationsRead();
+                }
+            });
         });
     </script>
     {% block extra_js %}{% endblock %}

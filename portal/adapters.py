@@ -391,10 +391,10 @@ def debug_list_board_statuses_and_items(board_name="Help Desk (MS)"):
 
 def get_connectwise_ticket_notes(ticket_id):
     """
-    Fetch notes/discussions for a ConnectWise ticket by ID.
+    Fetch all notes/discussions for a ConnectWise ticket by ID.
     Returns a list of note dicts.
     """
-    base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/tickets/{ticket_id}/notes"
+    base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/tickets/{ticket_id}/allNotes"
     company_id = settings.CONNECTWISE_COMPANY_ID
     public_key = settings.CONNECTWISE_PUBLIC_KEY
     private_key = settings.CONNECTWISE_PRIVATE_KEY

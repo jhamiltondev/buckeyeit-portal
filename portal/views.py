@@ -293,19 +293,22 @@ def connectwise_ticket_detail(request, ticket_id):
     notes = get_connectwise_ticket_notes(ticket_id)
     # Enhance notes with display_name
     for note in notes:
-        # If note text starts with 'From: ...', extract the name/email
         text = note.get('text', '')
+        entered_by = note.get('enteredBy') or note.get('createdBy') or note.get('member', {}).get('name')
         if text.startswith('From: '):
             # Format: From: Name (email)\nMessage
             first_line = text.split('\n', 1)[0]
             display_name = first_line.replace('From: ', '').strip()
-            note['display_name'] = display_name
-        elif note.get('enteredBy'):
-            note['display_name'] = note.get('enteredBy')
-        elif note.get('createdBy'):
-            note['display_name'] = note.get('createdBy')
-        elif note.get('member', {}).get('name'):
-            note['display_name'] = note['member']['name']
+            # If entered_by is api_admin, show the extracted name
+            if entered_by == 'api_admin':
+                note['display_name'] = display_name
+            else:
+                note['display_name'] = entered_by or display_name
+        elif entered_by == 'api_admin' and text:
+            # If entered_by is api_admin but no From: line, fallback to 'Buckeye IT'
+            note['display_name'] = 'Buckeye IT'
+        elif entered_by:
+            note['display_name'] = entered_by
         else:
             note['display_name'] = 'Buckeye IT'
     notes_split = split_ticket_notes(notes)
@@ -384,12 +387,26 @@ def notifications_api(request):
             is_remote_support = 'user has requested remote support' in note.get('text', '').lower()
             is_user_reply = note.get('enteredBy', '').lower() == user_email or note.get('text', '').lower().startswith('from:')
 
-            print(f"[DEBUG][Notifications] Note: id={note_id}, enteredBy={note.get('enteredBy')}, text={note.get('text')}, is_tech_reply={is_tech_reply}, is_status_change={is_status_change}, is_owner_change={is_owner_change}, is_remote_support={is_remote_support}, is_user_reply={is_user_reply}")
+            # Extract display name (same logic as ticket detail)
+            text = note.get('text', '')
+            if text.startswith('From: '):
+                first_line = text.split('\n', 1)[0]
+                display_name = first_line.replace('From: ', '').strip()
+            elif note.get('enteredBy'):
+                display_name = note.get('enteredBy')
+            elif note.get('createdBy'):
+                display_name = note.get('createdBy')
+            elif note.get('member', {}).get('name'):
+                display_name = note['member']['name']
+            else:
+                display_name = 'Buckeye IT'
 
             if (is_tech_reply or is_status_change or is_owner_change) and not is_remote_support and not is_user_reply:
                 if note_id not in read_ids:
                     note['ticket_id'] = t['id']
                     note['notification_id'] = note_id
+                    note['display_name'] = display_name
+                    note['notification_message'] = f"{display_name} has replied to ticket"
                     notifications.append(note)
                     print(f"[DEBUG][Notifications] -> ADDED to notifications: {note_id}")
                 else:
