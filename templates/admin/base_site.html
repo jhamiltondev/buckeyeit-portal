@@ -4,7 +4,6 @@
 <aside class="custom-admin-sidebar" id="customSidebar">
     <nav>
         <div class="sidebar-header">
-            <button id="sidebarCollapse" class="sidebar-collapse-toggle" title="Toggle Sidebar"><i class="fas fa-bars"></i></button>
             <button id="nightModeToggle" class="night-mode-toggle" title="Toggle Night Mode"><i class="fas fa-moon"></i></button>
         </div>
         <ul class="sidebar-menu">
@@ -109,7 +108,6 @@
 
         // Night mode toggle
         var nightModeBtn = document.getElementById('nightModeToggle');
-        var sidebar = document.getElementById('customSidebar');
         var html = document.documentElement;
         function setNightMode(on) {
             if (on) {
@@ -129,13 +127,6 @@
         if (localStorage.getItem('adminNightMode') === '1') {
             setNightMode(true);
         }
-
-        // Sidebar collapse/expand
-        var collapseBtn = document.getElementById('sidebarCollapse');
-        collapseBtn.addEventListener('click', function() {
-            sidebar.classList.toggle('collapsed');
-            html.classList.toggle('sidebar-collapsed');
-        });
     });
 </script>
 {% endblock %}
@@ -156,7 +147,6 @@
             top: 0;
             left: 0;
             z-index: 1100;
-            padding-top: 60px;
             box-shadow: 2px 0 8px rgba(0,0,0,0.08);
             transition: background 0.3s, width 0.3s;
         }
@@ -165,22 +155,9 @@
         }
         .sidebar-header {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             padding: 8px 18px 0 10px;
-        }
-        .sidebar-collapse-toggle {
-            background: none;
-            border: none;
-            color: #888;
-            font-size: 1.2rem;
-            cursor: pointer;
-            outline: none;
-            margin-right: 8px;
-            transition: color 0.2s;
-        }
-        .sidebar-collapse-toggle:hover, .sidebar-collapse-toggle:focus {
-            color: #3ea6ff;
         }
         .night-mode-toggle {
             background: none;
@@ -329,7 +306,6 @@
         @media (max-width: 900px) {
             .custom-admin-sidebar {
                 width: 200px;
-                padding-top: 50px;
             }
             .sidebar-collapsed .custom-admin-sidebar {
                 width: 50px;
