@@ -264,7 +264,7 @@ def create_connectwise_ticket(form_data, user):
         "item": {"name": item},
         "priority": {"name": priority},
         "source": {"name": "Portal"},
-        "contactId": contact_id,
+        "contact": {"id": contact_id},
         "contactEmailAddress": contact_email,
         "contactName": user.get_full_name() or user.username,
         "company": {"identifier": company_identifier} if company_identifier else None,
