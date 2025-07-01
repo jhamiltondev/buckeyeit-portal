@@ -336,4 +336,5 @@ class AdminLoginView(LoginView):
 class AdminLogoutView(LogoutView):
     next_page = '/adminpanel/login/'
     def get(self, request, *args, **kwargs):
+        print("=== AdminLogoutView GET called ===")
         return self.post(request, *args, **kwargs)
