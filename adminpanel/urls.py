@@ -17,6 +17,9 @@ urlpatterns = [
     path('users/groups/', views.groups, name='groups'),
     path('users/deactivated/', views.users_deactivated, name='users_deactivated'),
     path('users/audit/', views.users_audit, name='users_audit'),
+    path('users/pending/<int:approval_id>/approve/', views.approve_pending_user, name='approve_pending_user'),
+    path('users/pending/<int:approval_id>/deny/', views.deny_pending_user, name='deny_pending_user'),
+    path('users/pending/<int:approval_id>/details/', views.pending_user_details, name='pending_user_details'),
     # Tenants
     path('tenants/', views.tenants, name='tenants'),
     path('tenants/documents/', views.tenant_documents, name='tenant_documents'),

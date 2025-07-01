@@ -1,13 +1,15 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView, LogoutView
-from portal.models import Tenant, Ticket, KnowledgeBaseArticle
+from portal.models import Tenant, Ticket, KnowledgeBaseArticle, PendingUserApproval
 from portal.tech_news import get_tech_news
 import logging
 import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -139,13 +141,24 @@ def users_active(request):
 
 @staff_member_required
 def users_pending(request):
-    return render(request, 'adminpanel/users_pending.html')
+    pending_requests = PendingUserApproval.objects.select_related('tenant', 'requested_by').filter(status='pending').order_by('-submitted_on')
+    tenants = Tenant.objects.all().order_by('name')
+    roles = ['Superuser', 'Admin', 'POC', 'Viewer']
+    context = {
+        'pending_requests': pending_requests,
+        'tenants': tenants,
+        'roles': roles,
+    }
+    return render(request, 'adminpanel/users_pending.html', context)
+
 @staff_member_required
 def users_invitations(request):
     return render(request, 'adminpanel/users_invitations.html')
+
 @staff_member_required
 def users_deactivated(request):
     return render(request, 'adminpanel/users_deactivated.html')
+
 @staff_member_required
 def users_audit(request):
     return render(request, 'adminpanel/users_audit.html')
@@ -154,15 +167,19 @@ def users_audit(request):
 @staff_member_required
 def tenant_settings(request):
     return render(request, 'adminpanel/tenant_settings.html')
+
 @staff_member_required
 def tenant_activity(request):
     return render(request, 'adminpanel/tenant_activity.html')
+
 @staff_member_required
 def tenant_customization(request):
     return render(request, 'adminpanel/tenant_customization.html')
+
 @staff_member_required
 def tenant_staff(request):
     return render(request, 'adminpanel/tenant_staff.html')
+
 @staff_member_required
 def tenant_automation(request):
     return render(request, 'adminpanel/tenant_automation.html')
@@ -171,9 +188,11 @@ def tenant_automation(request):
 @staff_member_required
 def kb_feedback(request):
     return render(request, 'adminpanel/kb_feedback.html')
+
 @staff_member_required
 def kb_drafts(request):
     return render(request, 'adminpanel/kb_drafts.html')
+
 @staff_member_required
 def kb_suggested(request):
     return render(request, 'adminpanel/kb_suggested.html')
@@ -187,18 +206,23 @@ def service_health(request):
 @staff_member_required
 def platform_settings(request):
     return render(request, 'adminpanel/platform_settings.html')
+
 @staff_member_required
 def social_identity(request):
     return render(request, 'adminpanel/social_identity.html')
+
 @staff_member_required
 def api_integration(request):
     return render(request, 'adminpanel/api_integration.html')
+
 @staff_member_required
 def audit_logs(request):
     return render(request, 'adminpanel/audit_logs.html')
+
 @staff_member_required
 def role_manager(request):
     return render(request, 'adminpanel/role_manager.html')
+
 @staff_member_required
 def system_health(request):
     return render(request, 'adminpanel/system_health.html')
@@ -254,6 +278,56 @@ def disable_user(request, user_id):
     user.is_active = False
     user.save()
     return JsonResponse({'success': True})
+
+@staff_member_required
+@require_POST
+@csrf_exempt
+def approve_pending_user(request, approval_id):
+    from portal.models import PendingUserApproval
+    try:
+        approval = PendingUserApproval.objects.get(id=approval_id)
+        approval.status = 'approved'
+        approval.save()
+        return JsonResponse({'success': True, 'message': 'Request approved.'})
+    except PendingUserApproval.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Request not found.'}, status=404)
+
+@staff_member_required
+@require_POST
+@csrf_exempt
+def deny_pending_user(request, approval_id):
+    from portal.models import PendingUserApproval
+    comment = request.POST.get('comment', '')
+    try:
+        approval = PendingUserApproval.objects.get(id=approval_id)
+        approval.status = 'denied'
+        approval.metadata = approval.metadata or {}
+        approval.metadata['deny_comment'] = comment
+        approval.save()
+        return JsonResponse({'success': True, 'message': 'Request denied.'})
+    except PendingUserApproval.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Request not found.'}, status=404)
+
+@staff_member_required
+def pending_user_details(request, approval_id):
+    from portal.models import PendingUserApproval
+    try:
+        approval = PendingUserApproval.objects.select_related('tenant', 'requested_by').get(id=approval_id)
+        data = {
+            'id': approval.id,
+            'name': approval.name,
+            'email': approval.email,
+            'tenant': approval.tenant.name if approval.tenant else '',
+            'role_requested': approval.role_requested,
+            'requested_by': approval.requested_by.username if approval.requested_by else 'self-submitted',
+            'submitted_on': approval.submitted_on.strftime('%b %d, %Y %I:%M%p'),
+            'justification': approval.justification,
+            'status': approval.status,
+            'metadata': approval.metadata,
+        }
+        return JsonResponse({'success': True, 'data': data})
+    except PendingUserApproval.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Request not found.'}, status=404)
 
 class AdminLoginView(LoginView):
     template_name = 'adminpanel/login.html'

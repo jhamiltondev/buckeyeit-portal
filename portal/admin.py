@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Tenant, Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, TenantDocument
+from .models import User, Tenant, Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, TenantDocument, PendingUserApproval
 from import_export.admin import ImportExportModelAdmin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.admin.sites import NotRegistered
@@ -72,3 +72,20 @@ try:
     admin.site.unregister(EmailAddress)
 except Exception:
     pass
+
+@admin.register(PendingUserApproval)
+class PendingUserApprovalAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'tenant', 'role_requested', 'requested_by', 'submitted_on', 'status')
+    list_filter = ('status', 'tenant', 'role_requested', 'submitted_on')
+    search_fields = ('name', 'email', 'requested_by__username', 'tenant__name')
+    actions = ['approve_selected', 'deny_selected']
+
+    def approve_selected(self, request, queryset):
+        updated = queryset.update(status='approved')
+        self.message_user(request, f"{updated} request(s) approved.")
+    approve_selected.short_description = "Approve selected requests"
+
+    def deny_selected(self, request, queryset):
+        updated = queryset.update(status='denied')
+        self.message_user(request, f"{updated} request(s) denied.")
+    deny_selected.short_description = "Deny selected requests"

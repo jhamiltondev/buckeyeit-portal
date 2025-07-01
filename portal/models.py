@@ -101,3 +101,23 @@ class TenantDocument(models.Model):
     
     def __str__(self):
         return f"{self.title} ({self.tenant.name})"
+
+class PendingUserApproval(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('denied', 'Denied'),
+        ('expired', 'Expired'),
+    ]
+    name = models.CharField(max_length=150)
+    email = models.EmailField()
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='pending_approvals')
+    role_requested = models.CharField(max_length=50)
+    requested_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approvals_requested')
+    submitted_on = models.DateTimeField(auto_now_add=True)
+    justification = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    metadata = models.JSONField(blank=True, null=True, help_text='Optional: store form/automation metadata')
+
+    def __str__(self):
+        return f"{self.name} ({self.email}) - {self.role_requested} [{self.status}]"
