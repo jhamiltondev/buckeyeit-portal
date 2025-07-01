@@ -61,11 +61,11 @@
             height: 40px;
             margin-right: 1rem;
         }
-        .portal-banner-title {
+        .portal-banner-title, .portal-banner-username {
             font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: 0.02em;
-            color: #fff;
+            color: #fff !important;
         }
         .user-btn, .portal-banner-username {
             font-weight: 500;
@@ -112,6 +112,7 @@
             background: transparent;
             min-height: 60vh;
             transition: opacity 0.4s;
+            box-sizing: border-box;
         }
         .main-content.fade-out {
             opacity: 0;
