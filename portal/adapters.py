@@ -182,7 +182,7 @@ def create_connectwise_ticket(form_data, user):
         onsite_note = 'User requests remote support.'
     # Build formatted note/message
     submitter_name = user.get_full_name() or user.username or user.email
-    issue_request = form_data['description']
+    issue_request = form_data['description'] or 'No description provided.'
     onsite_or_remote = form_data.get('onsite_or_remote', 'N/A')
     # Markdown for ConnectWise
     note_markdown = f"**Submitted By:** {submitter_name}\n\n**Issue/Request:** {issue_request}\n\n---\n\n**On-site or Remote:** {onsite_or_remote}"
