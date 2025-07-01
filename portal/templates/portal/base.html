@@ -501,7 +501,7 @@
             </main>
         </div>
     </div>
-    <footer class="buckeye-footer text-center py-2" style="background: none; color: #888; position: absolute; bottom: 8px; left: 0; right: 0; font-size: 0.95em; z-index: 1; box-shadow: none;">
+    <footer class="buckeye-footer text-end" style="background: none; color: #bbb; position: fixed; bottom: 12px; right: 24px; left: auto; font-size: 0.92em; z-index: 1; box-shadow: none; pointer-events: none;">
         &copy; 2024 Buckeye IT
     </footer>
     <button class="help-widget-btn" id="helpWidgetBtn" title="Help & Support" aria-label="Open help widget" tabindex="0"><i class="fa fa-question"></i></button>
@@ -814,24 +814,6 @@
             // Initial loads
             updateNotifications();
             updateDashboardElements();
-
-            // Add live indicator
-            const liveIndicator = document.createElement('div');
-            liveIndicator.innerHTML = '<i class="fa fa-circle text-success" style="font-size: 8px; animation: pulse 2s infinite;"></i> Live';
-            liveIndicator.className = 'position-fixed';
-            liveIndicator.style.cssText = 'bottom: 20px; right: 20px; background: rgba(0,0,0,0.7); color: white; padding: 8px 12px; border-radius: 20px; font-size: 12px; z-index: 1000; opacity: 0.8;';
-            document.body.appendChild(liveIndicator);
-
-            // Add pulse animation
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes pulse {
-                    0% { opacity: 1; }
-                    50% { opacity: 0.3; }
-                    100% { opacity: 1; }
-                }
-            `;
-            document.head.appendChild(style);
 
             function markNotificationsRead() {
                 fetch('/api/notifications/?mark_notifications_read=1')
