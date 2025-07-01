@@ -223,10 +223,9 @@ def submit_ticket_view(request):
             print("[DEBUG] create_connectwise_ticket returned:", cw_result)
             if cw_result:
                 messages.success(request, 'Thank you for your submission! We have received your request and will be assigning a technician shortly. If it is during normal business hours (M-F 8:00a-5:00p, excluding Federal holidays), a technician will begin working on your ticket as soon as possible and will reach out via phone or email if more information is needed. If this request was received outside of normal hours, our team will triage your request once we return to the office.')
+                return redirect('portal:support')
             else:
-                print("[ERROR] create_connectwise_ticket returned None. Ticket not created.")
-                messages.error(request, 'There was an error submitting your ticket to ConnectWise. Please try again or contact support.')
-            return redirect('portal:support')
+                return render(request, 'portal/ticket_submit_error.html')
         else:
             print("[ERROR] SupportTicketForm is invalid. Errors:", form.errors)
     else:
