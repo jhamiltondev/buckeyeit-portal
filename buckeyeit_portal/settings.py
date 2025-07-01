@@ -148,7 +148,7 @@ AUTH_USER_MODEL = 'portal.User'
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/admin/login/'
-LOGIN_URL = '/login/'
+LOGIN_URL = '/adminpanel/login/'
 
 # Email verification settings for allauth
 ACCOUNT_EMAIL_VERIFICATION = 'none'  # Disable email verification
