@@ -213,7 +213,7 @@ def support_view(request):
 
 @login_required(login_url='/adminpanel/login/')
 def submit_ticket_view(request):
-    print("[DEBUG] submit_ticket_view called, method:", request.method)
+    print("[DEBUG] submit_ticket_view TOP - method:", request.method)
     if request.method == 'POST':
         form = SupportTicketForm(request.POST, request.FILES)
         if form.is_valid():
