@@ -166,7 +166,10 @@ def create_connectwise_ticket(form_data, user):
     summary = form_data['request_type']
     if form_data.get('request_type') == 'Other' and form_data.get('request_type_other'):
         summary = form_data['request_type_other']
-    summary = f"{summary} - {form_data['description'][:60]}"
+    if summary == 'New User Setup':
+        summary = f"New User Setup - {user.get_full_name() or user.username or user.email}"
+    else:
+        summary = f"{summary} - {user.get_full_name() or user.username or user.email}"
     contact_email = form_data.get('affected_user') or user.email
     company_identifier = None
     if hasattr(user, 'tenant') and user.tenant:
@@ -179,10 +182,9 @@ def create_connectwise_ticket(form_data, user):
         onsite_note = 'User requests remote support.'
     # Build description with submitter info
     submitter_name = user.get_full_name() or user.username or user.email
-    submitter_email = user.email
-    description = f"Submitted by: {submitter_name} ({submitter_email})\n\n{form_data['description']}"
+    description = f"Submitted by: {submitter_name}\n\n{form_data['description']}"
     if onsite_note:
-        description = onsite_note + '\n\n' + description
+        description += f"\n\nOn-site or Remote: {form_data.get('onsite_or_remote', 'N/A')}"
 
     # Board/item/status mapping
     REQUEST_TYPE_TO_ITEM = {

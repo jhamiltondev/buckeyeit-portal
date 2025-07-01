@@ -223,6 +223,14 @@ def submit_ticket_view(request):
             print("[DEBUG] create_connectwise_ticket returned:", cw_result)
             if cw_result:
                 messages.success(request, 'Thank you for your submission! We have received your request and will be assigning a technician shortly. If it is during normal business hours (M-F 8:00a-5:00p, excluding Federal holidays), a technician will begin working on your ticket as soon as possible and will reach out via phone or email if more information is needed. If this request was received outside of normal hours, our team will triage your request once we return to the office.')
+                # When saving the Ticket in the portal, set description to a short label
+                ticket = Ticket.objects.create(
+                    user=request.user,
+                    tenant=getattr(request.user, 'tenant', None),
+                    subject=form.cleaned_data['request_type'],
+                    description=form.cleaned_data['request_type'],
+                    status='open',
+                )
                 return redirect('portal:support')
             else:
                 return render(request, 'portal/ticket_submit_error.html')
