@@ -253,6 +253,8 @@ def create_connectwise_ticket(form_data, user):
         subtype = REQUEST_TYPE_TO_SUBTYPE.get(form_data.get('request_type'), 'Email')
         if subtype not in HELPDESK_SUBTYPES:
             subtype = 'Email'
+    elif board == 'Implementation (MS)':
+        subtype = 'Account Managment'
     else:
         subtype = item
     # Build payload
@@ -295,13 +297,16 @@ def test_connectwise_fetch_by_email(email):
     import os
     from django.conf import settings
     import requests
+    import base64
     base_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/service/tickets"
     company_id = settings.CONNECTWISE_COMPANY_ID
     public_key = settings.CONNECTWISE_PUBLIC_KEY
     private_key = settings.CONNECTWISE_PRIVATE_KEY
     client_id = settings.CONNECTWISE_CLIENT_ID
+    auth_string = f"{company_id}+{public_key}:{private_key}"
+    auth_b64 = base64.b64encode(auth_string.encode()).decode()
     headers = {
-        'Authorization': f'Basic ' + requests.auth._basic_auth_str(f'{company_id}+{public_key}', private_key).split(' ')[1],
+        'Authorization': f'Basic {auth_b64}',
         'clientId': client_id,
         'Accept': 'application/json',
     }
@@ -324,14 +329,17 @@ def test_connectwise_fetch_by_contact_email(email):
     """Standalone test: Look up contact by email, then fetch tickets by contactId."""
     from django.conf import settings
     import requests
+    import base64
     # Step 1: Look up contact by email
     contacts_url = f"{settings.CONNECTWISE_SITE}/v4_6_release/apis/3.0/company/contacts"
     company_id = settings.CONNECTWISE_COMPANY_ID
     public_key = settings.CONNECTWISE_PUBLIC_KEY
     private_key = settings.CONNECTWISE_PRIVATE_KEY
     client_id = settings.CONNECTWISE_CLIENT_ID
+    auth_string = f"{company_id}+{public_key}:{private_key}"
+    auth_b64 = base64.b64encode(auth_string.encode()).decode()
     headers = {
-        'Authorization': f'Basic ' + requests.auth._basic_auth_str(f'{company_id}+{public_key}', private_key).split(' ')[1],
+        'Authorization': f'Basic {auth_b64}',
         'clientId': client_id,
         'Accept': 'application/json',
     }
