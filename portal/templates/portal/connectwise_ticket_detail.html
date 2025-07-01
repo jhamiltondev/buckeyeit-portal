@@ -46,7 +46,7 @@
                                             <i class="fa fa-clock me-1"></i>
                                             {{ note.dateCreated|date:'Y-m-d H:i' }}
                                         </div>
-                                        <div>{{ note.text }}</div>
+                                        <div>{{ note.text|safe }}</div>
                                     </div>
                                 {% empty %}
                                     <div class="small text-muted">No messages yet.</div>

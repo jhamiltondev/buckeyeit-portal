@@ -228,7 +228,7 @@ def submit_ticket_view(request):
                     user=request.user,
                     tenant=getattr(request.user, 'tenant', None),
                     subject=form.cleaned_data['request_type'],
-                    description=form.cleaned_data['request_type'],
+                    description=form.cleaned_data['description'],
                     status='open',
                 )
                 return redirect('portal:ticket_thank_you', ticket_id=ticket.id)
