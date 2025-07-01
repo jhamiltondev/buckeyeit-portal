@@ -23,6 +23,9 @@
             --sidebar-link: #1e293b;
             --sidebar-link-hover: var(--accent);
             --dropdown-shadow: 0 4px 16px rgba(37,99,235,0.10), 0 2px 8px rgba(0,0,0,0.06);
+            --banner-height: 64px;
+            --sidebar-width: 220px;
+            --content-max-width: 1200px;
         }
         html, body {
             font-family: 'Inter', Arial, sans-serif;
@@ -30,20 +33,29 @@
             color: #1e293b;
             font-size: 16px;
             letter-spacing: 0.01em;
+            height: 100%;
+            margin: 0;
+            padding: 0;
         }
-        h1, h2, h3, h4, h5, h6 {
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 0.5em;
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         .portal-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: var(--banner-height);
             background: var(--accent);
             color: #fff;
             box-shadow: var(--card-shadow);
-            padding: 1rem 2rem;
+            padding: 0 2rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            z-index: 1000;
         }
         .portal-banner-logo {
             height: 40px;
@@ -53,6 +65,75 @@
             font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: 0.02em;
+            color: #fff;
+        }
+        .user-btn, .portal-banner-username {
+            font-weight: 500;
+            color: #fff !important;
+            background: none;
+            border: none;
+            transition: color 0.2s;
+        }
+        .user-btn:hover, .user-btn:focus {
+            color: #dbeafe;
+        }
+        .portal-layout {
+            display: flex;
+            flex: 1 1 auto;
+            margin-top: var(--banner-height);
+            min-height: calc(100vh - var(--banner-height));
+        }
+        .portal-sidebar {
+            position: fixed;
+            top: var(--banner-height);
+            left: 0;
+            width: var(--sidebar-width);
+            height: calc(100vh - var(--banner-height));
+            background: var(--sidebar-bg);
+            box-shadow: var(--card-shadow);
+            padding-top: 1.5rem;
+            border-right: 1px solid var(--divider);
+            z-index: 900;
+            overflow-y: auto;
+        }
+        .portal-main {
+            margin-left: var(--sidebar-width);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: calc(100vh - var(--banner-height));
+        }
+        .main-content {
+            width: 100%;
+            max-width: var(--content-max-width);
+            margin: 2.5rem auto 2rem auto;
+            padding: 0 2rem;
+            background: transparent;
+            min-height: 60vh;
+            transition: opacity 0.4s;
+        }
+        .main-content.fade-out {
+            opacity: 0;
+        }
+        .main-content.fade-in {
+            opacity: 1;
+        }
+        .footer {
+            width: 100%;
+            background: #222;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0 0.5rem 0;
+            font-size: 0.98em;
+            letter-spacing: 0.01em;
+            margin-top: auto;
+            position: static;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5em;
         }
         .user-btn {
             font-weight: 500;
@@ -79,13 +160,6 @@
         .dropdown-item:hover, .dropdown-item:focus {
             background: var(--accent-hover);
             color: #fff;
-        }
-        .portal-sidebar {
-            background: var(--sidebar-bg);
-            box-shadow: var(--card-shadow);
-            padding-top: 1.5rem;
-            min-width: 220px;
-            border-right: 1px solid var(--divider);
         }
         .sidebar-link {
             color: var(--sidebar-link);
@@ -116,11 +190,6 @@
         .sidebar-divider {
             border-top: 1px solid var(--divider);
             margin: 1.5rem 0;
-        }
-        .main-content {
-            padding: 2.5rem 2rem 2rem 2rem;
-            background: #f3f4f6;
-            min-height: 100vh;
         }
         .card, .portal-panel-card {
             background: var(--card-bg);
