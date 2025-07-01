@@ -224,10 +224,11 @@ def submit_ticket_view(request):
             if cw_result:
                 messages.success(request, 'Your support ticket has been submitted and routed to our team!')
             else:
+                print("[ERROR] create_connectwise_ticket returned None. Ticket not created.")
                 messages.error(request, 'There was an error submitting your ticket to ConnectWise. Please try again or contact support.')
             return redirect('portal:support')
         else:
-            print("[DEBUG] SupportTicketForm is invalid. Errors:", form.errors)
+            print("[ERROR] SupportTicketForm is invalid. Errors:", form.errors)
     else:
         form = SupportTicketForm()
     return render(request, 'portal/submit_ticket.html', {'form': form})
