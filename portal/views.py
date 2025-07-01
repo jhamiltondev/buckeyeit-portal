@@ -23,7 +23,7 @@ logger = logging.getLogger('portal.views')
 
 # Create your views here.
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def dashboard(request, tenant_slug=None):
     logger.info(f"Dashboard accessed by user: {request.user.email}")
     
@@ -160,7 +160,7 @@ def login_view(request):
     
     return render(request, 'portal/login.html')
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def password_view(request):
     return render(request, 'portal/password.html')
 
@@ -181,7 +181,7 @@ def debug_urls(request):
     url_names = [str(k) for k in get_resolver().reverse_dict.keys()]
     return HttpResponse("<br>".join(url_names))
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def support_view(request):
     # Only show open ConnectWise tickets (not Closed, Pending Close, or Closed - Silent)
     cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
@@ -211,7 +211,7 @@ def support_view(request):
         'closed_cw_tickets': closed_cw_tickets
     })
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def submit_ticket_view(request):
     print("[DEBUG] submit_ticket_view called, method:", request.method)
     if request.method == 'POST':
@@ -232,7 +232,7 @@ def submit_ticket_view(request):
         form = SupportTicketForm()
     return render(request, 'portal/submit_ticket.html', {'form': form})
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def knowledge_base_view(request):
     categories = KnowledgeBaseCategory.objects.all()
     # Trending articles are global (most viewed by all users)
@@ -242,7 +242,7 @@ def knowledge_base_view(request):
         'trending_articles': articles,
     })
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def knowledge_article_view(request, article_id):
     article = KnowledgeBaseArticle.objects.get(pk=article_id)
     # Increment view count
@@ -250,7 +250,7 @@ def knowledge_article_view(request, article_id):
     article.save(update_fields=['view_count'])
     return render(request, 'portal/knowledge_article.html', {'article': article})
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def profile_view(request):
     user = request.user
     tenant = getattr(user, 'tenant', None)
@@ -295,7 +295,7 @@ def profile_view(request):
         'password_success': password_success,
     })
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def company_info_view(request):
     tenant = getattr(request.user, 'tenant', None)
     if not tenant:
@@ -324,7 +324,7 @@ def company_info_view(request):
         'is_admin': is_admin,
     })
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def announcements_view(request):
     # Pinned announcement (if any)
     pinned = Announcement.objects.filter(is_active=True, pinned=True).order_by('-created_at').first()
@@ -335,7 +335,7 @@ def announcements_view(request):
         'feed': feed,
     })
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def debug_tech_news(request):
     """Debug view to test tech news functionality"""
     logger.info("Debug tech news view accessed")
@@ -361,7 +361,7 @@ def debug_tech_news(request):
         'debug_info': debug_info,
     })
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def all_tickets_view(request):
     local_open = Ticket.objects.filter(user=request.user).exclude(status__in=['resolved']).order_by('-created_at')
     cw_open = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
@@ -371,7 +371,7 @@ def all_tickets_view(request):
             cw_ticket_notes[t['id']] = get_connectwise_ticket_notes(t['id'])
     return render(request, 'portal/all_tickets.html', {'tickets': local_open, 'cw_tickets': cw_open, 'cw_ticket_notes': cw_ticket_notes})
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def connectwise_ticket_detail(request, ticket_id):
     ticket = get_connectwise_ticket(ticket_id)
     if not ticket:
@@ -437,7 +437,7 @@ def connectwise_ticket_detail(request, ticket_id):
         'is_tech': is_tech
     })
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def notifications_api(request):
     """API endpoint for notifications - used by live update JavaScript"""
     user_email = request.user.email.lower()
@@ -516,7 +516,7 @@ def notifications_api(request):
         'notifications': notifications
     })
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def dashboard_tickets_api(request):
     """API endpoint for dashboard recent tickets - used by live update JavaScript"""
     # Only open ConnectWise tickets
@@ -527,7 +527,7 @@ def dashboard_tickets_api(request):
         'tickets': cw_tickets
     })
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def dashboard_tech_news_api(request):
     """API endpoint for dashboard tech news - used by live update JavaScript"""
     tech_news = get_tech_news()
@@ -536,7 +536,7 @@ def dashboard_tech_news_api(request):
         'articles': tech_news
     })
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def dashboard_announcements_api(request):
     """API endpoint for dashboard announcements - used by live update JavaScript"""
     announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')
@@ -553,7 +553,7 @@ def dashboard_announcements_api(request):
         'announcements': announcements_data
     })
 
-@login_required
+@login_required(login_url='/adminpanel/login/')
 def support_tickets_api(request):
     """API endpoint for support page tickets - used by live update JavaScript"""
     # Only show open ConnectWise tickets

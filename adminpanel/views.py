@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def dashboard(request):
     User = get_user_model()
     
@@ -78,52 +78,52 @@ def dashboard(request):
     }
     return render(request, 'adminpanel/dashboard.html', context)
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def users(request):
     return render(request, 'adminpanel/users.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def groups(request):
     return render(request, 'adminpanel/groups.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def tenants(request):
     return render(request, 'adminpanel/tenants.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def tenant_documents(request):
     return render(request, 'adminpanel/tenant_documents.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def kb_articles(request):
     return render(request, 'adminpanel/kb_articles.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def kb_categories(request):
     return render(request, 'adminpanel/kb_categories.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def tickets(request):
     return render(request, 'adminpanel/tickets.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def announcements(request):
     return render(request, 'adminpanel/announcements.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def social_accounts(request):
     return render(request, 'adminpanel/social_accounts.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def social_tokens(request):
     return render(request, 'adminpanel/social_tokens.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def social_apps(request):
     return render(request, 'adminpanel/social_apps.html')
 
 # Users
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def users_active(request):
     User = get_user_model()
     users = User.objects.select_related('tenant').all().order_by('first_name', 'last_name')
@@ -139,7 +139,7 @@ def users_active(request):
     }
     return render(request, 'adminpanel/users_active.html', context)
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def users_pending(request):
     pending_requests = PendingUserApproval.objects.select_related('tenant', 'requested_by').filter(status='pending').order_by('-submitted_on')
     tenants = Tenant.objects.all().order_by('name')
@@ -151,83 +151,83 @@ def users_pending(request):
     }
     return render(request, 'adminpanel/users_pending.html', context)
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def users_invitations(request):
     return render(request, 'adminpanel/users_invitations.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def users_deactivated(request):
     return render(request, 'adminpanel/users_deactivated.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def users_audit(request):
     return render(request, 'adminpanel/users_audit.html')
 
 # Tenants
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def tenant_settings(request):
     return render(request, 'adminpanel/tenant_settings.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def tenant_activity(request):
     return render(request, 'adminpanel/tenant_activity.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def tenant_customization(request):
     return render(request, 'adminpanel/tenant_customization.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def tenant_staff(request):
     return render(request, 'adminpanel/tenant_staff.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def tenant_automation(request):
     return render(request, 'adminpanel/tenant_automation.html')
 
 # Knowledge Base
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def kb_feedback(request):
     return render(request, 'adminpanel/kb_feedback.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def kb_drafts(request):
     return render(request, 'adminpanel/kb_drafts.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def kb_suggested(request):
     return render(request, 'adminpanel/kb_suggested.html')
 
 # Support
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def service_health(request):
     return render(request, 'adminpanel/service_health.html')
 
 # Admin Center
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def platform_settings(request):
     return render(request, 'adminpanel/platform_settings.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def social_identity(request):
     return render(request, 'adminpanel/social_identity.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def api_integration(request):
     return render(request, 'adminpanel/api_integration.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def audit_logs(request):
     return render(request, 'adminpanel/audit_logs.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def role_manager(request):
     return render(request, 'adminpanel/role_manager.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def system_health(request):
     return render(request, 'adminpanel/system_health.html')
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def user_details(request, user_id):
     User = get_user_model()
     user = User.objects.select_related('tenant').get(id=user_id)
@@ -251,7 +251,7 @@ def user_details(request, user_id):
     }
     return JsonResponse(data)
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def edit_user(request, user_id):
     User = get_user_model()
     user = User.objects.get(id=user_id)
@@ -264,14 +264,14 @@ def edit_user(request, user_id):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False})
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def delete_user(request, user_id):
     User = get_user_model()
     user = User.objects.get(id=user_id)
     user.delete()
     return JsonResponse({'success': True})
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def disable_user(request, user_id):
     User = get_user_model()
     user = User.objects.get(id=user_id)
@@ -279,7 +279,7 @@ def disable_user(request, user_id):
     user.save()
     return JsonResponse({'success': True})
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 @require_POST
 @csrf_exempt
 def approve_pending_user(request, approval_id):
@@ -292,7 +292,7 @@ def approve_pending_user(request, approval_id):
     except PendingUserApproval.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Request not found.'}, status=404)
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 @require_POST
 @csrf_exempt
 def deny_pending_user(request, approval_id):
@@ -308,7 +308,7 @@ def deny_pending_user(request, approval_id):
     except PendingUserApproval.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Request not found.'}, status=404)
 
-@staff_member_required
+@staff_member_required(login_url='/adminpanel/login/')
 def pending_user_details(request, approval_id):
     from portal.models import PendingUserApproval
     try:
