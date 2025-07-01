@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(90deg, #1976d2 0%, #1565c0 100%);
+            background: linear-gradient(120deg, #f44336 0%, #c8102e 100%); /* Soft red gradient */
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -22,26 +22,35 @@
             max-width: 400px;
             width: 100%;
         }
+        .admin-login-logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .admin-login-logo img {
+            max-width: 120px;
+            height: auto;
+        }
         .admin-login-title {
             text-align: center;
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
-            color: #1976d2;
+            color: #c8102e;
         }
         .btn-primary {
-            background-color: #1976d2;
+            background-color: #c8102e;
             border: none;
         }
         .btn-primary:hover {
-            background-color: #1565c0;
+            background-color: #a50d23;
         }
         .form-label {
             font-weight: 600;
         }
         .form-control:focus {
-            border-color: #1976d2;
-            box-shadow: 0 0 0 0.2rem rgba(25,118,210,0.15);
+            border-color: #c8102e;
+            box-shadow: 0 0 0 0.2rem rgba(200,16,46,0.15);
         }
         .login-error {
             color: #c8102e;
@@ -53,8 +62,11 @@
 </head>
 <body>
     <div class="admin-login-card">
+        <div class="admin-login-logo">
+            <img src="/static/portal/assets/buckeye-logo.png" alt="Buckeye IT Logo">
+        </div>
         <div class="admin-login-title">
-            <i class="fas fa-shield-alt me-2"></i>Buckeye IT Admin Center
+            Buckeye IT Admin Center
         </div>
         {% if form.errors %}
             <div class="login-error">Invalid username or password.</div>
