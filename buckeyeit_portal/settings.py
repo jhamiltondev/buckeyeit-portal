@@ -146,8 +146,8 @@ AUTH_USER_MODEL = 'portal.User'
 
 # django-allauth config
 SITE_ID = 1
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/admin/login/'
+LOGIN_REDIRECT_URL = '/adminpanel/'
+LOGOUT_REDIRECT_URL = '/adminpanel/login/'
 LOGIN_URL = '/adminpanel/login/'
 
 # Email verification settings for allauth
@@ -217,11 +217,11 @@ JAZZMIN_SETTINGS = {
     ],
     "hide_apps": ["allauth.account"],
     "hide_models": ["allauth.account.EmailAddress"],
-    "custom_links": {
-        "portal.Tenant": [
-            {"name": "Create Tenant", "url": "admin:portal_tenant_add", "icon": "fas fa-plus-circle"},
-        ],
-    },
+    #    "custom_links": {
+    #        "portal.Tenant": [
+    #            {"name": "Create Tenant", "url": "admin:portal_tenant_add", "icon": "fas fa-plus-circle"},
+    #        ],
+    #    },
     "side_menu": [
         {"label": "Users", "icon": "fas fa-user", "models": [
             {"model": "portal.user", "label": "Active Users"},
