@@ -231,7 +231,7 @@ def submit_ticket_view(request):
                     description=form.cleaned_data['request_type'],
                     status='open',
                 )
-                return redirect('portal:support')
+                return redirect('portal:ticket_thank_you', ticket_id=ticket.id)
             else:
                 return render(request, 'portal/ticket_submit_error.html')
         else:

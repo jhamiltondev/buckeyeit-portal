@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %}{{ article.title }} | Knowledge Base{% endblock %}
 {% block content %}
+<a href="{% url 'portal:support' %}" class="btn btn-link mb-3" style="font-size:1.2rem;"><i class="fa fa-arrow-left"></i> Back to Support</a>
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-lg-8">

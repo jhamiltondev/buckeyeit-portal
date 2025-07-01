@@ -180,12 +180,17 @@ def create_connectwise_ticket(form_data, user):
         onsite_note = 'User requests onsite visit.'
     elif form_data.get('onsite_or_remote') == 'Remote Support':
         onsite_note = 'User requests remote support.'
-    # Build description with submitter info
+    # Build formatted note/message
     submitter_name = user.get_full_name() or user.username or user.email
-    description = f"Submitted by: {submitter_name}\n\n{form_data['description']}"
-    if onsite_note:
-        description += f"\n\nOn-site or Remote: {form_data.get('onsite_or_remote', 'N/A')}"
-
+    issue_request = form_data['description']
+    onsite_or_remote = form_data.get('onsite_or_remote', 'N/A')
+    # Markdown for ConnectWise
+    note_markdown = f"**Submitted By:** {submitter_name}\n\n**Issue/Request:** {issue_request}\n\n---\n\n**On-site or Remote:** {onsite_or_remote}"
+    # HTML for portal
+    note_html = f"<strong>Submitted By:</strong> {submitter_name}<br><strong>Issue/Request:</strong> {issue_request}<hr style='margin:8px 0;'><strong>On-site or Remote:</strong> {onsite_or_remote}"
+    description = note_markdown
+    # For portal ticket description, use a short label
+    portal_ticket_description = f"New User Setup for {issue_request.split('for')[-1].strip()}" if 'new user setup' in issue_request.lower() else form_data['request_type']
     # Board/item/status mapping
     REQUEST_TYPE_TO_ITEM = {
         'Technical Issue': 'Software / Drivers',
