@@ -125,6 +125,9 @@ def social_apps(request):
 def users_active(request):
     User = get_user_model()
     users = User.objects.select_related('tenant').all().order_by('first_name', 'last_name')
+    # Add group_names attribute to each user
+    for user in users:
+        user.group_names = list(user.groups.values_list('name', flat=True))
     tenants = Tenant.objects.all().order_by('name')
     total_users = users.count()
     context = {

@@ -124,7 +124,7 @@
                                     <td>
                                         {% if user.is_superuser %}<span class="badge bg-danger">Superuser</span>
                                         {% elif user.is_staff %}<span class="badge bg-secondary">Admin</span>
-                                        {% elif 'POC' in user.groups.values_list('name', flat=True) %}<span class="badge bg-primary">POC</span>
+                                        {% elif 'POC' in user.group_names %}<span class="badge bg-primary">POC</span>
                                         {% else %}<span class="badge bg-light text-dark border">Viewer</span>{% endif %}
                                     </td>
                                     <td>
