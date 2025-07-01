@@ -584,3 +584,6 @@ def support_tickets_api(request):
     return JsonResponse({
         'tickets': cw_tickets
     })
+
+def ticket_thank_you_view(request, ticket_id):
+    return render(request, 'portal/ticket_submit_thank_you.html', {'ticket_id': ticket_id})

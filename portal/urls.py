@@ -31,4 +31,5 @@ urlpatterns = [
     path('api/dashboard/tech-news/', dashboard_tech_news_api, name='dashboard_tech_news_api'),
     path('api/dashboard/announcements/', dashboard_announcements_api, name='dashboard_announcements_api'),
     path('api/support/tickets/', support_tickets_api, name='support_tickets_api'),
+    path('support/thank-you/<int:ticket_id>/', views.ticket_thank_you_view, name='ticket_thank_you'),
 ] 
