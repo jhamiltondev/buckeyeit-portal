@@ -177,7 +177,10 @@ def create_connectwise_ticket(form_data, user):
         onsite_note = 'User requests onsite visit.'
     elif form_data.get('onsite_or_remote') == 'Remote Support':
         onsite_note = 'User requests remote support.'
-    description = form_data['description']
+    # Build description with submitter info
+    submitter_name = user.get_full_name() or user.username or user.email
+    submitter_email = user.email
+    description = f"Submitted by: {submitter_name} ({submitter_email})\n\n{form_data['description']}"
     if onsite_note:
         description = onsite_note + '\n\n' + description
 
