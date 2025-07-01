@@ -218,10 +218,20 @@ def create_connectwise_ticket(form_data, user):
         'Other': 'Email',
         'New User Setup': 'Account Managment',
     }
-    # Use Implementation (MS) for General Inquiry/Other, else Help Desk (MS)
-    board = 'Help Desk (MS)'
-    if form_data.get('request_type') in ['General Inquiry', 'Other']:
+    # Board/type mapping based on request type
+    INCIDENT_TYPES = [
+        'Technical Issue',
+        'Password Reset',
+        'Software Installation',
+        'Hardware Problem',
+        'Network Issue',
+    ]
+    if form_data.get('request_type') in INCIDENT_TYPES:
+        board = 'Help Desk (MS)'
+        ticket_type = 'Incident'
+    else:
         board = 'Implementation (MS)'
+        ticket_type = 'Request'
     item = REQUEST_TYPE_TO_ITEM.get(form_data.get('request_type'), 'Software / Drivers')
     status = 'Needs Worked'
     # Priority mapping (as before)
@@ -248,7 +258,7 @@ def create_connectwise_ticket(form_data, user):
         "summary": summary,
         "board": {"name": board},
         "status": {"name": status},
-        "type": {"name": "Incident"},
+        "type": {"name": ticket_type},
         "item": {"name": item},
         "priority": {"name": priority},
         "source": {"name": "Portal"},
