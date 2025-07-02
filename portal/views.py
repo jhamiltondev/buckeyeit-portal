@@ -490,6 +490,8 @@ def notifications_api(request):
             'last_checked': timezone.now(),
         })
         if not created and seen.last_status_id != current_status_id:
+            print(f"[DEBUG][Notifications] Status change detected for user {request.user.email}, ticket {ticket_id}: {seen.last_status_id} -> {current_status_id} ({seen.last_status_name} -> {current_status_name})")
+            print(f"[DEBUG][Notifications] TicketStatusSeen record: {seen}")
             # Status changed, trigger notification
             notifications.append({
                 'ticket_id': ticket_id,
