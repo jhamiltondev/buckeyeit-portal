@@ -410,7 +410,39 @@
             if (localStorage.getItem('adminNightMode') === '1') {
                 setNightMode(true);
             }
+
+            // SPA AJAX navigation with fade animation (event delegation)
+            document.body.addEventListener('click', function(e) {
+                var target = e.target;
+                // Traverse up if icon or span is clicked
+                while (target && target.tagName !== 'A') {
+                    target = target.parentElement;
+                }
+                if (target && target.matches('a[data-url]')) {
+                    e.preventDefault();
+                    var url = target.getAttribute('data-url');
+                    if (!url) return;
+                    var mainContent = document.getElementById('mainContent');
+                    if (!mainContent) return;
+                    mainContent.classList.add('fade-out');
+                    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                        .then(response => response.text())
+                        .then(html => {
+                            setTimeout(() => {
+                                mainContent.innerHTML = html;
+                                mainContent.classList.remove('fade-out');
+                                mainContent.classList.add('fade-in');
+                                setTimeout(() => mainContent.classList.remove('fade-in'), 300);
+                            }, 300);
+                        });
+                    history.pushState(null, '', url);
+                }
+            });
         });
     </script>
+    <style>
+    #mainContent.fade-out { opacity: 0; transition: opacity 0.3s; }
+    #mainContent.fade-in { opacity: 1; transition: opacity 0.3s; }
+    </style>
 </body>
 </html> 
