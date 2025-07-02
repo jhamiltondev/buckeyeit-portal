@@ -10,6 +10,8 @@ from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
+import pytz
+from datetime import datetime
 
 # Create your views here.
 
@@ -26,10 +28,13 @@ def dashboard(request):
     # Recent Admin Activity - Real user activity
     recent_users = User.objects.filter(last_login__isnull=False).order_by('-last_login')[:5]
     recent_admin_activity = []
-    
+    eastern = pytz.timezone('US/Eastern')
     for user in recent_users:
         if user.last_login:
-            recent_admin_activity.append(f"{user.get_full_name() or user.username} logged in at {user.last_login.strftime('%M %d, %Y %H:%M')}")
+            # Convert to EST and format as 'Mon/DD/YYYY h:mm AM/PM EST'
+            dt_est = user.last_login.astimezone(eastern)
+            formatted = dt_est.strftime('%b/%d/%Y %I:%M %p EST')
+            recent_admin_activity.append(f"{user.get_full_name() or user.username} logged in at {formatted}")
     
     # If no recent activity, show placeholder
     if not recent_admin_activity:
