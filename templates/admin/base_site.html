@@ -1,4 +1,5 @@
 {% extends "admin/base_site.html" %}
+{% load static %}
 
 {% block sidebar %}
 <aside class="custom-admin-sidebar" id="customSidebar">
@@ -52,6 +53,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Restore open section from localStorage
         var openSection = localStorage.getItem('adminSidebarOpenSection');
+        console.log('[Sidebar] Restoring open section:', openSection);
         document.querySelectorAll('.sidebar-section').forEach(function(section) {
             var submenu = section.querySelector('.sidebar-submenu');
             var caret = section.querySelector('.sidebar-caret');
@@ -64,6 +66,7 @@
                         section.classList.add('open');
                         submenu.style.display = 'block';
                         submenu.style.maxHeight = submenu.scrollHeight + 'px';
+                        console.log('[Sidebar] Opened section:', openSection);
                     } else {
                         submenu.style.maxHeight = '0';
                         submenu.style.overflow = 'hidden';
@@ -78,6 +81,7 @@
                     caret.classList.add('open');
                     section.classList.add('open');
                     submenu.style.display = 'block';
+                    console.log('[Sidebar] Defaulted to Users section');
                 }
                 section.querySelector('.sidebar-link').addEventListener('click', function(e) {
                     e.preventDefault();
@@ -107,6 +111,7 @@
                         section.classList.add('open');
                         // Save open section to localStorage
                         localStorage.setItem('adminSidebarOpenSection', section.dataset.section);
+                        console.log('[Sidebar] Set open section:', section.dataset.section);
                     } else {
                         submenu.style.maxHeight = '0';
                         submenu.style.opacity = '0';
@@ -117,6 +122,7 @@
                         section.classList.remove('open');
                         // Remove from localStorage if closed
                         localStorage.removeItem('adminSidebarOpenSection');
+                        console.log('[Sidebar] Cleared open section');
                     }
                 });
             }
@@ -153,12 +159,14 @@
 {% endblock %}
 
 {% block content %}
+<div id="mainContent">
     {{ block.super }}
+</div>
 {% endblock %}
 
 {% block extrahead %}
     {{ block.super }}
-    <link rel="icon" type="image/png" href="/static/portal/assets/favicon.png">
+    <link rel="icon" type="image/png" href="{% static 'portal/assets/favicon.png' %}">
     <style>
         .custom-admin-sidebar {
             background: #f4f6fa;
@@ -343,4 +351,33 @@
             }
         }
     </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.sidebar-link[data-url]').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const url = this.getAttribute('data-url');
+        if (!url) return;
+        const mainContent = document.getElementById('mainContent');
+        mainContent.classList.add('fade-out');
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(response => response.text())
+            .then(html => {
+                setTimeout(() => {
+                    mainContent.innerHTML = html;
+                    mainContent.classList.remove('fade-out');
+                    mainContent.classList.add('fade-in');
+                    setTimeout(() => mainContent.classList.remove('fade-in'), 300);
+                }, 300);
+            });
+        history.pushState(null, '', url);
+    });
+});
+</script>
+<style>
+#mainContent.fade-out { opacity: 0; transition: opacity 0.3s; }
+#mainContent.fade-in { opacity: 1; transition: opacity 0.3s; }
+</style>
 {% endblock %} 

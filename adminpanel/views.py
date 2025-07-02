@@ -87,6 +87,8 @@ def dashboard(request):
         "integrations": integrations,
         "automation_failures": automation_failures,
     }
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'adminpanel/partials/dashboard.html', context)
     return render(request, 'adminpanel/dashboard.html', context)
 
 @staff_member_required(login_url='/adminpanel/login/')
@@ -95,10 +97,14 @@ def users(request):
 
 @staff_member_required(login_url='/adminpanel/login/')
 def groups(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'adminpanel/partials/groups.html')
     return render(request, 'adminpanel/groups.html')
 
 @staff_member_required(login_url='/adminpanel/login/')
 def tenants(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'adminpanel/partials/tenants.html')
     return render(request, 'adminpanel/tenants.html')
 
 @staff_member_required(login_url='/adminpanel/login/')
@@ -107,6 +113,8 @@ def tenant_documents(request):
 
 @staff_member_required(login_url='/adminpanel/login/')
 def kb_articles(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'adminpanel/partials/kb_articles.html')
     return render(request, 'adminpanel/kb_articles.html')
 
 @staff_member_required(login_url='/adminpanel/login/')
@@ -115,6 +123,8 @@ def kb_categories(request):
 
 @staff_member_required(login_url='/adminpanel/login/')
 def tickets(request):
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'adminpanel/partials/tickets.html')
     return render(request, 'adminpanel/tickets.html')
 
 @staff_member_required(login_url='/adminpanel/login/')
@@ -148,6 +158,8 @@ def users_active(request):
         'tenants': tenants,
         'total_users': total_users,
     }
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'adminpanel/partials/users_active.html', context)
     return render(request, 'adminpanel/users_active.html', context)
 
 @staff_member_required(login_url='/adminpanel/login/')
@@ -160,6 +172,8 @@ def users_pending(request):
         'tenants': tenants,
         'roles': roles,
     }
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'adminpanel/partials/users_pending.html', context)
     return render(request, 'adminpanel/users_pending.html', context)
 
 @staff_member_required(login_url='/adminpanel/login/')

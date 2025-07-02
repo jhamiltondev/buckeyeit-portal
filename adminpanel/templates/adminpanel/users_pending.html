@@ -134,13 +134,22 @@ window.addEventListener('DOMContentLoaded', function() {
 {% endblock %}
 
 <style>
+/* Ensure the flex container aligns items center */
+.row.mb-3 > .col-auto.d-flex {
+    align-items: center !important;
+}
+/* Explicitly set button height and line-height for just these buttons */
 .btn.btn-primary,
 .btn.btn-outline-success {
-    height: 40px;
+    height: 40px !important;
+    line-height: 1.5 !important;
     min-width: 120px;
     font-size: 1rem;
     padding: 0 20px;
     border-radius: 6px;
     box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 </style> 

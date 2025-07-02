@@ -261,57 +261,57 @@
         <ul class="sidebar-menu">
             <!-- Home -->
             <li class="sidebar-section">
-                <a href="{% url 'adminpanel:dashboard' %}" class="sidebar-link"><i class="fas fa-home"></i> Home</a>
+                <a href="{% url 'adminpanel:dashboard' %}" class="sidebar-link" data-url="{% url 'adminpanel:dashboard' %}"><i class="fas fa-home"></i> Home</a>
             </li>
             <!-- Users -->
             <li class="sidebar-section" data-section="users">
                 <a href="#" class="sidebar-link"><i class="fas fa-users"></i> Users <span class="sidebar-caret"></span></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="{% url 'adminpanel:users_active' %}">Active Users</a></li>
-                    <li><a href="{% url 'adminpanel:users_pending' %}">Pending Approvals</a></li>
-                    <li><a href="{% url 'adminpanel:users_invitations' %}">Invitations/Registration Logs</a></li>
-                    <li><a href="{% url 'adminpanel:groups' %}">Groups</a></li>
-                    <li><a href="{% url 'adminpanel:users_deactivated' %}">Deactivated Users</a></li>
-                    <li><a href="{% url 'adminpanel:users_audit' %}">Audit Logs</a></li>
+                    <li><a href="{% url 'adminpanel:users_active' %}" data-url="{% url 'adminpanel:users_active' %}">Active Users</a></li>
+                    <li><a href="{% url 'adminpanel:users_pending' %}" data-url="{% url 'adminpanel:users_pending' %}">Pending Approvals</a></li>
+                    <li><a href="{% url 'adminpanel:users_invitations' %}" data-url="{% url 'adminpanel:users_invitations' %}">Invitations/Registration Logs</a></li>
+                    <li><a href="{% url 'adminpanel:groups' %}" data-url="{% url 'adminpanel:groups' %}">Groups</a></li>
+                    <li><a href="{% url 'adminpanel:users_deactivated' %}" data-url="{% url 'adminpanel:users_deactivated' %}">Deactivated Users</a></li>
+                    <li><a href="{% url 'adminpanel:users_audit' %}" data-url="{% url 'adminpanel:users_audit' %}">Audit Logs</a></li>
                 </ul>
             </li>
             <!-- Tenants -->
             <li class="sidebar-section" data-section="tenants">
                 <a href="#" class="sidebar-link"><i class="fas fa-building"></i> Tenants <span class="sidebar-caret"></span></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="{% url 'adminpanel:tenants' %}">All Tenants</a></li>
-                    <li><a href="{% url 'adminpanel:tenant_documents' %}">Tenant Documents</a></li>
-                    <li><a href="{% url 'adminpanel:tenant_settings' %}">Tenant Settings</a></li>
-                    <li><a href="{% url 'adminpanel:tenant_activity' %}">Tenant Activity</a></li>
-                    <li><a href="{% url 'adminpanel:tenant_customization' %}">Tenant Portal Customization</a></li>
-                    <li><a href="{% url 'adminpanel:tenant_staff' %}">Assigned Staff / Contacts</a></li>
-                    <li><a href="{% url 'adminpanel:tenant_automation' %}">Automation Status</a></li>
+                    <li><a href="{% url 'adminpanel:tenants' %}" data-url="{% url 'adminpanel:tenants' %}">All Tenants</a></li>
+                    <li><a href="{% url 'adminpanel:tenant_documents' %}" data-url="{% url 'adminpanel:tenant_documents' %}">Tenant Documents</a></li>
+                    <li><a href="{% url 'adminpanel:tenant_settings' %}" data-url="{% url 'adminpanel:tenant_settings' %}">Tenant Settings</a></li>
+                    <li><a href="{% url 'adminpanel:tenant_activity' %}" data-url="{% url 'adminpanel:tenant_activity' %}">Tenant Activity</a></li>
+                    <li><a href="{% url 'adminpanel:tenant_customization' %}" data-url="{% url 'adminpanel:tenant_customization' %}">Tenant Portal Customization</a></li>
+                    <li><a href="{% url 'adminpanel:tenant_staff' %}" data-url="{% url 'adminpanel:tenant_staff' %}">Assigned Staff / Contacts</a></li>
+                    <li><a href="{% url 'adminpanel:tenant_automation' %}" data-url="{% url 'adminpanel:tenant_automation' %}">Automation Status</a></li>
                 </ul>
             </li>
             <!-- Knowledge Base -->
             <li class="sidebar-section" data-section="kb">
                 <a href="#" class="sidebar-link"><i class="fas fa-book"></i> Knowledge Base <span class="sidebar-caret"></span></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="{% url 'adminpanel:kb_articles' %}">Articles</a></li>
-                    <li><a href="{% url 'adminpanel:kb_categories' %}">Categories</a></li>
-                    <li><a href="{% url 'adminpanel:kb_feedback' %}">Feedback & Ratings</a></li>
-                    <li><a href="{% url 'adminpanel:kb_drafts' %}">Drafts/Review Queue</a></li>
-                    <li><a href="{% url 'adminpanel:kb_suggested' %}">Suggested Articles</a></li>
+                    <li><a href="{% url 'adminpanel:kb_articles' %}" data-url="{% url 'adminpanel:kb_articles' %}">Articles</a></li>
+                    <li><a href="{% url 'adminpanel:kb_categories' %}" data-url="{% url 'adminpanel:kb_categories' %}">Categories</a></li>
+                    <li><a href="{% url 'adminpanel:kb_feedback' %}" data-url="{% url 'adminpanel:kb_feedback' %}">Feedback & Ratings</a></li>
+                    <li><a href="{% url 'adminpanel:kb_drafts' %}" data-url="{% url 'adminpanel:kb_drafts' %}">Drafts/Review Queue</a></li>
+                    <li><a href="{% url 'adminpanel:kb_suggested' %}" data-url="{% url 'adminpanel:kb_suggested' %}">Suggested Articles</a></li>
                 </ul>
             </li>
             <!-- Announcements -->
             <li class="sidebar-section" data-section="announcements">
                 <a href="#" class="sidebar-link"><i class="fas fa-bullhorn"></i> Announcements <span class="sidebar-caret"></span></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="{% url 'adminpanel:announcements' %}">All Announcements</a></li>
+                    <li><a href="{% url 'adminpanel:announcements' %}" data-url="{% url 'adminpanel:announcements' %}">All Announcements</a></li>
                 </ul>
             </li>
             <!-- Support -->
             <li class="sidebar-section" data-section="support">
                 <a href="#" class="sidebar-link"><i class="fas fa-headset"></i> Support <span class="sidebar-caret"></span></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="{% url 'adminpanel:tickets' %}">Tickets</a></li>
-                    <li><a href="{% url 'adminpanel:service_health' %}">Service Health</a></li>
+                    <li><a href="{% url 'adminpanel:tickets' %}" data-url="{% url 'adminpanel:tickets' %}">Tickets</a></li>
+                    <li><a href="{% url 'adminpanel:service_health' %}" data-url="{% url 'adminpanel:service_health' %}">Service Health</a></li>
                 </ul>
             </li>
             <!-- Automation -->
@@ -328,12 +328,12 @@
             <li class="sidebar-section" data-section="admincenters">
                 <a href="#" class="sidebar-link"><i class="fas fa-shield-alt"></i> Admin Center <span class="sidebar-caret"></span></a>
                 <ul class="sidebar-submenu">
-                    <li><a href="{% url 'adminpanel:platform_settings' %}">Platform Settings</a></li>
-                    <li><a href="{% url 'adminpanel:social_identity' %}">Social Login & Identity</a></li>
-                    <li><a href="{% url 'adminpanel:api_integration' %}">API Integration</a></li>
-                    <li><a href="{% url 'adminpanel:audit_logs' %}">Audit Logs</a></li>
-                    <li><a href="{% url 'adminpanel:role_manager' %}">Role & Permission Manager</a></li>
-                    <li><a href="{% url 'adminpanel:system_health' %}">System Health / Monitor</a></li>
+                    <li><a href="{% url 'adminpanel:platform_settings' %}" data-url="{% url 'adminpanel:platform_settings' %}">Platform Settings</a></li>
+                    <li><a href="{% url 'adminpanel:social_identity' %}" data-url="{% url 'adminpanel:social_identity' %}">Social Login & Identity</a></li>
+                    <li><a href="{% url 'adminpanel:api_integration' %}" data-url="{% url 'adminpanel:api_integration' %}">API Integration</a></li>
+                    <li><a href="{% url 'adminpanel:audit_logs' %}" data-url="{% url 'adminpanel:audit_logs' %}">Audit Logs</a></li>
+                    <li><a href="{% url 'adminpanel:role_manager' %}" data-url="{% url 'adminpanel:role_manager' %}">Role & Permission Manager</a></li>
+                    <li><a href="{% url 'adminpanel:system_health' %}" data-url="{% url 'adminpanel:system_health' %}">System Health / Monitor</a></li>
                 </ul>
             </li>
         </ul>
