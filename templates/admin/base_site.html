@@ -50,13 +50,26 @@
 <script>
     // Accordion sidebar: only one section open at a time, fix lingering submenus
     document.addEventListener('DOMContentLoaded', function() {
+        // Restore open section from localStorage
+        var openSection = localStorage.getItem('adminSidebarOpenSection');
         document.querySelectorAll('.sidebar-section').forEach(function(section) {
-            var link = section.querySelector('.sidebar-link');
             var submenu = section.querySelector('.sidebar-submenu');
             var caret = section.querySelector('.sidebar-caret');
             if (submenu) {
-                // Start collapsed except for Users
-                if (!section.dataset.section || section.dataset.section !== 'users') {
+                // Start collapsed except for openSection (or Users by default)
+                if (openSection) {
+                    if (section.dataset.section === openSection) {
+                        submenu.classList.add('open');
+                        caret.classList.add('open');
+                        section.classList.add('open');
+                        submenu.style.display = 'block';
+                        submenu.style.maxHeight = submenu.scrollHeight + 'px';
+                    } else {
+                        submenu.style.maxHeight = '0';
+                        submenu.style.overflow = 'hidden';
+                        submenu.style.display = 'none';
+                    }
+                } else if (!section.dataset.section || section.dataset.section !== 'users') {
                     submenu.style.maxHeight = '0';
                     submenu.style.overflow = 'hidden';
                     submenu.style.display = 'none';
@@ -66,7 +79,7 @@
                     section.classList.add('open');
                     submenu.style.display = 'block';
                 }
-                link.addEventListener('click', function(e) {
+                section.querySelector('.sidebar-link').addEventListener('click', function(e) {
                     e.preventDefault();
                     // Close all other sections
                     document.querySelectorAll('.sidebar-section').forEach(function(other) {
@@ -89,13 +102,21 @@
                     if (isOpen) {
                         submenu.style.display = 'block';
                         submenu.style.maxHeight = submenu.scrollHeight + 'px';
+                        submenu.style.opacity = '1';
                         caret.classList.add('open');
                         section.classList.add('open');
+                        // Save open section to localStorage
+                        localStorage.setItem('adminSidebarOpenSection', section.dataset.section);
                     } else {
                         submenu.style.maxHeight = '0';
-                        submenu.style.display = 'none';
+                        submenu.style.opacity = '0';
+                        setTimeout(function() {
+                            submenu.style.display = 'none';
+                        }, 350);
                         caret.classList.remove('open');
                         section.classList.remove('open');
+                        // Remove from localStorage if closed
+                        localStorage.removeItem('adminSidebarOpenSection');
                     }
                 });
             }
@@ -137,6 +158,7 @@
 
 {% block extrahead %}
     {{ block.super }}
+    <link rel="icon" type="image/png" href="/static/portal/assets/favicon.png">
     <style>
         .custom-admin-sidebar {
             background: #f4f6fa;
@@ -226,11 +248,14 @@
             padding-left: 36px;
             margin: 0;
             background: none;
-            transition: max-height 0.3s cubic-bezier(0.4,0,0.2,1);
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s;
+            opacity: 0;
+            max-height: 0;
             overflow: hidden;
             display: none;
         }
         .sidebar-submenu.open {
+            opacity: 1;
             display: block;
         }
         .sidebar-submenu li a {
