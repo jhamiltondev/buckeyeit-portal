@@ -1,14 +1,14 @@
 {% extends "adminpanel/base.html" %}
 {% block content %}
 <div class="container-fluid mt-4">
-  <h2 class="mb-3">✉️ Invitations / Registration Logs</h2>
+  <h2 class="mb-3">Invitations / Registration Logs</h2>
   <form method="get" class="row g-2 align-items-end mb-3">
     <div class="col-md-3">
-      <input type="text" name="q" class="form-control" placeholder="🔍 Search email or name" value="{{ query }}">
+      <input type="text" name="q" class="form-control" placeholder="Search email or name" value="{{ query }}">
     </div>
     <div class="col-md-2">
       <select name="tenant" class="form-select">
-        <option value="">⛃ Tenant</option>
+        <option value="">Tenant</option>
         {% for tenant in tenants %}
           <option value="{{ tenant.id }}" {% if tenant_id|add:'' == tenant.id|stringformat:'s' %}selected{% endif %}>{{ tenant.name }}</option>
         {% endfor %}
@@ -16,7 +16,7 @@
     </div>
     <div class="col-md-2">
       <select name="status" class="form-select">
-        <option value="">🔄 Status</option>
+        <option value="">Status</option>
         {% for value, label in statuses %}
           <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
         {% endfor %}
@@ -37,10 +37,10 @@
     </div>
   </form>
   <div class="mb-3 d-flex gap-2">
-    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#inviteModal">➕ New Invite</button>
-    <a href="{% url 'adminpanel:export_invitations_csv' %}?q={{ query }}&tenant={{ tenant_id }}&status={{ status }}&unredeemed={{ unredeemed }}&date_sent={{ date_sent }}" class="btn btn-outline-secondary">⏬ Export CSV</a>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#inviteModal"><i class="fas fa-user-plus me-1"></i>New Invite</button>
+    <a href="{% url 'adminpanel:export_invitations_csv' %}?q={{ query }}&tenant={{ tenant_id }}&status={{ status }}&unredeemed={{ unredeemed }}&date_sent={{ date_sent }}" class="btn btn-outline-secondary"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
     <div class="dropdown">
-      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">⚙️ Bulk Actions</button>
+      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"><i class="fas fa-cog me-1"></i>Bulk Actions</button>
       <ul class="dropdown-menu">
         <li><a class="dropdown-item" href="#" id="bulkResend">Resend Selected</a></li>
         <li><a class="dropdown-item" href="#" id="bulkRevoke">Revoke Selected</a></li>
@@ -73,24 +73,24 @@
           <td>{{ invite.role_assigned }}</td>
           <td>{{ invite.date_sent|date:'M d, H:i' }}</td>
           <td>
-            {% if invite.status == 'pending' %}<span title="Pending">⏳ Pending</span>{% endif %}
-            {% if invite.status == 'redeemed' %}<span class="text-success" title="Redeemed">✅ Redeemed</span>{% endif %}
-            {% if invite.status == 'expired' %}<span class="text-danger" title="Expired">❌ Expired</span>{% endif %}
-            {% if invite.status == 'revoked' %}<span class="text-warning" title="Revoked">🚫 Revoked</span>{% endif %}
+            {% if invite.status == 'pending' %}<span title="Pending" class="text-secondary">Pending</span>{% endif %}
+            {% if invite.status == 'redeemed' %}<span class="text-success" title="Redeemed">Redeemed</span>{% endif %}
+            {% if invite.status == 'expired' %}<span class="text-danger" title="Expired">Expired</span>{% endif %}
+            {% if invite.status == 'revoked' %}<span class="text-warning" title="Revoked">Revoked</span>{% endif %}
           </td>
           <td>{% if invite.redeemed_on %}{{ invite.redeemed_on|date:'M d, H:i' }}{% else %}--{% endif %}</td>
           <td>
             {% if invite.status == 'pending' %}
-              <button class="btn btn-sm btn-outline-primary resendBtn">🔁 Resend</button>
-              <button class="btn btn-sm btn-outline-danger revokeBtn">🗑 Revoke</button>
+              <button class="btn btn-sm btn-outline-primary resendBtn">Resend</button>
+              <button class="btn btn-sm btn-outline-danger revokeBtn">Revoke</button>
             {% elif invite.status == 'redeemed' %}
-              <button class="btn btn-sm btn-outline-secondary viewBtn">👁 View</button>
-              <button class="btn btn-sm btn-outline-primary editBtn">✏️ Edit</button>
+              <button class="btn btn-sm btn-outline-secondary viewBtn">View</button>
+              <button class="btn btn-sm btn-outline-primary editBtn">Edit</button>
             {% elif invite.status == 'expired' %}
-              <button class="btn btn-sm btn-outline-primary resendBtn">🔁 Reinvite</button>
-              <button class="btn btn-sm btn-outline-danger revokeBtn">🗑 Delete</button>
+              <button class="btn btn-sm btn-outline-primary resendBtn">Reinvite</button>
+              <button class="btn btn-sm btn-outline-danger revokeBtn">Delete</button>
             {% elif invite.status == 'revoked' %}
-              <button class="btn btn-sm btn-outline-danger revokeBtn">🗑 Delete</button>
+              <button class="btn btn-sm btn-outline-danger revokeBtn">Delete</button>
             {% endif %}
           </td>
         </tr>

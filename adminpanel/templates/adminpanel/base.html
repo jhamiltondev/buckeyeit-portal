@@ -13,6 +13,8 @@
             color: #222;
             min-height: 100vh;
             transition: background 0.3s, color 0.3s;
+            font-family: 'Segoe UI', 'Inter', system-ui, Arial, sans-serif;
+            font-weight: 400;
         }
         .admin-banner {
             position: fixed;
@@ -39,10 +41,11 @@
         }
         .admin-banner-title {
             font-size: 1.35rem;
-            font-weight: 700;
+            font-weight: 600;
             letter-spacing: 0.02em;
             color: #fff;
             margin-right: 2rem;
+            font-family: 'Segoe UI', 'Inter', system-ui, Arial, sans-serif;
         }
         .admin-user-dropdown {
             margin-right: 2.5rem;
@@ -90,6 +93,7 @@
             transition: background 0.3s, width 0.3s;
             display: flex;
             flex-direction: column;
+            font-family: 'Segoe UI', 'Inter', system-ui, Arial, sans-serif;
         }
         .sidebar-header {
             display: flex;
@@ -117,11 +121,11 @@
         .sidebar-section > .sidebar-link {
             display: flex;
             align-items: center;
-            font-weight: 700;
+            font-weight: 400;
             padding: 14px 24px 14px 20px;
             color: #111 !important;
             text-decoration: none;
-            font-size: 1.13rem;
+            font-size: 1.08rem;
             cursor: pointer;
             transition: background 0.15s, color 0.15s;
             border-radius: 6px;
@@ -136,8 +140,8 @@
             color: #23272f !important;
         }
         .sidebar-section > .sidebar-link i {
-            margin-right: 12px;
-            font-size: 1.18rem;
+            margin-right: 8px;
+            font-size: 1.05rem;
         }
         .sidebar-caret {
             margin-left: auto;
@@ -169,17 +173,14 @@
             color: #222 !important;
             padding: 8px 0;
             text-decoration: none;
-            font-size: 1.01rem;
+            font-size: 0.98rem;
+            font-weight: 400;
             border-radius: 4px;
             transition: background 0.15s, color 0.15s;
         }
         .sidebar-submenu li a:hover, .sidebar-submenu li a:focus {
             background: #f4f6fa;
             color: #23272f !important;
-        }
-        .sidebar-submenu li a i {
-            margin-right: 10px;
-            font-size: 1.08rem;
         }
         .sidebar-divider {
             border-top: 1px solid #d3d7e3;
@@ -189,6 +190,8 @@
             margin-left: 260px;
             padding: 2.5rem 2rem 2rem 2rem;
             transition: margin-left 0.3s;
+            font-family: 'Segoe UI', 'Inter', system-ui, Arial, sans-serif;
+            font-weight: 400;
         }
         .night-mode, .night-mode body {
             background: #232526 !important;
@@ -220,6 +223,10 @@
         }
         .night-mode .sidebar-divider {
             border-top: 1px solid #444;
+        }
+        /* Remove bold from table headers */
+        th, .table th {
+            font-weight: 500;
         }
     </style>
     {% block extrahead %}{% endblock %}
