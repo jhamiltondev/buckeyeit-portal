@@ -410,6 +410,17 @@ def connectwise_ticket_detail(request, ticket_id):
     notes_split = split_ticket_notes(notes)
     # Determine if user is a tech/admin (for internal notes access)
     is_tech = request.user.is_staff or request.user.is_superuser
+    # Generate logical description from user's original request
+    user_description = None
+    for note in notes:
+        entered_by = note.get('enteredBy', '').lower()
+        if entered_by and entered_by != 'api_admin':
+            # Use the first non-api_admin note as the user's request
+            user_description = note.get('text', '').strip()
+            break
+    if not user_description:
+        # Fallback to initialDescription or a default
+        user_description = ticket.get('initialDescription', '').strip() or 'No description available.'
     if request.method == 'POST':
         if request.POST.get('reply_text'):
             reply_text = request.POST.get('reply_text')
@@ -436,7 +447,8 @@ def connectwise_ticket_detail(request, ticket_id):
         'ticket': ticket, 
         'notes': notes_split['discussion'],
         'internal_notes': notes_split['internal'],
-        'is_tech': is_tech
+        'is_tech': is_tech,
+        'user_description': user_description,
     })
 
 @login_required(login_url='/adminpanel/login/')
