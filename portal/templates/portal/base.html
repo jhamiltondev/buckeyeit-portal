@@ -447,13 +447,9 @@
                         <span>Notifications</span>
                         <a href="?mark_notifications_read=1" class="btn btn-link btn-sm p-0 text-danger ms-2" style="font-size:0.95em;">Clear All</a>
                     </li>
-                    {% if notifications %}
-                        {% for note in notifications %}
-                            <li><a class="dropdown-item small" href="{% url 'portal:connectwise_ticket_detail' note.ticket_id %}"><strong>{{ note.enteredBy }}</strong>: {{ note.text|truncatechars:60 }}</a></li>
-                        {% endfor %}
-                    {% else %}
-                        <li><span class="dropdown-item small text-muted">No new notifications</span></li>
-                    {% endif %}
+                    <div id="notificationList">
+                        <!-- Notifications will be rendered here by JS -->
+                    </div>
                 </ul>
             </div>
             <div class="dropdown">
@@ -676,22 +672,20 @@
                         const badge = document.querySelector('.fa-bell + .badge, .fa-bell ~ .badge, .fa-bell .badge');
                         if (badge) badge.textContent = data.count;
                         // Update dropdown
-                        const dropdown = document.querySelector('.dropdown-menu[aria-labelledby="notificationDropdown"]');
-                        if (dropdown) {
-                            let html = '<li class="dropdown-header d-flex justify-content-between align-items-center">';
-                            html += '<span>Notifications</span>';
-                            html += '<a href="?mark_notifications_read=1" class="btn btn-link btn-sm p-0 text-danger ms-2" style="font-size:0.95em;">Clear All</a>';
-                            html += '</li>';
-                            if (data.notifications.length > 0) {
-                                data.notifications.forEach(note => {
-                                    const enteredBy = note.enteredBy || note.display_name || 'System';
-                                    html += `<li><a class="dropdown-item small" href="/tickets/${note.ticket_id}/"><strong>${enteredBy}</strong>: ${note.text.substring(0,60)}</a></li>`;
-                                });
-                            } else {
-                                html += '<li><span class="dropdown-item small text-muted">No new notifications</span></li>';
-                            }
-                            dropdown.innerHTML = html;
+                        const notificationList = document.getElementById('notificationList');
+                        let html = '';
+                        if (data.notifications.length > 0) {
+                            data.notifications.forEach(note => {
+                                const enteredBy = note.enteredBy || note.display_name || 'System';
+                                html += `<li class="d-flex align-items-center justify-content-between notification-item">`;
+                                html += `<a class="dropdown-item small flex-grow-1" href="/tickets/${note.ticket_id}/"><strong>${enteredBy}</strong>: ${note.text.substring(0,60)}</a>`;
+                                html += `<button class="btn btn-link btn-sm text-danger ms-2 clear-notification-btn" data-id="${note.notification_id}" title="Clear notification"><i class="fa fa-times"></i></button>`;
+                                html += `</li>`;
+                            });
+                        } else {
+                            html += '<li><span class="dropdown-item small text-muted">No new notifications</span></li>';
                         }
+                        notificationList.innerHTML = html;
                         // Show toast for new notifications
                         const newIds = data.notifications.map(n => n.notification_id);
                         data.notifications.forEach(note => {
@@ -701,6 +695,27 @@
                             }
                         });
                         lastNotificationIds = newIds;
+                        // Attach clear button handlers
+                        document.querySelectorAll('.clear-notification-btn').forEach(btn => {
+                            btn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                const notificationId = this.getAttribute('data-id');
+                                fetch('/api/notifications/clear/', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': getCookie('csrftoken') },
+                                    body: `notification_id=${encodeURIComponent(notificationId)}`
+                                })
+                                .then(res => res.json())
+                                .then(res => {
+                                    if (res.success) {
+                                        // Remove from UI
+                                        this.closest('li').remove();
+                                        // Optionally update badge
+                                        updateNotifications();
+                                    }
+                                });
+                            });
+                        });
                     });
             }
 
@@ -833,6 +848,32 @@
                 }
             });
         });
+        // When dropdown is opened, only reset badge (not notifications)
+        const notificationDropdown = document.getElementById('notificationDropdown');
+        if (notificationDropdown) {
+            notificationDropdown.addEventListener('show.bs.dropdown', function() {
+                fetch('/api/notifications/?mark_notifications_read=1')
+                    .then(() => {
+                        const badge = document.querySelector('.fa-bell + .badge, .fa-bell ~ .badge, .fa-bell .badge');
+                        if (badge) badge.textContent = '0';
+                    });
+            });
+        }
+        // Helper to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
     </script>
     {% block extra_js %}{% endblock %}
 </body>
