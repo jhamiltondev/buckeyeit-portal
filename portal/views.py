@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
 from django.urls import get_resolver
-from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument
+from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument, TicketStatusSeen
 from django.contrib.admin.views.decorators import staff_member_required
 import requests
 from .adapters import get_connectwise_tickets, create_connectwise_ticket, get_connectwise_ticket_notes, post_connectwise_ticket_note, get_connectwise_ticket, split_ticket_notes, get_connectwise_contact_id
@@ -17,6 +17,7 @@ import logging
 from .tech_news import get_tech_news, test_news_api
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 # Set up logger for views
 logger = logging.getLogger('portal.views')
@@ -479,9 +480,32 @@ def notifications_api(request):
 
     notifications = []
     for t in cw_tickets:
-        notes = get_connectwise_ticket_notes(t['id'])
+        ticket_id = t['id']
+        current_status_id = t.get('status', {}).get('id')
+        current_status_name = t.get('status', {}).get('name')
+        # Get or create TicketStatusSeen
+        seen, created = TicketStatusSeen.objects.get_or_create(user=request.user, ticket_id=ticket_id, defaults={
+            'last_status_id': current_status_id,
+            'last_status_name': current_status_name,
+            'last_checked': timezone.now(),
+        })
+        if not created and seen.last_status_id != current_status_id:
+            # Status changed, trigger notification
+            notifications.append({
+                'ticket_id': ticket_id,
+                'notification_id': f'status_{ticket_id}_{current_status_id}',
+                'display_name': 'System',
+                'text': f"Ticket status changed to {current_status_name}",
+                'dateCreated': timezone.now().isoformat(),
+            })
+            seen.last_status_id = current_status_id
+            seen.last_status_name = current_status_name
+            seen.last_checked = timezone.now()
+            seen.save()
+
+        notes = get_connectwise_ticket_notes(ticket_id)
         for note in notes:
-            note_id = f"{t['id']}_{note.get('id', note.get('dateCreated'))}"
+            note_id = f"{ticket_id}_{note.get('id', note.get('dateCreated'))}"
             # Only show notes from last 7 days
             note_date = note.get('dateCreated', '')[:10]
             try:
@@ -515,7 +539,7 @@ def notifications_api(request):
 
             if (is_tech_reply or is_status_change or is_owner_change) and not is_remote_support and not is_user_reply:
                 if note_id not in read_ids:
-                    note['ticket_id'] = t['id']
+                    note['ticket_id'] = ticket_id
                     note['notification_id'] = note_id
                     note['display_name'] = display_name
                     note['notification_message'] = f"{display_name} has replied to ticket"

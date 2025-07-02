@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.conf import settings
+from django.utils import timezone
 
 # Create your models here.
 
@@ -121,3 +123,13 @@ class PendingUserApproval(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.email}) - {self.role_requested} [{self.status}]"
+
+class TicketStatusSeen(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    ticket_id = models.IntegerField()
+    last_status_id = models.IntegerField()
+    last_status_name = models.CharField(max_length=128)
+    last_checked = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('user', 'ticket_id')
