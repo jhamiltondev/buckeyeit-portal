@@ -107,7 +107,9 @@ def dashboard(request, tenant_slug=None):
             # 2. Status changed
             # 3. Owner/tech assigned/changed
             is_tech_reply = note.get('enteredBy', '').lower() != user_email and not note.get('text', '').lower().startswith('from:')
-            is_status_change = note.get('detailDescriptionFlag') and 'status' in note.get('text', '').lower()
+            is_status_change = note.get('detailDescriptionFlag') and (
+                'status' in note.get('text', '').lower() or note.get('detailDescriptionFlag')
+            )
             is_owner_change = note.get('detailDescriptionFlag') and 'assigned' in note.get('text', '').lower()
             is_remote_support = 'user has requested remote support' in note.get('text', '').lower()
             if (is_tech_reply or is_status_change or is_owner_change) and not is_remote_support:
@@ -490,7 +492,9 @@ def notifications_api(request):
                 continue
 
             is_tech_reply = note.get('enteredBy', '').lower() != user_email and not note.get('text', '').lower().startswith('from:')
-            is_status_change = note.get('detailDescriptionFlag') and 'status' in note.get('text', '').lower()
+            is_status_change = note.get('detailDescriptionFlag') and (
+                'status' in note.get('text', '').lower() or note.get('detailDescriptionFlag')
+            )
             is_owner_change = note.get('detailDescriptionFlag') and 'assigned' in note.get('text', '').lower()
             is_remote_support = 'user has requested remote support' in note.get('text', '').lower()
             is_user_reply = note.get('enteredBy', '').lower() == user_email or note.get('text', '').lower().startswith('from:')
