@@ -202,7 +202,7 @@ def users_invitations(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'adminpanel/users_invitations.html', {
+    context = {
         'page_obj': page_obj,
         'tenants': tenants,
         'statuses': UserInvitation.STATUS_CHOICES,
@@ -211,7 +211,10 @@ def users_invitations(request):
         'status': status,
         'unredeemed': unredeemed,
         'date_sent': date_sent,
-    })
+    }
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'adminpanel/partials/users_invitations.html', context)
+    return render(request, 'adminpanel/users_invitations.html', context)
 
 @staff_member_required(login_url='/adminpanel/login/')
 def users_deactivated(request):

@@ -409,13 +409,34 @@
                 setNightMode(true);
             }
 
+            function restoreSidebarOpenState() {
+                var openSection = localStorage.getItem('adminSidebarOpenSection');
+                document.querySelectorAll('.sidebar-section').forEach(function(section) {
+                    var submenu = section.querySelector('.sidebar-submenu');
+                    var caret = section.querySelector('.sidebar-caret');
+                    if (submenu) {
+                        if (openSection && section.dataset.section === openSection) {
+                            submenu.classList.add('open');
+                            caret && caret.classList.add('open');
+                            section.classList.add('open');
+                            submenu.style.display = 'block';
+                            submenu.style.maxHeight = submenu.scrollHeight + 'px';
+                        } else {
+                            submenu.classList.remove('open');
+                            caret && caret.classList.remove('open');
+                            section.classList.remove('open');
+                            submenu.style.maxHeight = '0';
+                            submenu.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
             // SPA AJAX navigation with fade animation (event delegation + popstate)
             function loadContent(url, addToHistory=true) {
                 var mainContent = document.getElementById('mainContent');
                 if (!mainContent) return;
-                // Always reset fade classes
                 mainContent.classList.remove('fade-in', 'fade-out');
-                // Fade out
                 mainContent.classList.add('fade-out');
                 fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
                     .then(response => response.text())
@@ -425,6 +446,7 @@
                             mainContent.classList.remove('fade-out');
                             mainContent.classList.add('fade-in');
                             setTimeout(() => mainContent.classList.remove('fade-in'), 300);
+                            restoreSidebarOpenState();
                         }, 300);
                     });
                 if (addToHistory) {
@@ -438,6 +460,7 @@
                 mainContent.classList.remove('fade-in', 'fade-out');
                 mainContent.classList.add('fade-in');
                 setTimeout(() => mainContent.classList.remove('fade-in'), 300);
+                restoreSidebarOpenState();
             }
 
             // Event delegation for sidebar links

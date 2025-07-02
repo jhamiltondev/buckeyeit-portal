@@ -1,0 +1,116 @@
+<div class="container-fluid mt-4">
+  <h2 class="mb-3">Invitations / Registration Logs</h2>
+  <form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-3">
+      <input type="text" name="q" class="form-control" placeholder="Search email or name" value="{{ query }}">
+    </div>
+    <div class="col-md-2">
+      <select name="tenant" class="form-select">
+        <option value="">Tenant</option>
+        {% for tenant in tenants %}
+          <option value="{{ tenant.id }}" {% if tenant_id|add:'' == tenant.id|stringformat:'s' %}selected{% endif %}>{{ tenant.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select name="status" class="form-select">
+        <option value="">Status</option>
+        {% for value, label in statuses %}
+          <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <input type="date" name="date_sent" class="form-control" value="{{ date_sent }}">
+    </div>
+    <div class="col-md-2 form-check">
+      <input type="checkbox" name="unredeemed" value="1" class="form-check-input" id="unredeemed" {% if unredeemed %}checked{% endif %}>
+      <label class="form-check-label" for="unredeemed">Unredeemed Only</label>
+    </div>
+    <div class="col-md-1">
+      <button type="submit" class="btn btn-primary w-100">Filter</button>
+    </div>
+    <div class="col-md-1">
+      <a href="?" class="btn btn-secondary w-100">Clear All</a>
+    </div>
+  </form>
+  <div class="mb-3 d-flex gap-2">
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#inviteModal"><i class="fas fa-user-plus me-1"></i>New Invite</button>
+    <a href="{% url 'adminpanel:export_invitations_csv' %}?q={{ query }}&tenant={{ tenant_id }}&status={{ status }}&unredeemed={{ unredeemed }}&date_sent={{ date_sent }}" class="btn btn-outline-secondary"><i class="fas fa-file-csv me-1"></i>Export CSV</a>
+    <div class="dropdown">
+      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"><i class="fas fa-cog me-1"></i>Bulk Actions</button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#" id="bulkResend">Resend Selected</a></li>
+        <li><a class="dropdown-item" href="#" id="bulkRevoke">Revoke Selected</a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="inviteAlert"></div>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle bg-white" id="inviteTable">
+      <thead class="table-light">
+        <tr>
+          <th><input type="checkbox" id="selectAll"></th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Tenant</th>
+          <th>Role</th>
+          <th>Date Sent</th>
+          <th>Status</th>
+          <th>Redeemed On</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for invite in page_obj %}
+        <tr data-id="{{ invite.id }}">
+          <td><input type="checkbox" class="rowCheckbox"></td>
+          <td>{{ invite.name|default:'--' }}</td>
+          <td>{{ invite.email }}</td>
+          <td>{{ invite.tenant.name }}</td>
+          <td>{{ invite.role_assigned }}</td>
+          <td>{{ invite.date_sent|date:'M d, H:i' }}</td>
+          <td>
+            {% if invite.status == 'pending' %}<span title="Pending" class="text-secondary">Pending</span>{% endif %}
+            {% if invite.status == 'redeemed' %}<span class="text-success" title="Redeemed">Redeemed</span>{% endif %}
+            {% if invite.status == 'expired' %}<span class="text-danger" title="Expired">Expired</span>{% endif %}
+            {% if invite.status == 'revoked' %}<span class="text-warning" title="Revoked">Revoked</span>{% endif %}
+          </td>
+          <td>{% if invite.redeemed_on %}{{ invite.redeemed_on|date:'M d, H:i' }}{% else %}--{% endif %}</td>
+          <td>
+            {% if invite.status == 'pending' %}
+              <button class="btn btn-sm btn-outline-primary resendBtn">Resend</button>
+              <button class="btn btn-sm btn-outline-danger revokeBtn">Revoke</button>
+            {% elif invite.status == 'redeemed' %}
+              <button class="btn btn-sm btn-outline-secondary viewBtn">View</button>
+              <button class="btn btn-sm btn-outline-primary editBtn">Edit</button>
+            {% elif invite.status == 'expired' %}
+              <button class="btn btn-sm btn-outline-primary resendBtn">Reinvite</button>
+              <button class="btn btn-sm btn-outline-danger revokeBtn">Delete</button>
+            {% elif invite.status == 'revoked' %}
+              <button class="btn btn-sm btn-outline-danger revokeBtn">Delete</button>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="9" class="text-center">No invitations found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <nav>
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}{% if tenant_id %}tenant={{ tenant_id }}&{% endif %}{% if status %}status={{ status }}&{% endif %}{% if unredeemed %}unredeemed=1&{% endif %}{% if date_sent %}date_sent={{ date_sent }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a></li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+      {% endif %}
+      <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+      {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}{% if tenant_id %}tenant={{ tenant_id }}&{% endif %}{% if status %}status={{ status }}&{% endif %}{% if unredeemed %}unredeemed=1&{% endif %}{% if date_sent %}date_sent={{ date_sent }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a></li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">Next</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+</div> 
