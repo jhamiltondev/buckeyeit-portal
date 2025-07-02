@@ -20,6 +20,12 @@ urlpatterns = [
     path('users/pending/<int:approval_id>/approve/', views.approve_pending_user, name='approve_pending_user'),
     path('users/pending/<int:approval_id>/deny/', views.deny_pending_user, name='deny_pending_user'),
     path('users/pending/<int:approval_id>/details/', views.pending_user_details, name='pending_user_details'),
+    path('users/invitations/create/', views.create_invitation, name='create_invitation'),
+    path('users/invitations/<int:invitation_id>/resend/', views.resend_invitation, name='resend_invitation'),
+    path('users/invitations/<int:invitation_id>/revoke/', views.revoke_invitation, name='revoke_invitation'),
+    path('users/invitations/<int:invitation_id>/edit/', views.edit_invitation, name='edit_invitation'),
+    path('users/invitations/<int:invitation_id>/view/', views.view_invitation, name='view_invitation'),
+    path('users/invitations/export/', views.export_invitations_csv, name='export_invitations_csv'),
     # Tenants
     path('tenants/', views.tenants, name='tenants'),
     path('tenants/documents/', views.tenant_documents, name='tenant_documents'),

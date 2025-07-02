@@ -1,17 +1,23 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView, LogoutView
-from portal.models import Tenant, Ticket, KnowledgeBaseArticle, PendingUserApproval
+from portal.models import Tenant, Ticket, KnowledgeBaseArticle, PendingUserApproval, UserInvitation
 from portal.tech_news import get_tech_news
 import logging
 import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 import pytz
 from datetime import datetime
+from django.db.models import Q
+from django.core.paginator import Paginator
+import csv
+import secrets
+from django.utils import timezone
+from portal.email_utils import send_invitation_email
 
 # Create your views here.
 
@@ -158,7 +164,40 @@ def users_pending(request):
 
 @staff_member_required(login_url='/adminpanel/login/')
 def users_invitations(request):
-    return render(request, 'adminpanel/users_invitations.html')
+    query = request.GET.get('q', '')
+    tenant_id = request.GET.get('tenant', '')
+    status = request.GET.get('status', '')
+    unredeemed = request.GET.get('unredeemed', '')
+    date_sent = request.GET.get('date_sent', '')
+
+    invitations = UserInvitation.objects.all().select_related('tenant', 'invited_by')
+    if query:
+        invitations = invitations.filter(Q(email__icontains=query) | Q(name__icontains=query))
+    if tenant_id:
+        invitations = invitations.filter(tenant_id=tenant_id)
+    if status:
+        invitations = invitations.filter(status=status)
+    if unredeemed:
+        invitations = invitations.filter(status='pending')
+    if date_sent:
+        invitations = invitations.filter(date_sent__date=date_sent)
+    invitations = invitations.order_by('-date_sent')
+
+    tenants = Tenant.objects.all()
+    paginator = Paginator(invitations, 25)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'adminpanel/users_invitations.html', {
+        'page_obj': page_obj,
+        'tenants': tenants,
+        'statuses': UserInvitation.STATUS_CHOICES,
+        'query': query,
+        'tenant_id': tenant_id,
+        'status': status,
+        'unredeemed': unredeemed,
+        'date_sent': date_sent,
+    })
 
 @staff_member_required(login_url='/adminpanel/login/')
 def users_deactivated(request):
@@ -343,3 +382,147 @@ class AdminLogoutView(LogoutView):
     def get(self, request, *args, **kwargs):
         print("=== AdminLogoutView GET called ===")
         return self.post(request, *args, **kwargs)
+
+@staff_member_required(login_url='/adminpanel/login/')
+def create_invitation(request):
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip().lower()
+        tenant_id = request.POST.get('tenant')
+        role = request.POST.get('role_assigned', '').strip()
+        expiration_date = request.POST.get('expiration_date')
+        invited_by = request.user
+        if not email or not tenant_id or not role:
+            return JsonResponse({'success': False, 'error': 'Email, tenant, and role are required.'})
+        if UserInvitation.objects.filter(email=email, tenant_id=tenant_id, status='pending').exists():
+            return JsonResponse({'success': False, 'error': 'A pending invitation for this email and tenant already exists.'})
+        token = secrets.token_urlsafe(32)
+        exp = None
+        if expiration_date:
+            try:
+                exp = timezone.datetime.strptime(expiration_date, '%Y-%m-%d')
+                exp = timezone.make_aware(exp)
+            except Exception:
+                return JsonResponse({'success': False, 'error': 'Invalid expiration date.'})
+        invite = UserInvitation.objects.create(
+            name=name,
+            email=email,
+            tenant_id=tenant_id,
+            role_assigned=role,
+            invited_by=invited_by,
+            token=token,
+            expiration_date=exp,
+            status='pending',
+        )
+        try:
+            send_invitation_email(email, token, tenant_name=invite.tenant.name, role=role)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': f'Invitation created but email failed: {e}'})
+        return JsonResponse({'success': True, 'message': 'Invitation created and email sent.'})
+    return JsonResponse({'success': False, 'error': 'Invalid request.'})
+
+@staff_member_required(login_url='/adminpanel/login/')
+def resend_invitation(request, invitation_id):
+    try:
+        invite = UserInvitation.objects.get(id=invitation_id)
+        if invite.status not in ['pending', 'expired']:
+            return JsonResponse({'success': False, 'message': 'Only pending or expired invites can be resent.'})
+        try:
+            send_invitation_email(invite.email, invite.token, tenant_name=invite.tenant.name, role=invite.role_assigned)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'Email failed: {e}'})
+        return JsonResponse({'success': True, 'message': 'Invitation resent.'})
+    except UserInvitation.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Invitation not found.'})
+
+@staff_member_required(login_url='/adminpanel/login/')
+def revoke_invitation(request, invitation_id):
+    try:
+        invite = UserInvitation.objects.get(id=invitation_id)
+        if invite.status in ['redeemed', 'revoked']:
+            return JsonResponse({'success': False, 'message': 'Cannot revoke a redeemed or already revoked invite.'})
+        invite.status = 'revoked'
+        invite.save()
+        return JsonResponse({'success': True, 'message': 'Invitation revoked.'})
+    except UserInvitation.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Invitation not found.'})
+
+@staff_member_required(login_url='/adminpanel/login/')
+def edit_invitation(request, invitation_id):
+    try:
+        invite = UserInvitation.objects.get(id=invitation_id)
+        if request.method == 'POST':
+            if invite.status == 'redeemed':
+                return JsonResponse({'success': False, 'message': 'Cannot edit a redeemed invite.'})
+            invite.name = request.POST.get('name', invite.name)
+            invite.email = request.POST.get('email', invite.email)
+            invite.tenant_id = request.POST.get('tenant', invite.tenant_id)
+            invite.role_assigned = request.POST.get('role_assigned', invite.role_assigned)
+            expiration_date = request.POST.get('expiration_date')
+            if expiration_date:
+                try:
+                    exp = timezone.datetime.strptime(expiration_date, '%Y-%m-%d')
+                    exp = timezone.make_aware(exp)
+                    invite.expiration_date = exp
+                except Exception:
+                    return JsonResponse({'success': False, 'message': 'Invalid expiration date.'})
+            invite.save()
+            return JsonResponse({'success': True, 'message': 'Invitation updated.'})
+        return JsonResponse({'success': False, 'message': 'Invalid request.'})
+    except UserInvitation.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Invitation not found.'})
+
+@staff_member_required(login_url='/adminpanel/login/')
+def view_invitation(request, invitation_id):
+    try:
+        invite = UserInvitation.objects.select_related('tenant').get(id=invitation_id)
+        data = {
+            'name': invite.name,
+            'email': invite.email,
+            'tenant': invite.tenant.name,
+            'tenant_id': invite.tenant.id,
+            'role_assigned': invite.role_assigned,
+            'date_sent': invite.date_sent.strftime('%Y-%m-%d %H:%M'),
+            'status': invite.get_status_display(),
+            'redeemed_on': invite.redeemed_on.strftime('%Y-%m-%d %H:%M') if invite.redeemed_on else '',
+            'expiration_date': invite.expiration_date.strftime('%Y-%m-%d') if invite.expiration_date else '',
+        }
+        return JsonResponse({'success': True, 'data': data})
+    except UserInvitation.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Invitation not found.'})
+
+@staff_member_required(login_url='/adminpanel/login/')
+def export_invitations_csv(request):
+    # Filter logic (reuse from users_invitations)
+    query = request.GET.get('q', '')
+    tenant_id = request.GET.get('tenant', '')
+    status = request.GET.get('status', '')
+    unredeemed = request.GET.get('unredeemed', '')
+    date_sent = request.GET.get('date_sent', '')
+    invitations = UserInvitation.objects.all().select_related('tenant', 'invited_by')
+    if query:
+        invitations = invitations.filter(Q(email__icontains=query) | Q(name__icontains=query))
+    if tenant_id:
+        invitations = invitations.filter(tenant_id=tenant_id)
+    if status:
+        invitations = invitations.filter(status=status)
+    if unredeemed:
+        invitations = invitations.filter(status='pending')
+    if date_sent:
+        invitations = invitations.filter(date_sent__date=date_sent)
+    invitations = invitations.order_by('-date_sent')
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="invitations.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Name', 'Email', 'Tenant', 'Role', 'Date Sent', 'Status', 'Redeemed On'])
+    for i in invitations:
+        writer.writerow([
+            i.name,
+            i.email,
+            i.tenant.name,
+            i.role_assigned,
+            i.date_sent.strftime('%Y-%m-%d %H:%M'),
+            i.get_status_display(),
+            i.redeemed_on.strftime('%Y-%m-%d %H:%M') if i.redeemed_on else '',
+        ])
+    return response

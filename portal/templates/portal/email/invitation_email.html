@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>You're Invited to Buckeye IT Portal</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f7f7f7; color: #222; }
+    .container { background: #fff; border-radius: 8px; padding: 32px; max-width: 480px; margin: 40px auto; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+    .logo { width: 160px; margin-bottom: 24px; }
+    .btn { display: inline-block; background: #c8102e; color: #fff !important; padding: 12px 28px; border-radius: 4px; text-decoration: none; font-weight: bold; margin-top: 24px; }
+    .footer { margin-top: 32px; font-size: 13px; color: #888; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://portal.buckeyeit.com/static/portal/assets/buckeye-logo.png" alt="Buckeye IT" class="logo">
+    <h2>You're Invited!</h2>
+    <p>Hello,</p>
+    <p>You have been invited to join <b>{{ tenant_name }}</b> on the Buckeye IT Portal as a <b>{{ role }}</b>.</p>
+    <p>To get started, please click the button below to complete your registration:</p>
+    <p style="text-align:center;">
+      <a href="{{ registration_url }}" class="btn">Accept Invitation</a>
+    </p>
+    <p>If the button doesn't work, copy and paste this link into your browser:</p>
+    <p style="word-break:break-all; color:#555;">{{ registration_url }}</p>
+    <div class="footer">
+      If you did not expect this invitation, you can safely ignore this email.<br>
+      &copy; Buckeye IT
+    </div>
+  </div>
+</body>
+</html> 

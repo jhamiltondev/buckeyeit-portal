@@ -133,3 +133,28 @@ class TicketStatusSeen(models.Model):
 
     class Meta:
         unique_together = ('user', 'ticket_id')
+
+class UserInvitation(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('redeemed', 'Redeemed'),
+        ('expired', 'Expired'),
+        ('revoked', 'Revoked'),
+    )
+    name = models.CharField(max_length=150, blank=True)
+    email = models.EmailField()
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, related_name='invitations')
+    role_assigned = models.CharField(max_length=50)
+    invited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='invitations_sent')
+    date_sent = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    redeemed_on = models.DateTimeField(null=True, blank=True)
+    token = models.CharField(max_length=64, unique=True)
+    expiration_date = models.DateTimeField(null=True, blank=True)
+    metadata = models.JSONField(blank=True, null=True, help_text='Optional: store invite metadata, e.g. IP, user agent, etc.')
+
+    def __str__(self):
+        return f"{self.email} ({self.get_status_display()}) - {self.tenant.name}"
+
+    def get_status_display(self):
+        return dict(UserInvitation.STATUS_CHOICES).get(str(self.status), self.status)

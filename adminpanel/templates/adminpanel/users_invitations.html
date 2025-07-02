@@ -1,7 +1,336 @@
 {% extends "adminpanel/base.html" %}
 {% block content %}
-<div class="container mt-4">
-  <h2>Invitations / Registration Logs</h2>
-  <p>This page is under construction. Please check back later.</p>
+<div class="container-fluid mt-4">
+  <h2 class="mb-3">✉️ Invitations / Registration Logs</h2>
+  <form method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-3">
+      <input type="text" name="q" class="form-control" placeholder="🔍 Search email or name" value="{{ query }}">
+    </div>
+    <div class="col-md-2">
+      <select name="tenant" class="form-select">
+        <option value="">⛃ Tenant</option>
+        {% for tenant in tenants %}
+          <option value="{{ tenant.id }}" {% if tenant_id|add:'' == tenant.id|stringformat:'s' %}selected{% endif %}>{{ tenant.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select name="status" class="form-select">
+        <option value="">🔄 Status</option>
+        {% for value, label in statuses %}
+          <option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <input type="date" name="date_sent" class="form-control" value="{{ date_sent }}">
+    </div>
+    <div class="col-md-2 form-check">
+      <input type="checkbox" name="unredeemed" value="1" class="form-check-input" id="unredeemed" {% if unredeemed %}checked{% endif %}>
+      <label class="form-check-label" for="unredeemed">Unredeemed Only</label>
+    </div>
+    <div class="col-md-1">
+      <button type="submit" class="btn btn-primary w-100">Filter</button>
+    </div>
+    <div class="col-md-1">
+      <a href="?" class="btn btn-secondary w-100">Clear All</a>
+    </div>
+  </form>
+  <div class="mb-3 d-flex gap-2">
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#inviteModal">➕ New Invite</button>
+    <a href="{% url 'adminpanel:export_invitations_csv' %}?q={{ query }}&tenant={{ tenant_id }}&status={{ status }}&unredeemed={{ unredeemed }}&date_sent={{ date_sent }}" class="btn btn-outline-secondary">⏬ Export CSV</a>
+    <div class="dropdown">
+      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">⚙️ Bulk Actions</button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#" id="bulkResend">Resend Selected</a></li>
+        <li><a class="dropdown-item" href="#" id="bulkRevoke">Revoke Selected</a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="inviteAlert"></div>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle bg-white" id="inviteTable">
+      <thead class="table-light">
+        <tr>
+          <th><input type="checkbox" id="selectAll"></th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Tenant</th>
+          <th>Role</th>
+          <th>Date Sent</th>
+          <th>Status</th>
+          <th>Redeemed On</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for invite in page_obj %}
+        <tr data-id="{{ invite.id }}">
+          <td><input type="checkbox" class="rowCheckbox"></td>
+          <td>{{ invite.name|default:'--' }}</td>
+          <td>{{ invite.email }}</td>
+          <td>{{ invite.tenant.name }}</td>
+          <td>{{ invite.role_assigned }}</td>
+          <td>{{ invite.date_sent|date:'M d, H:i' }}</td>
+          <td>
+            {% if invite.status == 'pending' %}<span title="Pending">⏳ Pending</span>{% endif %}
+            {% if invite.status == 'redeemed' %}<span class="text-success" title="Redeemed">✅ Redeemed</span>{% endif %}
+            {% if invite.status == 'expired' %}<span class="text-danger" title="Expired">❌ Expired</span>{% endif %}
+            {% if invite.status == 'revoked' %}<span class="text-warning" title="Revoked">🚫 Revoked</span>{% endif %}
+          </td>
+          <td>{% if invite.redeemed_on %}{{ invite.redeemed_on|date:'M d, H:i' }}{% else %}--{% endif %}</td>
+          <td>
+            {% if invite.status == 'pending' %}
+              <button class="btn btn-sm btn-outline-primary resendBtn">🔁 Resend</button>
+              <button class="btn btn-sm btn-outline-danger revokeBtn">🗑 Revoke</button>
+            {% elif invite.status == 'redeemed' %}
+              <button class="btn btn-sm btn-outline-secondary viewBtn">👁 View</button>
+              <button class="btn btn-sm btn-outline-primary editBtn">✏️ Edit</button>
+            {% elif invite.status == 'expired' %}
+              <button class="btn btn-sm btn-outline-primary resendBtn">🔁 Reinvite</button>
+              <button class="btn btn-sm btn-outline-danger revokeBtn">🗑 Delete</button>
+            {% elif invite.status == 'revoked' %}
+              <button class="btn btn-sm btn-outline-danger revokeBtn">🗑 Delete</button>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="9" class="text-center">No invitations found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <nav>
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}{% if tenant_id %}tenant={{ tenant_id }}&{% endif %}{% if status %}status={{ status }}&{% endif %}{% if unredeemed %}unredeemed=1&{% endif %}{% if date_sent %}date_sent={{ date_sent }}&{% endif %}page={{ page_obj.previous_page_number }}">Previous</a></li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+      {% endif %}
+      <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+      {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}{% if tenant_id %}tenant={{ tenant_id }}&{% endif %}{% if status %}status={{ status }}&{% endif %}{% if unredeemed %}unredeemed=1&{% endif %}{% if date_sent %}date_sent={{ date_sent }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a></li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">Next</span></li>
+      {% endif %}
+    </ul>
+  </nav>
 </div>
+
+<!-- New Invite Modal -->
+<div class="modal fade" id="inviteModal" tabindex="-1" aria-labelledby="inviteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="inviteForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="inviteModalLabel">New Invitation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="inviteName" class="form-label">Name (optional)</label>
+            <input type="text" class="form-control" id="inviteName" name="name">
+          </div>
+          <div class="mb-3">
+            <label for="inviteEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="inviteEmail" name="email" required>
+          </div>
+          <div class="mb-3">
+            <label for="inviteTenant" class="form-label">Tenant</label>
+            <select class="form-select" id="inviteTenant" name="tenant" required>
+              <option value="">Select Tenant</option>
+              {% for tenant in tenants %}
+                <option value="{{ tenant.id }}">{{ tenant.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="inviteRole" class="form-label">Role</label>
+            <input type="text" class="form-control" id="inviteRole" name="role_assigned" required>
+          </div>
+          <div class="mb-3">
+            <label for="inviteExpiration" class="form-label">Expiration (optional)</label>
+            <input type="date" class="form-control" id="inviteExpiration" name="expiration_date">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Send Invite</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Invite Modal (structure only) -->
+<div class="modal fade" id="editInviteModal" tabindex="-1" aria-labelledby="editInviteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="editInviteForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editInviteModalLabel">Edit Invitation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Fields will be filled by JS -->
+          <input type="hidden" id="editInviteId" name="invitation_id">
+          <div class="mb-3">
+            <label for="editInviteName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="editInviteName" name="name">
+          </div>
+          <div class="mb-3">
+            <label for="editInviteEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="editInviteEmail" name="email" required>
+          </div>
+          <div class="mb-3">
+            <label for="editInviteTenant" class="form-label">Tenant</label>
+            <select class="form-select" id="editInviteTenant" name="tenant" required>
+              <option value="">Select Tenant</option>
+              {% for tenant in tenants %}
+                <option value="{{ tenant.id }}">{{ tenant.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="editInviteRole" class="form-label">Role</label>
+            <input type="text" class="form-control" id="editInviteRole" name="role_assigned" required>
+          </div>
+          <div class="mb-3">
+            <label for="editInviteExpiration" class="form-label">Expiration</label>
+            <input type="date" class="form-control" id="editInviteExpiration" name="expiration_date">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- View Invite Modal (structure only) -->
+<div class="modal fade" id="viewInviteModal" tabindex="-1" aria-labelledby="viewInviteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewInviteModalLabel">Invitation Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="viewInviteBody">
+        <!-- Details will be filled by JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Helper: show alert
+function showInviteAlert(msg, type='success') {
+  document.getElementById('inviteAlert').innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">${msg}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
+}
+
+// New Invite AJAX
+$('#inviteForm').on('submit', function(e) {
+  e.preventDefault();
+  $.ajax({
+    url: "{% url 'adminpanel:create_invitation' %}",
+    method: 'POST',
+    data: $(this).serialize(),
+    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+    success: function(resp) {
+      if (resp.success) {
+        showInviteAlert(resp.message, 'success');
+        $('#inviteModal').modal('hide');
+        setTimeout(() => location.reload(), 1000);
+      } else {
+        showInviteAlert(resp.error || 'Error creating invitation', 'danger');
+      }
+    },
+    error: function() { showInviteAlert('Server error', 'danger'); }
+  });
+});
+
+// Resend, Revoke, Edit, View AJAX
+$('#inviteTable').on('click', '.resendBtn', function() {
+  let id = $(this).closest('tr').data('id');
+  $.post(`/adminpanel/users/invitations/${id}/resend/`, {'csrfmiddlewaretoken': '{{ csrf_token }}'}, function(resp) {
+    showInviteAlert(resp.message, resp.success ? 'success' : 'danger');
+    if (resp.success) setTimeout(() => location.reload(), 1000);
+  });
+});
+$('#inviteTable').on('click', '.revokeBtn', function() {
+  if (!confirm('Are you sure?')) return;
+  let id = $(this).closest('tr').data('id');
+  $.post(`/adminpanel/users/invitations/${id}/revoke/`, {'csrfmiddlewaretoken': '{{ csrf_token }}'}, function(resp) {
+    showInviteAlert(resp.message, resp.success ? 'success' : 'danger');
+    if (resp.success) setTimeout(() => location.reload(), 1000);
+  });
+});
+$('#inviteTable').on('click', '.editBtn', function() {
+  let id = $(this).closest('tr').data('id');
+  $.get(`/adminpanel/users/invitations/${id}/view/`, function(resp) {
+    if (resp.success) {
+      let d = resp.data;
+      $('#editInviteId').val(id);
+      $('#editInviteName').val(d.name);
+      $('#editInviteEmail').val(d.email);
+      $('#editInviteTenant').val(d.tenant_id);
+      $('#editInviteRole').val(d.role_assigned);
+      $('#editInviteExpiration').val(d.expiration_date);
+      $('#editInviteModal').modal('show');
+    }
+  });
+});
+$('#editInviteForm').on('submit', function(e) {
+  e.preventDefault();
+  let id = $('#editInviteId').val();
+  $.ajax({
+    url: `/adminpanel/users/invitations/${id}/edit/`,
+    method: 'POST',
+    data: $(this).serialize(),
+    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+    success: function(resp) {
+      showInviteAlert(resp.message, resp.success ? 'success' : 'danger');
+      if (resp.success) {
+        $('#editInviteModal').modal('hide');
+        setTimeout(() => location.reload(), 1000);
+      }
+    },
+    error: function() { showInviteAlert('Server error', 'danger'); }
+  });
+});
+$('#inviteTable').on('click', '.viewBtn', function() {
+  let id = $(this).closest('tr').data('id');
+  $.get(`/adminpanel/users/invitations/${id}/view/`, function(resp) {
+    if (resp.success) {
+      let d = resp.data;
+      let html = `<b>Name:</b> ${d.name || '--'}<br><b>Email:</b> ${d.email}<br><b>Tenant:</b> ${d.tenant}<br><b>Role:</b> ${d.role_assigned}<br><b>Date Sent:</b> ${d.date_sent}<br><b>Status:</b> ${d.status}<br><b>Redeemed On:</b> ${d.redeemed_on || '--'}`;
+      $('#viewInviteBody').html(html);
+      $('#viewInviteModal').modal('show');
+    }
+  });
+});
+// Select all checkboxes
+$('#selectAll').on('change', function() {
+  $('.rowCheckbox').prop('checked', this.checked);
+});
+// Bulk actions
+$('#bulkResend').on('click', function(e) {
+  e.preventDefault();
+  let ids = $('.rowCheckbox:checked').closest('tr').map(function(){return $(this).data('id');}).get();
+  if (!ids.length) return showInviteAlert('Select at least one invite', 'warning');
+  // TODO: Implement bulk resend AJAX
+  showInviteAlert('Bulk resend not implemented (stub)', 'info');
+});
+$('#bulkRevoke').on('click', function(e) {
+  e.preventDefault();
+  let ids = $('.rowCheckbox:checked').closest('tr').map(function(){return $(this).data('id');}).get();
+  if (!ids.length) return showInviteAlert('Select at least one invite', 'warning');
+  // TODO: Implement bulk revoke AJAX
+  showInviteAlert('Bulk revoke not implemented (stub)', 'info');
+});
 {% endblock %} 
