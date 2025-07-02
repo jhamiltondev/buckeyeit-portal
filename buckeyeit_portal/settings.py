@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.microsoft',
     'widget_tweaks',
+    'rest_framework',
+    'portal',
 ]
 
 MIDDLEWARE = [

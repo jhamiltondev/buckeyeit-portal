@@ -18,6 +18,9 @@ from .tech_news import get_tech_news, test_news_api
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import AnnouncementSerializer
 
 # Set up logger for views
 logger = logging.getLogger('portal.views')
@@ -642,3 +645,10 @@ def support_tickets_api(request):
 
 def ticket_thank_you_view(request, ticket_id):
     return render(request, 'portal/ticket_submit_thank_you.html', {'ticket_id': ticket_id})
+
+@api_view(['GET'])
+def api_announcements_list(request):
+    """API endpoint to list all active announcements."""
+    announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')
+    serializer = AnnouncementSerializer(announcements, many=True)
+    return Response(serializer.data)
