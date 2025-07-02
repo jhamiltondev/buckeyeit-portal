@@ -15,3 +15,4 @@ django-jazzmin
 whitenoise
 django-import-export
 django-widget-tweaks
+pytz
