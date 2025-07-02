@@ -346,8 +346,8 @@
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Accordion sidebar: only one section open at a time
         document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar accordion logic (unchanged)
             document.querySelectorAll('.sidebar-section').forEach(function(section) {
                 var link = section.querySelector('.sidebar-link');
                 var submenu = section.querySelector('.sidebar-submenu');
@@ -356,10 +356,8 @@
                     submenu.style.maxHeight = '0';
                     submenu.style.overflow = 'hidden';
                     submenu.style.display = 'none';
-                    // Only toggle on main section header click
                     link.addEventListener('click', function(e) {
                         e.preventDefault();
-                        // Close all other sections
                         document.querySelectorAll('.sidebar-section').forEach(function(other) {
                             if (other !== section) {
                                 var otherSub = other.querySelector('.sidebar-submenu');
@@ -375,7 +373,6 @@
                                 other.classList.remove('open');
                             }
                         });
-                        // Toggle this section
                         var isOpen = submenu.classList.toggle('open');
                         if (isOpen) {
                             submenu.style.display = 'block';
@@ -391,7 +388,7 @@
                     });
                 }
             });
-            // Night mode toggle
+            // Night mode toggle (unchanged)
             var nightModeBtn = document.getElementById('nightModeToggle');
             var html = document.documentElement;
             function setNightMode(on) {
@@ -408,15 +405,44 @@
                     setNightMode(!html.classList.contains('night-mode'));
                 });
             }
-            // Restore night mode preference
             if (localStorage.getItem('adminNightMode') === '1') {
                 setNightMode(true);
             }
 
-            // SPA AJAX navigation with fade animation (event delegation)
+            // SPA AJAX navigation with fade animation (event delegation + popstate)
+            function loadContent(url, addToHistory=true) {
+                var mainContent = document.getElementById('mainContent');
+                if (!mainContent) return;
+                // Always reset fade classes
+                mainContent.classList.remove('fade-in', 'fade-out');
+                // Fade out
+                mainContent.classList.add('fade-out');
+                fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(response => response.text())
+                    .then(html => {
+                        setTimeout(() => {
+                            mainContent.innerHTML = html;
+                            mainContent.classList.remove('fade-out');
+                            mainContent.classList.add('fade-in');
+                            setTimeout(() => mainContent.classList.remove('fade-in'), 300);
+                        }, 300);
+                    });
+                if (addToHistory) {
+                    history.pushState(null, '', url);
+                }
+            }
+
+            // Initial fade-in on page load
+            var mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.classList.remove('fade-in', 'fade-out');
+                mainContent.classList.add('fade-in');
+                setTimeout(() => mainContent.classList.remove('fade-in'), 300);
+            }
+
+            // Event delegation for sidebar links
             document.body.addEventListener('click', function(e) {
                 var target = e.target;
-                // Traverse up if icon or span is clicked
                 while (target && target.tagName !== 'A') {
                     target = target.parentElement;
                 }
@@ -424,21 +450,13 @@
                     e.preventDefault();
                     var url = target.getAttribute('data-url');
                     if (!url) return;
-                    var mainContent = document.getElementById('mainContent');
-                    if (!mainContent) return;
-                    mainContent.classList.add('fade-out');
-                    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-                        .then(response => response.text())
-                        .then(html => {
-                            setTimeout(() => {
-                                mainContent.innerHTML = html;
-                                mainContent.classList.remove('fade-out');
-                                mainContent.classList.add('fade-in');
-                                setTimeout(() => mainContent.classList.remove('fade-in'), 300);
-                            }, 300);
-                        });
-                    history.pushState(null, '', url);
+                    loadContent(url, true);
                 }
+            });
+
+            // Handle browser back/forward navigation
+            window.addEventListener('popstate', function() {
+                loadContent(location.pathname, false);
             });
         });
     </script>
