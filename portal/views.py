@@ -460,9 +460,9 @@ def notifications_api(request):
     user_email = request.user.email.lower()
     read_ids = request.session.get('read_notifications', [])
 
-    # Mark all as read if requested
+    # Mark all as read if requested (only clears badge, not the list)
     if request.GET.get('mark_notifications_read') == '1':
-        # Get all current notification IDs
+        # Only update the session to clear the badge count
         cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
         all_note_ids = []
         for t in cw_tickets:
@@ -470,14 +470,20 @@ def notifications_api(request):
             for note in notes:
                 note_id = f"{t['id']}_{note.get('id', note.get('dateCreated'))}"
                 all_note_ids.append(note_id)
-        print(f"[DEBUG][Notifications] Marking all as read: {all_note_ids}")
         request.session['read_notifications'] = all_note_ids
         request.session.modified = True
-        return JsonResponse({'count': 0, 'notifications': []})
+        # Return notifications, but with count 0
+        notifications = _get_notifications(request, all_note_ids)
+        return JsonResponse({'count': 0, 'notifications': notifications})
 
-    # Get recent tickets and their notes
+    # Get notifications as usual
+    notifications = _get_notifications(request, read_ids)
+    return JsonResponse({'count': len([n for n in notifications if n['notification_id'] not in read_ids]), 'notifications': notifications})
+
+# Helper to build notifications list
+def _get_notifications(request, read_ids):
+    user_email = request.user.email.lower()
     cw_tickets = [t for t in get_connectwise_tickets(request.user) if t.get('status', {}).get('name') not in ['Closed', 'Pending Close', 'Closed - Silent']]
-
     notifications = []
     for t in cw_tickets:
         ticket_id = t['id']
@@ -490,9 +496,6 @@ def notifications_api(request):
             'last_checked': timezone.now(),
         })
         if not created and seen.last_status_id != current_status_id:
-            print(f"[DEBUG][Notifications] Status change detected for user {request.user.email}, ticket {ticket_id}: {seen.last_status_id} -> {current_status_id} ({seen.last_status_name} -> {current_status_name})")
-            print(f"[DEBUG][Notifications] TicketStatusSeen record: {seen}")
-            # Status changed, trigger notification
             notifications.append({
                 'ticket_id': ticket_id,
                 'notification_id': f'status_{ticket_id}_{current_status_id}',
@@ -504,7 +507,22 @@ def notifications_api(request):
             seen.last_status_name = current_status_name
             seen.last_checked = timezone.now()
             seen.save()
-
+        # Assignment change notification
+        current_owner_id = t.get('owner', {}).get('id')
+        if hasattr(seen, 'last_owner_id'):
+            if seen.last_owner_id != current_owner_id:
+                notifications.append({
+                    'ticket_id': ticket_id,
+                    'notification_id': f'owner_{ticket_id}_{current_owner_id}',
+                    'display_name': 'System',
+                    'text': f"Ticket assigned to {t.get('owner', {}).get('name', 'Unassigned')}",
+                    'dateCreated': timezone.now().isoformat(),
+                })
+                seen.last_owner_id = current_owner_id
+                seen.save()
+        else:
+            seen.last_owner_id = current_owner_id
+            seen.save()
         notes = get_connectwise_ticket_notes(ticket_id)
         for note in notes:
             note_id = f"{ticket_id}_{note.get('id', note.get('dateCreated'))}"
@@ -516,7 +534,6 @@ def notifications_api(request):
                     continue
             except Exception:
                 continue
-
             is_tech_reply = note.get('enteredBy', '').lower() != user_email and not note.get('text', '').lower().startswith('from:')
             is_status_change = note.get('detailDescriptionFlag') and (
                 'status' in note.get('text', '').lower() or note.get('detailDescriptionFlag')
@@ -524,8 +541,6 @@ def notifications_api(request):
             is_owner_change = note.get('detailDescriptionFlag')
             is_remote_support = 'user has requested remote support' in note.get('text', '').lower()
             is_user_reply = note.get('enteredBy', '').lower() == user_email or note.get('text', '').lower().startswith('from:')
-
-            # Extract display name (same logic as ticket detail)
             text = note.get('text', '')
             if text.startswith('From: '):
                 first_line = text.split('\n', 1)[0]
@@ -538,7 +553,6 @@ def notifications_api(request):
                 display_name = note['member']['name']
             else:
                 display_name = 'Buckeye IT'
-
             if (is_tech_reply or is_status_change or is_owner_change) and not is_remote_support and not is_user_reply:
                 if note_id not in read_ids:
                     note['ticket_id'] = ticket_id
@@ -546,19 +560,24 @@ def notifications_api(request):
                     note['display_name'] = display_name
                     note['notification_message'] = f"{display_name} has replied to ticket"
                     notifications.append(note)
-                    print(f"[DEBUG][Notifications] -> ADDED to notifications: {note_id}")
-                else:
-                    print(f"[DEBUG][Notifications] -> SKIPPED (already read): {note_id}")
-            else:
-                print(f"[DEBUG][Notifications] -> FILTERED OUT: {note_id}")
-
     notifications = sorted(notifications, key=lambda n: n.get('dateCreated', ''), reverse=True)[:10]
-    print(f"[DEBUG][Notifications] Final notifications: {[n['notification_id'] for n in notifications]}")
+    return notifications
 
-    return JsonResponse({
-        'count': len(notifications),
-        'notifications': notifications
-    })
+@csrf_exempt
+@login_required(login_url='/adminpanel/login/')
+def notifications_clear_api(request):
+    """API endpoint to clear a single notification by notification_id (POST)"""
+    if request.method == 'POST':
+        notification_id = request.POST.get('notification_id')
+        if not notification_id:
+            return JsonResponse({'success': False, 'error': 'No notification_id provided'}, status=400)
+        read_ids = request.session.get('read_notifications', [])
+        if notification_id not in read_ids:
+            read_ids.append(notification_id)
+            request.session['read_notifications'] = read_ids
+            request.session.modified = True
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'POST required'}, status=405)
 
 @login_required(login_url='/adminpanel/login/')
 def dashboard_tickets_api(request):

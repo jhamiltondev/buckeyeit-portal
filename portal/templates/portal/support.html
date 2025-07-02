@@ -44,7 +44,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for ticket in cw_tickets %}
+                                {% for ticket in cw_tickets|slice:':3' %}
                                 <tr>
                                     <td><a href="{% url 'portal:connectwise_ticket_detail' ticket.id %}">{{ ticket.summary }}</a></td>
                                     <td>
@@ -70,6 +70,9 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                        {% if cw_tickets|length > 3 %}
+                            <div class="text-end"><a href="/tickets/" class="btn btn-link">See more...</a></div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -108,7 +111,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for ticket in closed_cw_tickets %}
+                                {% for ticket in closed_cw_tickets|slice:':3' %}
                                 <tr>
                                     <td><a href="{% url 'portal:connectwise_ticket_detail' ticket.id %}">{{ ticket.summary }}</a></td>
                                     <td>
@@ -128,6 +131,9 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                        {% if closed_cw_tickets|length > 3 %}
+                            <div class="text-end"><a href="/tickets/" class="btn btn-link">See more...</a></div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
