@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,16 +7,21 @@ export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
     const result = await login(username, password);
     if (result.success) {
-      navigate('/');
+      // Fade out login, then navigate
+      document.getElementById('login-root').classList.add('fade-out');
+      setTimeout(() => navigate('/'), 500);
     } else {
       setError(result.error || 'Login failed');
+      setLoading(false);
     }
   };
 
@@ -27,7 +32,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 to-red-300">
+    <div id="login-root" className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 to-red-300 transition-opacity duration-500 ${loading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
       <div className="bg-white rounded-2xl shadow-2xl flex w-full max-w-4xl overflow-hidden">
         {/* Left: Branding */}
         <div className="hidden md:flex flex-col items-center justify-center bg-gradient-to-br from-red-600 to-red-400 text-white p-10 w-1/2">
@@ -39,6 +44,7 @@ export default function Login() {
         <div className="flex flex-col justify-center p-8 md:p-12 w-full md:w-1/2">
           <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">Sign in</h2>
           {error && <div className="mb-4 text-red-500 text-center">{error}</div>}
+          {loading && <div className="mb-4 text-blue-500 text-center animate-pulse">Signing in…</div>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative">
               <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
