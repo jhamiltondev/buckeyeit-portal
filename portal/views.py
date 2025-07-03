@@ -459,6 +459,10 @@ def connectwise_ticket_detail(request, ticket_id):
     })
 
 @login_required(login_url='/adminpanel/login/')
+def ticket_thank_you_view(request, ticket_id):
+    return render(request, 'portal/ticket_submit_thank_you.html', {'ticket_id': ticket_id})
+
+@login_required(login_url='/adminpanel/login/')
 def notifications_api(request):
     """API endpoint for notifications - used by live update JavaScript"""
     user_email = request.user.email.lower()
@@ -644,9 +648,6 @@ def support_tickets_api(request):
         'tickets': cw_tickets
     })
 
-def ticket_thank_you_view(request, ticket_id):
-    return render(request, 'portal/ticket_submit_thank_you.html', {'ticket_id': ticket_id})
-
 @api_view(['GET'])
 def api_announcements_list(request):
     """API endpoint to list all active announcements."""
@@ -672,7 +673,9 @@ def api_login(request):
 @permission_classes([IsAuthenticated])
 def api_logout(request):
     django_logout(request)
-    return JsonResponse({'success': True})
+    response = JsonResponse({'success': True})
+    response.delete_cookie('sessionid')
+    return response
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
