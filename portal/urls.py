@@ -43,4 +43,5 @@ urlpatterns = [
     path('api/security_center/', security_center_api, name='security-center'),
     path('api/knowledge_base_articles/', api_knowledge_base_articles, name='api_knowledge_base_articles'),
     path('api/company_info/', views.api_company_info, name='api_company_info'),
+    path('api/log-frontend/', views.api_frontend_log, name='api_frontend_log'),
 ] 

@@ -872,3 +872,13 @@ def api_company_info(request):
             } for d in docs
         ],
     })
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def api_frontend_log(request):
+    import logging
+    logger = logging.getLogger('frontend.react')
+    data = request.data
+    logger.info(f"[ReactLog] {data}")
+    return Response({'status': 'ok'})
