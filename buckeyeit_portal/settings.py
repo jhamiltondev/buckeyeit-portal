@@ -48,10 +48,11 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.microsoft',
     'widget_tweaks',
     'rest_framework',
-    'portal',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -88,12 +89,8 @@ WSGI_APPLICATION = 'buckeyeit_portal.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'buckeyeit',
-        'PASSWORD': 'weareself12!',
-        'HOST': 'buckeyeitsql.postgres.database.azure.com',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -305,3 +302,5 @@ LOGGING = {
 print("LOGIN_URL:", LOGIN_URL)
 print("LOGOUT_REDIRECT_URL:", LOGOUT_REDIRECT_URL)
 print("LOGIN_REDIRECT_URL:", LOGIN_REDIRECT_URL)
+
+CORS_ALLOW_ALL_ORIGINS = True

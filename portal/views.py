@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login as django_login, logout
 from django.contrib import messages
 from django.contrib.auth.views import LogoutView
 from django.utils.decorators import method_decorator
@@ -18,9 +18,10 @@ from .tech_news import get_tech_news, test_news_api
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .serializers import AnnouncementSerializer
+from .serializers import AnnouncementSerializer, KnowledgeBaseArticleSerializer
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 # Set up logger for views
 logger = logging.getLogger('portal.views')
@@ -155,7 +156,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
-            login(request, user)
+            django_login(request, user)
             tenant_slug = user.tenant.slug if user.tenant else None
             if tenant_slug:
                 return redirect('portal:tenant_dashboard', tenant_slug=tenant_slug)
@@ -652,3 +653,222 @@ def api_announcements_list(request):
     announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')
     serializer = AnnouncementSerializer(announcements, many=True)
     return Response(serializer.data)
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def api_login(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        django_login(request, user)
+        return JsonResponse({'success': True, 'username': user.username, 'email': user.email})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid credentials'}, status=400)
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_logout(request):
+    django_logout(request)
+    return JsonResponse({'success': True})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_user(request):
+    user = request.user
+    tenant = user.tenant if hasattr(user, 'tenant') and user.tenant else None
+    return JsonResponse({
+        'username': user.username,
+        'email': user.email,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'is_authenticated': user.is_authenticated,
+        'support_role': getattr(user, 'support_role', ''),
+        'phone': '',  # Placeholder, add if you add a phone field to User
+        'email_notifications': None,  # Placeholder for future preference
+        'theme': None,  # Placeholder for future preference
+        'show_tech_news': None,  # Placeholder for future preference
+        'tenant': {
+            'name': tenant.name if tenant else '',
+            'vip': tenant.vip if tenant else False,
+            'address': tenant.address if tenant else '',
+            'phone': tenant.phone if tenant else '',
+            'website': tenant.website if tenant else '',
+            'logo': tenant.logo.url if tenant and tenant.logo else '',
+        } if tenant else None,
+    })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_knowledge_base_articles(request):
+    articles = KnowledgeBaseArticle.objects.filter(is_active=True).order_by('-updated_at')
+    serializer = KnowledgeBaseArticleSerializer(articles, many=True)
+    return Response(serializer.data)
+
+def status_proxy(request):
+    ms_status = 'Unknown'
+    google_status = 'Unknown'
+    try:
+        ms_resp = requests.get('https://status.office.com/api/status', timeout=5)
+        if ms_resp.ok:
+            ms_data = ms_resp.json()
+            ms_status = ms_data.get('Status', {}).get('ServiceStatus', 'Operational')
+        else:
+            ms_status = 'Unavailable'
+    except Exception as e:
+        logger.error(f"Microsoft status fetch error: {e}")
+        ms_status = 'Error'
+    try:
+        g_resp = requests.get('https://www.google.com/appsstatus/dashboard/incidents.json', timeout=5)
+        if g_resp.ok:
+            g_data = g_resp.json()
+            google_status = 'Operational' if g_data.get('incidents', []) == [] else 'Issues'
+        else:
+            google_status = 'Unavailable'
+    except Exception as e:
+        logger.error(f"Google status fetch error: {e}")
+        google_status = 'Error'
+    return JsonResponse({'microsoft': ms_status, 'google': google_status})
+
+@login_required(login_url='/adminpanel/login/')
+def dashboard_ticket_summary_api(request):
+    """API endpoint for dashboard ticket summary stats for the current user."""
+    all_cw_tickets = get_connectwise_tickets(request.user)
+    # Open tickets
+    open_tickets = [t for t in all_cw_tickets if t.get('status', {}).get('name') not in ['Closed', 'Closed - Silent', 'Pending Close']]
+    open_tickets_count = len(open_tickets)
+    # Tickets resolved this month
+    now = datetime.now()
+    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    tickets_this_month = [t for t in all_cw_tickets if t.get('dateEntered') and datetime.strptime(t['dateEntered'][:10], '%Y-%m-%d') >= month_start]
+    tickets_resolved_this_month = len([t for t in tickets_this_month if t.get('status', {}).get('name') in ['Closed', 'Closed - Silent', 'Pending Close']])
+    # Average response time (for tickets resolved this month)
+    resolution_times = []
+    for t in tickets_this_month:
+        if t.get('status', {}).get('name') in ['Closed', 'Closed - Silent', 'Pending Close']:
+            created = t.get('dateEntered')
+            closed = t.get('closedDate')
+            if created and closed:
+                try:
+                    created_dt = datetime.strptime(created[:19], '%Y-%m-%dT%H:%M:%S')
+                    closed_dt = datetime.strptime(closed[:19], '%Y-%m-%dT%H:%M:%S')
+                    resolution_times.append((closed_dt - created_dt).total_seconds())
+                except Exception:
+                    continue
+    avg_response_time = (sum(resolution_times) / len(resolution_times) / 3600) if resolution_times else 0
+    avg_response_time = round(avg_response_time, 1)
+    return JsonResponse({
+        'open_tickets': open_tickets_count,
+        'resolved_this_month': tickets_resolved_this_month,
+        'avg_response_time': avg_response_time
+    })
+
+@login_required(login_url='/adminpanel/login/')
+def security_center_api(request):
+    """API endpoint for dashboard Security Center card (mock data for now)."""
+    return JsonResponse({
+        'mfa_status': 'Enabled',
+        'last_blocked_login': '2 days ago',
+        'risky_signins': 'None',
+    })
+
+@api_view(['PATCH', 'POST'])
+@permission_classes([IsAuthenticated])
+def api_user_update(request):
+    user = request.user
+    data = request.data if hasattr(request, 'data') else request.POST
+    updated = False
+    if 'phone' in data:
+        user.phone = data['phone']
+        updated = True
+    if 'support_role' in data:
+        user.support_role = data['support_role']
+        updated = True
+    # Preferences (store in session or user profile as needed)
+    if 'email_notifications' in data:
+        request.session['email_notifications'] = data['email_notifications']
+        updated = True
+    if 'theme' in data:
+        request.session['theme'] = data['theme']
+        updated = True
+    if 'show_tech_news' in data:
+        request.session['show_tech_news'] = data['show_tech_news']
+        updated = True
+    if updated:
+        user.save()
+        request.session.modified = True
+    # Return updated user data (same as api_user)
+    tenant = user.tenant if hasattr(user, 'tenant') and user.tenant else None
+    return JsonResponse({
+        'username': user.username,
+        'email': user.email,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'is_authenticated': user.is_authenticated,
+        'support_role': getattr(user, 'support_role', ''),
+        'phone': getattr(user, 'phone', ''),
+        'email_notifications': request.session.get('email_notifications', None),
+        'theme': request.session.get('theme', None),
+        'show_tech_news': request.session.get('show_tech_news', None),
+        'tenant': {
+            'name': tenant.name if tenant else '',
+            'vip': tenant.vip if tenant else False,
+            'address': tenant.address if tenant else '',
+            'phone': tenant.phone if tenant else '',
+            'website': tenant.website if tenant else '',
+            'logo': tenant.logo.url if tenant and tenant.logo else '',
+        } if tenant else None,
+    })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_company_info(request):
+    tenant = getattr(request.user, 'tenant', None)
+    if not tenant:
+        return JsonResponse({'error': 'No tenant found'}, status=404)
+    contacts = User.objects.filter(tenant=tenant).order_by('first_name', 'last_name')
+    docs = TenantDocument.objects.filter(tenant=tenant).order_by('-uploaded_at')
+    # Mock data for support info and services
+    support_info = {
+        'assigned_tech': 'John Hamilton',
+        'sla': 'VIP Tier – 2hr Response',
+        'support_line': '(800) 555-1234',
+        'email_support': 'support@buckeyeit.com',
+        'timezone': 'EST (UTC -5)',
+    }
+    services = [
+        {'category': 'Microsoft 365', 'services': ['Email', 'Teams', 'SharePoint', 'Licensing']},
+        {'category': 'Network & Firewall', 'services': ['FortiGate Management', 'VPN Setup']},
+        {'category': 'Device Management', 'services': ['NinjaRMM', 'Windows Patch Management']},
+        {'category': 'Support Tools', 'services': ['ConnectWise', 'ScreenConnect']},
+    ]
+    return JsonResponse({
+        'company_profile': {
+            'name': tenant.name,
+            'domain': tenant.domain,
+            'tenant_id': tenant.slug.upper() if tenant.slug else '',
+            'plan_type': 'VIP' if tenant.vip else 'Standard',
+            'security_tier': 'Standard',  # Placeholder, add to model if needed
+            'onboarded': tenant.created_at.strftime('%b %d, %Y') if tenant.created_at else '',
+            'logo': tenant.logo.url if tenant.logo else '',
+        },
+        'contacts': [
+            {
+                'name': f'{u.first_name} {u.last_name}',
+                'role': u.support_role or 'User',
+                'email': u.email,
+                'phone': u.phone if hasattr(u, 'phone') else ''
+            } for u in contacts
+        ],
+        'support_info': support_info,
+        'services': services,
+        'documents': [
+            {
+                'title': d.title,
+                'url': d.file.url,
+                'uploaded_at': d.uploaded_at.strftime('%b %d, %Y')
+            } for d in docs
+        ],
+    })

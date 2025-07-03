@@ -1103,3 +1103,624 @@ INFO 2025-07-01 11:22:03,659 autoreload 125080 120168 Watching for file changes 
 INFO 2025-07-01 11:22:03,666 autoreload 126880 117576 Watching for file changes with StatReloader
 INFO 2025-07-01 11:22:03,675 autoreload 129396 125328 Watching for file changes with StatReloader
 INFO 2025-07-01 11:22:03,807 autoreload 62908 94480 Watching for file changes with StatReloader
+INFO 2025-07-02 16:19:54,937 autoreload 127088 133872 Watching for file changes with StatReloader
+INFO 2025-07-02 16:21:56,862 autoreload 127088 133872 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-02 16:21:58,136 autoreload 142540 110180 Watching for file changes with StatReloader
+INFO 2025-07-02 16:22:16,690 autoreload 130404 123968 Watching for file changes with StatReloader
+INFO 2025-07-02 16:23:07,140 autoreload 130404 123968 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-02 16:23:08,383 autoreload 142668 132204 Watching for file changes with StatReloader
+INFO 2025-07-02 16:23:21,645 autoreload 143336 133312 Watching for file changes with StatReloader
+INFO 2025-07-02 16:23:42,967 autoreload 105356 142760 Watching for file changes with StatReloader
+INFO 2025-07-02 16:29:34,410 autoreload 139380 87256 Watching for file changes with StatReloader
+INFO 2025-07-02 16:29:43,728 basehttp 139380 141036 "GET /api/announcements/ HTTP/1.1" 200 5304
+INFO 2025-07-02 16:29:44,056 basehttp 139380 78644 "GET /static/rest_framework/css/bootstrap-tweaks.css HTTP/1.1" 200 3426
+INFO 2025-07-02 16:29:44,065 basehttp 139380 141036 "GET /static/rest_framework/css/bootstrap.min.css HTTP/1.1" 200 121457
+INFO 2025-07-02 16:29:44,068 basehttp 139380 120440 "GET /static/rest_framework/css/prettify.css HTTP/1.1" 200 817
+INFO 2025-07-02 16:29:44,071 basehttp 139380 126084 "GET /static/rest_framework/css/default.css HTTP/1.1" 200 1152
+INFO 2025-07-02 16:29:44,095 basehttp 139380 78644 "GET /static/rest_framework/js/csrf.js HTTP/1.1" 200 1793
+INFO 2025-07-02 16:29:44,096 basehttp 139380 137424 "GET /static/rest_framework/js/ajax-form.js HTTP/1.1" 200 3796
+INFO 2025-07-02 16:29:44,113 basehttp 139380 141036 "GET /static/rest_framework/js/bootstrap.min.js HTTP/1.1" 200 39680
+INFO 2025-07-02 16:29:44,116 basehttp 139380 120440 "GET /static/rest_framework/js/prettify-min.js HTTP/1.1" 200 13632
+INFO 2025-07-02 16:29:44,118 basehttp 139380 126084 "GET /static/rest_framework/js/default.js HTTP/1.1" 200 1268
+INFO 2025-07-02 16:29:44,123 basehttp 139380 78644 "GET /static/rest_framework/js/load-ajax-form.js HTTP/1.1" 200 59
+INFO 2025-07-02 16:29:44,147 basehttp 139380 101968 "GET /static/rest_framework/js/jquery-3.7.1.min.js HTTP/1.1" 200 87533
+INFO 2025-07-02 16:29:44,181 basehttp 139380 101968 "GET /static/rest_framework/img/grid.png HTTP/1.1" 200 1458
+INFO 2025-07-02 16:29:52,417 basehttp 139380 133444 "GET /api/announcements/ HTTP/1.1" 200 2
+INFO 2025-07-02 16:29:52,422 basehttp 139380 133444 "GET /api/announcements/ HTTP/1.1" 200 2
+INFO 2025-07-02 16:55:21,441 autoreload 139380 87256 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-02 16:55:23,394 autoreload 141584 130724 Watching for file changes with StatReloader
+INFO 2025-07-02 16:55:25,948 autoreload 141584 130724 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\urls.py changed, reloading.
+INFO 2025-07-02 16:55:27,023 autoreload 134476 134308 Watching for file changes with StatReloader
+INFO 2025-07-02 16:59:17,598 autoreload 125888 130660 Watching for file changes with StatReloader
+INFO 2025-07-02 22:38:06,618 basehttp 125888 124704 "GET /api/login HTTP/1.1" 301 0
+WARNING 2025-07-02 22:38:06,973 log 125888 145264 Method Not Allowed: /api/login/
+WARNING 2025-07-02 22:38:06,975 basehttp 125888 145264 "GET /api/login/ HTTP/1.1" 405 5560
+INFO 2025-07-02 22:38:07,237 basehttp 125888 145256 "GET /static/rest_framework/css/bootstrap-tweaks.css HTTP/1.1" 200 3426
+INFO 2025-07-02 22:38:07,240 basehttp 125888 145264 "GET /static/rest_framework/css/bootstrap.min.css HTTP/1.1" 200 121457
+INFO 2025-07-02 22:38:07,256 basehttp 125888 145256 "GET /static/rest_framework/css/prettify.css HTTP/1.1" 200 817
+INFO 2025-07-02 22:38:07,259 basehttp 125888 145264 "GET /static/rest_framework/css/default.css HTTP/1.1" 200 1152
+INFO 2025-07-02 22:38:07,304 basehttp 125888 145264 "GET /static/rest_framework/js/ajax-form.js HTTP/1.1" 200 3796
+INFO 2025-07-02 22:38:07,331 basehttp 125888 145264 "GET /static/rest_framework/js/csrf.js HTTP/1.1" 200 1793
+INFO 2025-07-02 22:38:07,343 basehttp 125888 145256 "GET /static/rest_framework/js/jquery-3.7.1.min.js HTTP/1.1" 200 87533
+INFO 2025-07-02 22:38:07,386 basehttp 125888 145264 "GET /static/rest_framework/js/bootstrap.min.js HTTP/1.1" 200 39680
+INFO 2025-07-02 22:38:07,435 basehttp 125888 145264 "GET /static/rest_framework/js/prettify-min.js HTTP/1.1" 200 13632
+INFO 2025-07-02 22:38:07,445 basehttp 125888 145192 "GET /static/rest_framework/img/grid.png HTTP/1.1" 200 1458
+INFO 2025-07-02 22:38:07,457 basehttp 125888 145236 "GET /static/rest_framework/js/load-ajax-form.js HTTP/1.1" 200 59
+INFO 2025-07-02 22:38:07,466 basehttp 125888 145164 "GET /static/rest_framework/js/default.js HTTP/1.1" 200 1268
+WARNING 2025-07-02 22:38:07,814 log 125888 145256 Not Found: /favicon.ico
+WARNING 2025-07-02 22:38:07,815 basehttp 125888 145256 "GET /favicon.ico HTTP/1.1" 404 10968
+INFO 2025-07-02 22:43:48,718 autoreload 125888 130660 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\serializers.py changed, reloading.
+INFO 2025-07-02 22:43:51,559 autoreload 137016 145012 Watching for file changes with StatReloader
+WARNING 2025-07-02 22:55:08,468 log 137016 144492 Not Found: /main.332e4cb76a0e3e32e627.hot-update.json
+WARNING 2025-07-02 22:55:08,473 basehttp 137016 144492 "GET /main.332e4cb76a0e3e32e627.hot-update.json HTTP/1.1" 404 11058
+WARNING 2025-07-02 22:55:08,508 log 137016 142416 Not Found: /main.332e4cb76a0e3e32e627.hot-update.json
+WARNING 2025-07-02 22:55:08,509 basehttp 137016 142416 "GET /main.332e4cb76a0e3e32e627.hot-update.json HTTP/1.1" 404 11058
+WARNING 2025-07-02 22:55:08,543 log 137016 144076 Not Found: /main.332e4cb76a0e3e32e627.hot-update.json
+WARNING 2025-07-02 22:55:08,544 basehttp 137016 144076 "GET /main.332e4cb76a0e3e32e627.hot-update.json HTTP/1.1" 404 11058
+WARNING 2025-07-02 22:55:09,131 log 137016 124736 Forbidden: /api/user/
+WARNING 2025-07-02 22:55:09,132 basehttp 137016 124736 "GET /api/user/ HTTP/1.1" 403 58
+WARNING 2025-07-02 22:55:09,155 log 137016 143488 Forbidden: /api/user/
+WARNING 2025-07-02 22:55:09,156 basehttp 137016 143488 "GET /api/user/ HTTP/1.1" 403 58
+WARNING 2025-07-02 22:55:10,126 log 137016 143828 Forbidden: /api/user/
+WARNING 2025-07-02 22:55:10,127 basehttp 137016 143828 "GET /api/user/ HTTP/1.1" 403 58
+WARNING 2025-07-02 22:55:10,134 log 137016 140176 Forbidden: /api/user/
+WARNING 2025-07-02 22:55:10,135 basehttp 137016 140176 "GET /api/user/ HTTP/1.1" 403 58
+WARNING 2025-07-02 22:55:10,141 log 137016 128424 Forbidden: /api/user/
+WARNING 2025-07-02 22:55:10,142 basehttp 137016 128424 "GET /api/user/ HTTP/1.1" 403 58
+WARNING 2025-07-02 22:55:10,148 log 137016 136628 Forbidden: /api/user/
+WARNING 2025-07-02 22:55:10,149 basehttp 137016 136628 "GET /api/user/ HTTP/1.1" 403 58
+WARNING 2025-07-02 22:55:10,229 log 137016 137420 Forbidden: /api/user/
+WARNING 2025-07-02 22:55:10,230 basehttp 137016 137420 "GET /api/user/ HTTP/1.1" 403 58
+WARNING 2025-07-02 22:55:10,238 log 137016 99868 Forbidden: /api/user/
+WARNING 2025-07-02 22:55:10,239 basehttp 137016 99868 "GET /api/user/ HTTP/1.1" 403 58
+ERROR 2025-07-02 22:55:45,751 log 137016 134296 Internal Server Error: /api/login/
+Traceback (most recent call last):
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py", line 665, in api_login
+    django_login(request, user)
+    ^^^^^^^^^^^^
+NameError: name 'django_login' is not defined
+ERROR 2025-07-02 22:55:45,781 basehttp 137016 134296 "POST /api/login/ HTTP/1.1" 500 112635
+ERROR 2025-07-02 22:55:46,185 log 137016 143724 Internal Server Error: /api/login/
+Traceback (most recent call last):
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py", line 665, in api_login
+    django_login(request, user)
+    ^^^^^^^^^^^^
+NameError: name 'django_login' is not defined
+ERROR 2025-07-02 22:55:46,199 basehttp 137016 143724 "POST /api/login/ HTTP/1.1" 500 112635
+WARNING 2025-07-02 22:57:16,339 log 137016 22264 Bad Request: /api/login/
+WARNING 2025-07-02 22:57:16,352 basehttp 137016 22264 "POST /api/login/ HTTP/1.1" 400 50
+ERROR 2025-07-02 23:13:15,020 log 137016 144552 Internal Server Error: /api/login/
+Traceback (most recent call last):
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\django\views\generic\base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\.venv\Lib\site-packages\rest_framework\decorators.py", line 50, in handler
+    return func(*args, **kwargs)
+  File "C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py", line 665, in api_login
+    django_login(request, user)
+    ^^^^^^^^^^^^
+NameError: name 'django_login' is not defined
+ERROR 2025-07-02 23:13:15,088 basehttp 137016 144552 "POST /api/login/ HTTP/1.1" 500 112635
+INFO 2025-07-02 23:19:44,951 autoreload 137016 145012 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-02 23:19:46,630 autoreload 140944 134844 Watching for file changes with StatReloader
+WARNING 2025-07-02 23:21:04,541 log 140944 138168 Forbidden: /api/user/
+WARNING 2025-07-02 23:21:04,544 basehttp 140944 138168 "GET /api/user/ HTTP/1.1" 403 58
+WARNING 2025-07-02 23:21:04,558 log 140944 115316 Forbidden: /api/user/
+WARNING 2025-07-02 23:21:04,559 basehttp 140944 115316 "GET /api/user/ HTTP/1.1" 403 58
+INFO 2025-07-02 23:21:27,919 basehttp 140944 139984 "POST /api/login/ HTTP/1.1" 200 68
+INFO 2025-07-02 23:46:42,452 basehttp 140944 122956 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 08:22:01,819 autoreload 135632 136464 Watching for file changes with StatReloader
+INFO 2025-07-03 08:23:20,872 autoreload 142284 139924 Watching for file changes with StatReloader
+INFO 2025-07-03 08:24:36,833 autoreload 142676 113724 Watching for file changes with StatReloader
+INFO 2025-07-03 08:25:39,709 autoreload 142732 118992 Watching for file changes with StatReloader
+INFO 2025-07-03 08:25:57,010 basehttp 142732 120324 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 08:25:57,086 basehttp 142732 85672 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 08:26:53,930 basehttp 142732 93208 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 08:26:53,942 basehttp 142732 143760 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 08:46:03,130 basehttp 142732 134728 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 08:46:03,151 basehttp 142732 143724 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 08:48:01,123 basehttp 142732 145028 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 08:48:01,140 basehttp 142732 140012 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 08:56:28,052 basehttp 142732 120344 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 08:56:28,069 basehttp 142732 65652 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:00:49,442 basehttp 142732 119420 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:00:49,456 basehttp 142732 144848 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:05:45,495 basehttp 142732 125332 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:05:45,507 basehttp 142732 125580 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:09:42,537 basehttp 142732 120672 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:09:42,545 basehttp 142732 62312 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:09:45,461 basehttp 142732 139160 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:09:45,469 basehttp 142732 131564 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:11:00,823 basehttp 142732 117736 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:11:00,835 basehttp 142732 129328 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:11:02,727 basehttp 142732 15932 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:11:02,734 basehttp 142732 133616 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:14:45,066 basehttp 142732 137240 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:14:45,088 basehttp 142732 93964 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:36:24,237 autoreload 142732 118992 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 09:36:24,234 autoreload 142676 113724 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 09:36:26,377 autoreload 118908 127644 Watching for file changes with StatReloader
+INFO 2025-07-03 09:36:26,377 autoreload 142268 140576 Watching for file changes with StatReloader
+INFO 2025-07-03 09:36:47,935 autoreload 142268 140576 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\urls.py changed, reloading.
+INFO 2025-07-03 09:36:47,946 autoreload 118908 127644 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\urls.py changed, reloading.
+INFO 2025-07-03 09:36:49,109 autoreload 142612 144440 Watching for file changes with StatReloader
+INFO 2025-07-03 09:36:49,118 autoreload 144208 94508 Watching for file changes with StatReloader
+INFO 2025-07-03 09:39:32,074 basehttp 142612 132508 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:39:32,084 basehttp 142612 144452 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:39:32,827 basehttp 142612 144008 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 09:39:33,284 basehttp 142612 68028 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 09:49:37,478 basehttp 142612 140836 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 09:49:37,954 basehttp 142612 111996 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 09:50:50,789 basehttp 142612 127388 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 09:50:51,193 basehttp 142612 135980 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 09:51:17,834 basehttp 142612 112692 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 09:51:18,195 basehttp 142612 143760 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 09:53:56,183 basehttp 142612 139608 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 09:53:56,529 basehttp 142612 103272 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 09:54:53,597 basehttp 142612 127164 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:54:53,605 basehttp 142612 120324 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:54:54,193 basehttp 142612 131592 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 09:54:54,557 basehttp 142612 55168 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 09:59:23,189 basehttp 142612 107852 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:59:23,200 basehttp 142612 101992 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 09:59:23,747 basehttp 142612 142044 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 09:59:24,110 basehttp 142612 130616 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:05:08,850 basehttp 142612 92252 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:05:09,198 basehttp 142612 137820 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:05:20,667 basehttp 142612 82160 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:05:21,244 basehttp 142612 115272 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:05:25,223 basehttp 142612 110400 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:05:25,696 basehttp 142612 140308 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:06:10,878 basehttp 142612 124692 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:06:11,196 basehttp 142612 142664 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:11:56,304 autoreload 142612 144440 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 10:11:56,299 autoreload 144208 94508 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 10:11:58,375 autoreload 113240 135204 Watching for file changes with StatReloader
+INFO 2025-07-03 10:11:58,375 autoreload 126472 16116 Watching for file changes with StatReloader
+INFO 2025-07-03 10:12:05,187 autoreload 113240 135204 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\urls.py changed, reloading.
+INFO 2025-07-03 10:12:05,212 autoreload 126472 16116 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\urls.py changed, reloading.
+INFO 2025-07-03 10:12:06,341 autoreload 129996 136952 Watching for file changes with StatReloader
+INFO 2025-07-03 10:12:06,350 autoreload 134296 144540 Watching for file changes with StatReloader
+INFO 2025-07-03 10:12:48,030 basehttp 129996 126848 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+INFO 2025-07-03 10:12:48,952 basehttp 129996 126740 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:16:21,649 autoreload 134296 144540 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 10:16:22,533 autoreload 129996 136952 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 10:16:23,163 autoreload 107560 141116 Watching for file changes with StatReloader
+INFO 2025-07-03 10:16:23,710 autoreload 97112 139276 Watching for file changes with StatReloader
+INFO 2025-07-03 10:16:33,417 basehttp 107560 90476 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 10:16:33,432 basehttp 107560 136324 "GET /api/user/ HTTP/1.1" 200 112
+ERROR 2025-07-03 10:16:33,968 views 107560 125484 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 10:16:34,101 views 107560 125484 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:16:34,104 basehttp 107560 125484 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:16:34,186 basehttp 107560 143240 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 10:16:34,325 views 107560 136160 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 10:16:34,418 views 107560 136160 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:16:34,420 basehttp 107560 136160 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:16:34,586 basehttp 107560 137784 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+WARNING 2025-07-03 10:22:17,670 log 107560 125576 Not Found: /api/security_center/
+WARNING 2025-07-03 10:22:17,677 basehttp 107560 125576 "GET /api/security_center/ HTTP/1.1" 404 11555
+ERROR 2025-07-03 10:22:18,005 views 107560 134224 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 10:22:18,103 basehttp 107560 131476 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 10:22:18,140 views 107560 134224 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:22:18,143 basehttp 107560 134224 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:22:51,280 autoreload 107560 141116 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 10:22:51,377 autoreload 97112 139276 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 10:22:53,013 autoreload 129228 129192 Watching for file changes with StatReloader
+INFO 2025-07-03 10:23:02,941 autoreload 129228 129192 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\urls.py changed, reloading.
+INFO 2025-07-03 10:23:02,946 autoreload 134924 83124 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\urls.py changed, reloading.
+INFO 2025-07-03 10:23:04,035 autoreload 128316 146952 Watching for file changes with StatReloader
+INFO 2025-07-03 10:23:04,091 autoreload 144240 147452 Watching for file changes with StatReloader
+INFO 2025-07-03 10:23:29,229 basehttp 128316 147348 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 10:23:29,238 basehttp 128316 128264 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 10:23:29,464 basehttp 128316 124644 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 10:23:29,475 basehttp 128316 21472 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 10:23:29,874 views 128316 147296 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 10:23:29,881 basehttp 128316 103672 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 10:23:30,016 views 128316 147296 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:23:30,018 basehttp 128316 147296 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:23:30,243 basehttp 128316 145236 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 10:23:30,297 views 128316 143648 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 10:23:30,395 views 128316 143648 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:23:30,396 basehttp 128316 143648 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:25:11,444 basehttp 128316 125884 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 10:25:11,452 basehttp 128316 133260 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 10:25:11,574 basehttp 128316 126116 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 10:25:11,586 basehttp 128316 128372 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 10:25:12,033 views 128316 144096 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 10:25:12,152 views 128316 144096 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:25:12,155 basehttp 128316 144096 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:25:12,155 basehttp 128316 126944 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 10:25:12,415 views 128316 140368 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 10:25:12,506 views 128316 140368 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:25:12,520 basehttp 128316 140368 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:25:12,661 basehttp 128316 117976 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+INFO 2025-07-03 10:29:30,107 basehttp 128316 120476 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 10:29:30,120 basehttp 128316 95496 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 10:29:30,271 views 128316 123412 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 10:29:30,378 basehttp 128316 113972 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 10:29:30,390 views 128316 123412 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:29:30,393 basehttp 128316 123412 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:29:30,580 basehttp 128316 126556 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 10:29:30,814 views 128316 118768 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 10:29:30,918 views 128316 118768 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:29:30,920 basehttp 128316 118768 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:29:32,227 basehttp 128316 147392 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 10:29:32,235 basehttp 128316 118044 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 10:29:32,433 views 128316 146348 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 10:29:32,477 basehttp 128316 134092 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 10:29:32,525 views 128316 146348 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:29:32,526 basehttp 128316 146348 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:29:32,728 basehttp 128316 108632 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 10:29:32,745 views 128316 131352 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 10:29:32,860 views 128316 131352 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:29:32,862 basehttp 128316 131352 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:44:43,922 basehttp 128316 128332 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 10:44:43,945 basehttp 128316 105932 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 10:44:44,271 views 128316 142384 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 10:44:44,497 views 128316 142384 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:44:44,502 basehttp 128316 142384 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:44:44,583 basehttp 128316 138536 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 10:44:44,811 views 128316 129728 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 10:44:44,927 views 128316 129728 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:44:44,929 basehttp 128316 129728 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:44:44,957 basehttp 128316 133936 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+INFO 2025-07-03 10:45:21,494 basehttp 128316 146700 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 10:45:21,507 basehttp 128316 147280 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 10:45:21,822 views 128316 120716 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 10:45:21,920 views 128316 120716 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:45:21,922 basehttp 128316 120716 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:45:21,944 basehttp 128316 145532 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 10:45:22,159 views 128316 101664 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 10:45:22,281 views 128316 101664 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:45:22,284 basehttp 128316 101664 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:45:22,369 basehttp 128316 95440 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+INFO 2025-07-03 10:50:31,174 basehttp 128316 115272 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 10:50:31,263 basehttp 128316 146160 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 10:50:31,305 views 128316 92472 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 10:50:31,450 views 128316 92472 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:50:31,453 basehttp 128316 92472 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:50:31,632 basehttp 128316 110840 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 10:50:31,689 views 128316 141848 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 10:50:31,784 views 128316 141848 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 10:50:31,786 basehttp 128316 141848 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 10:50:31,886 basehttp 128316 136576 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+INFO 2025-07-03 10:53:56,886 basehttp 128316 87804 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 10:53:57,594 basehttp 128316 146056 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 10:56:07,231 basehttp 128316 146212 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 10:56:07,531 basehttp 128316 142820 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 10:56:22,615 basehttp 128316 146888 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 10:56:23,538 basehttp 128316 147016 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 10:58:19,313 basehttp 128316 147076 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 10:58:19,327 basehttp 128316 97524 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 10:58:19,777 basehttp 128316 144556 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 10:58:22,087 basehttp 128316 89732 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:14:52,886 autoreload 128316 146952 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\serializers.py changed, reloading.
+INFO 2025-07-03 11:14:52,908 autoreload 144240 147452 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\serializers.py changed, reloading.
+INFO 2025-07-03 11:14:54,602 autoreload 147136 134096 Watching for file changes with StatReloader
+INFO 2025-07-03 11:14:54,602 autoreload 112172 144532 Watching for file changes with StatReloader
+INFO 2025-07-03 11:15:07,700 autoreload 147136 134096 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 11:15:07,709 autoreload 112172 144532 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 11:15:08,863 autoreload 143888 52060 Watching for file changes with StatReloader
+INFO 2025-07-03 11:15:08,887 autoreload 116720 134432 Watching for file changes with StatReloader
+INFO 2025-07-03 11:15:30,504 autoreload 143888 52060 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\urls.py changed, reloading.
+INFO 2025-07-03 11:15:30,515 autoreload 116720 134432 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\urls.py changed, reloading.
+INFO 2025-07-03 11:15:31,637 autoreload 137128 140156 Watching for file changes with StatReloader
+INFO 2025-07-03 11:17:22,293 basehttp 137128 142232 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:17:22,950 basehttp 137128 128372 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:18:33,650 basehttp 137128 137572 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 11:18:33,660 basehttp 137128 128464 "GET /api/user/ HTTP/1.1" 200 112
+INFO 2025-07-03 11:18:34,562 basehttp 137128 131260 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:18:35,059 basehttp 137128 130988 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:19:56,056 basehttp 137128 127156 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:19:56,369 basehttp 137128 123716 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:19:56,604 basehttp 137128 140548 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+INFO 2025-07-03 11:19:56,617 basehttp 137128 107204 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 11:19:56,655 basehttp 137128 127576 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 11:19:56,714 views 137128 142232 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 11:19:56,836 views 137128 142232 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:19:56,838 basehttp 137128 142232 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:19:56,853 basehttp 137128 75184 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 11:19:57,333 views 137128 140344 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 11:19:57,440 views 137128 140344 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:19:57,441 basehttp 137128 140344 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:21:02,909 basehttp 137128 146884 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:21:03,242 basehttp 137128 146112 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:21:04,288 basehttp 137128 123980 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+INFO 2025-07-03 11:21:04,294 basehttp 137128 146652 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 11:21:04,297 views 137128 134876 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 11:21:04,312 basehttp 137128 146184 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 11:21:04,418 views 137128 134876 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:21:04,420 basehttp 137128 134876 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:21:04,569 basehttp 137128 127412 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 11:21:04,676 views 137128 147044 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 11:21:04,784 views 137128 147044 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:21:04,787 basehttp 137128 147044 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:21:05,032 basehttp 137128 131628 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:21:05,330 basehttp 137128 130492 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:21:09,354 basehttp 137128 123700 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:21:09,576 basehttp 137128 129432 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:21:10,199 basehttp 137128 144552 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 11:21:10,211 basehttp 137128 89812 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 11:21:10,432 views 137128 146968 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 11:21:10,444 basehttp 137128 132864 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 11:21:10,576 views 137128 146968 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:21:10,578 basehttp 137128 146968 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:21:10,831 basehttp 137128 89116 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 11:21:10,846 views 137128 147036 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 11:21:10,942 views 137128 147036 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:21:10,943 basehttp 137128 147036 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:21:13,460 basehttp 137128 124200 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:21:13,695 basehttp 137128 128332 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:24:42,283 basehttp 137128 132200 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:24:42,296 basehttp 137128 142452 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:25:43,805 basehttp 137128 147416 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:25:43,834 basehttp 137128 107936 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:25:45,908 basehttp 137128 11984 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:25:46,208 basehttp 137128 134840 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:25:46,895 basehttp 137128 124340 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 11:25:46,911 basehttp 137128 123816 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 11:25:46,964 views 137128 110936 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 11:25:46,968 basehttp 137128 100680 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 11:25:47,131 views 137128 110936 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:25:47,133 basehttp 137128 110936 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:25:47,260 basehttp 137128 147184 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 11:25:47,379 views 137128 146652 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 11:25:47,492 views 137128 146652 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:25:47,494 basehttp 137128 146652 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:25:48,005 basehttp 137128 128140 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:25:48,290 basehttp 137128 129884 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:25:48,950 basehttp 137128 97524 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 11:25:48,960 basehttp 137128 124500 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 11:25:49,170 views 137128 126932 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 11:25:49,194 basehttp 137128 145500 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 11:25:49,287 views 137128 126932 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:25:49,290 basehttp 137128 126932 "GET /api/status/ HTTP/1.1" 200 41
+ERROR 2025-07-03 11:25:49,510 views 137128 147112 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 11:25:49,536 basehttp 137128 146312 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 11:25:49,618 views 137128 147112 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:25:49,620 basehttp 137128 147112 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:25:52,322 basehttp 137128 130844 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:25:52,571 basehttp 137128 102040 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:25:53,005 basehttp 137128 132808 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:25:53,017 basehttp 137128 146440 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:25:56,224 basehttp 137128 139428 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:25:56,237 basehttp 137128 125712 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:25:57,753 basehttp 137128 123076 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:25:58,032 basehttp 137128 147436 "GET /api/support/tickets/ HTTP/1.1" 200 15
+ERROR 2025-07-03 11:25:58,977 views 137128 128492 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 11:25:59,105 views 137128 128492 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:25:59,110 basehttp 137128 128492 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:25:59,114 basehttp 137128 141352 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 11:25:59,129 basehttp 137128 145624 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 11:25:59,267 basehttp 137128 143588 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+INFO 2025-07-03 11:25:59,496 basehttp 137128 128124 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 11:25:59,536 views 137128 37980 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 11:25:59,677 views 137128 37980 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:25:59,679 basehttp 137128 37980 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:26:52,830 basehttp 137128 124844 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:26:53,192 basehttp 137128 146580 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:29:29,074 basehttp 137128 119880 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 11:29:29,097 basehttp 137128 145264 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 11:29:29,417 views 137128 145896 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 11:29:29,508 basehttp 137128 124404 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 11:29:29,531 views 137128 145896 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:29:29,534 basehttp 137128 145896 "GET /api/status/ HTTP/1.1" 200 41
+ERROR 2025-07-03 11:29:29,789 views 137128 146228 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 11:29:29,812 basehttp 137128 146472 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 11:29:29,928 views 137128 146228 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:29:29,931 basehttp 137128 146228 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:29:30,451 basehttp 137128 145756 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:29:30,695 basehttp 137128 146536 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:29:31,618 basehttp 137128 118960 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:29:31,643 basehttp 137128 143612 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:31:37,082 basehttp 137128 129948 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:31:37,389 basehttp 137128 147296 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:32:16,400 basehttp 137128 145584 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:32:16,416 basehttp 137128 137912 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:35:29,240 autoreload 137128 140156 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 11:35:29,234 autoreload 144836 142644 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 11:35:32,647 autoreload 145912 145844 Watching for file changes with StatReloader
+INFO 2025-07-03 11:36:43,764 autoreload 138356 129228 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\models.py changed, reloading.
+INFO 2025-07-03 11:36:43,771 autoreload 145912 145844 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\models.py changed, reloading.
+INFO 2025-07-03 11:36:44,917 autoreload 109488 135224 Watching for file changes with StatReloader
+INFO 2025-07-03 11:36:44,949 autoreload 146828 126720 Watching for file changes with StatReloader
+INFO 2025-07-03 11:36:56,815 autoreload 146828 126720 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 11:36:56,828 autoreload 109488 135224 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 11:36:57,922 autoreload 110920 145920 Watching for file changes with StatReloader
+INFO 2025-07-03 11:36:57,933 autoreload 144172 144092 Watching for file changes with StatReloader
+INFO 2025-07-03 11:37:03,647 autoreload 144172 144092 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\urls.py changed, reloading.
+INFO 2025-07-03 11:37:03,650 autoreload 110920 145920 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\urls.py changed, reloading.
+INFO 2025-07-03 11:37:04,829 autoreload 84260 132864 Watching for file changes with StatReloader
+INFO 2025-07-03 11:37:04,829 autoreload 147292 11792 Watching for file changes with StatReloader
+INFO 2025-07-03 11:39:12,036 basehttp 84260 124220 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:39:12,051 basehttp 84260 146276 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:52:52,589 basehttp 84260 146276 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:52:52,620 basehttp 84260 134828 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:53:01,310 basehttp 84260 146644 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 11:53:01,329 basehttp 84260 118016 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 11:53:01,777 views 84260 128848 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 11:53:01,923 views 84260 128848 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:53:01,927 basehttp 84260 128848 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:53:02,061 basehttp 84260 117976 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 11:53:02,353 views 84260 127032 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 11:53:02,369 basehttp 84260 145200 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 11:53:02,442 views 84260 127032 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 11:53:02,445 basehttp 84260 127032 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 11:53:03,797 basehttp 84260 146808 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:53:04,074 basehttp 84260 131508 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 11:53:04,860 basehttp 84260 136920 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 11:53:04,883 basehttp 84260 141452 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 12:05:26,725 basehttp 84260 126244 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 12:05:26,762 basehttp 84260 122792 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 12:05:28,551 basehttp 84260 137724 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 12:05:28,903 basehttp 84260 129228 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 12:05:28,981 basehttp 84260 147324 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 12:05:29,278 basehttp 84260 130268 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 12:05:29,307 basehttp 84260 147016 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 12:05:29,334 views 84260 127440 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 12:05:29,452 views 84260 127440 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 12:05:29,455 basehttp 84260 127440 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 12:05:29,615 basehttp 84260 145896 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 12:05:29,673 views 84260 114916 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 12:05:29,803 views 84260 114916 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 12:05:29,808 basehttp 84260 114916 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 12:06:26,002 autoreload 84260 132864 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 12:06:26,029 autoreload 147292 11792 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\views.py changed, reloading.
+INFO 2025-07-03 12:06:30,429 autoreload 137496 146924 Watching for file changes with StatReloader
+INFO 2025-07-03 12:06:34,347 autoreload 137496 146924 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\urls.py changed, reloading.
+INFO 2025-07-03 12:06:34,353 autoreload 110684 136672 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\urls.py changed, reloading.
+INFO 2025-07-03 12:06:35,532 autoreload 89984 147172 Watching for file changes with StatReloader
+INFO 2025-07-03 12:06:35,537 autoreload 12072 146640 Watching for file changes with StatReloader
+WARNING 2025-07-03 12:08:16,346 log 12072 123556 Not Found: /api/company_info/
+WARNING 2025-07-03 12:08:16,354 basehttp 12072 123556 "GET /api/company_info/ HTTP/1.1" 404 28
+WARNING 2025-07-03 12:08:16,368 log 12072 124212 Not Found: /api/company_info/
+WARNING 2025-07-03 12:08:16,369 basehttp 12072 124212 "GET /api/company_info/ HTTP/1.1" 404 28
+WARNING 2025-07-03 12:08:22,697 log 12072 137876 Not Found: /api/company_info/
+WARNING 2025-07-03 12:08:22,697 basehttp 12072 137876 "GET /api/company_info/ HTTP/1.1" 404 28
+WARNING 2025-07-03 12:08:22,709 log 12072 15632 Not Found: /api/company_info/
+WARNING 2025-07-03 12:08:22,710 basehttp 12072 15632 "GET /api/company_info/ HTTP/1.1" 404 28
+INFO 2025-07-03 12:12:35,775 basehttp 12072 140792 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 12:12:35,824 basehttp 12072 146220 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 12:12:36,211 views 12072 140036 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 12:12:36,374 views 12072 140036 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 12:12:36,379 basehttp 12072 140036 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 12:12:36,424 basehttp 12072 101572 "GET /api/support/tickets/ HTTP/1.1" 200 15
+INFO 2025-07-03 12:12:36,425 basehttp 12072 116992 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 12:12:36,705 views 12072 146248 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 12:12:36,971 basehttp 12072 141448 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 12:12:36,971 basehttp 12072 144172 "GET /api/support/tickets/ HTTP/1.1" 200 15
+ERROR 2025-07-03 12:12:37,008 views 12072 146248 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 12:12:37,022 basehttp 12072 146248 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 12:12:37,025 basehttp 12072 54428 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 12:12:37,165 basehttp 12072 85472 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+INFO 2025-07-03 12:12:38,444 basehttp 12072 118640 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 12:12:38,460 basehttp 12072 144588 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 12:12:38,705 views 12072 116720 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 12:12:38,801 basehttp 12072 129856 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 12:12:38,811 views 12072 116720 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 12:12:38,817 basehttp 12072 116720 "GET /api/status/ HTTP/1.1" 200 41
+ERROR 2025-07-03 12:12:39,074 views 12072 146476 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 12:12:39,223 views 12072 146476 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 12:12:39,224 basehttp 12072 123864 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+INFO 2025-07-03 12:12:39,228 basehttp 12072 146476 "GET /api/status/ HTTP/1.1" 200 41
+WARNING 2025-07-03 12:16:02,655 log 12072 133708 Not Found: /api/company_info/
+WARNING 2025-07-03 12:16:02,674 basehttp 12072 133708 "GET /api/company_info/ HTTP/1.1" 404 28
+WARNING 2025-07-03 12:16:02,719 log 12072 144208 Not Found: /api/company_info/
+WARNING 2025-07-03 12:16:02,720 basehttp 12072 144208 "GET /api/company_info/ HTTP/1.1" 404 28
+INFO 2025-07-03 12:16:04,387 basehttp 12072 111192 "GET /api/announcements/ HTTP/1.1" 200 2
+INFO 2025-07-03 12:16:04,404 basehttp 12072 146560 "GET /api/announcements/ HTTP/1.1" 200 2
+WARNING 2025-07-03 12:16:18,631 log 12072 112548 Not Found: /api/company_info/
+WARNING 2025-07-03 12:16:18,635 basehttp 12072 112548 "GET /api/company_info/ HTTP/1.1" 404 28
+WARNING 2025-07-03 12:16:18,649 log 12072 133496 Not Found: /api/company_info/
+WARNING 2025-07-03 12:16:18,650 basehttp 12072 133496 "GET /api/company_info/ HTTP/1.1" 404 28
+INFO 2025-07-03 12:17:03,301 autoreload 12072 146640 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\models.py changed, reloading.
+INFO 2025-07-03 12:17:04,248 autoreload 89984 147172 C:\BuckeyeITClientPortal\buckeyeit-portal\portal\models.py changed, reloading.
+INFO 2025-07-03 12:17:05,757 autoreload 94080 126096 Watching for file changes with StatReloader
+INFO 2025-07-03 12:17:06,318 autoreload 78916 145492 Watching for file changes with StatReloader
+INFO 2025-07-03 12:18:18,764 basehttp 94080 142228 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 12:18:18,787 basehttp 94080 124332 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 12:18:21,922 basehttp 94080 144616 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 12:18:22,334 views 94080 144160 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 12:18:22,469 views 94080 144160 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 12:18:22,472 basehttp 94080 144160 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 12:18:22,541 basehttp 94080 128680 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+INFO 2025-07-03 12:18:24,908 basehttp 94080 141200 "GET /api/security_center/ HTTP/1.1" 200 86
+ERROR 2025-07-03 12:18:25,137 views 94080 135456 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+INFO 2025-07-03 12:18:25,156 basehttp 94080 146556 "GET /api/support/tickets/ HTTP/1.1" 200 15
+ERROR 2025-07-03 12:18:25,232 views 94080 135456 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 12:18:25,235 basehttp 94080 135456 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 12:18:25,265 basehttp 94080 74728 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+INFO 2025-07-03 12:18:25,441 basehttp 94080 146932 "GET /api/support/tickets/ HTTP/1.1" 200 15
+WARNING 2025-07-03 12:18:27,701 log 94080 136696 Not Found: /api/company_info/
+WARNING 2025-07-03 12:18:27,702 basehttp 94080 136696 "GET /api/company_info/ HTTP/1.1" 404 28
+WARNING 2025-07-03 12:18:27,714 log 94080 144188 Not Found: /api/company_info/
+WARNING 2025-07-03 12:18:27,714 basehttp 94080 144188 "GET /api/company_info/ HTTP/1.1" 404 28
+INFO 2025-07-03 12:18:28,773 basehttp 94080 145684 "GET /api/announcements/ HTTP/1.1" 200 2
+INFO 2025-07-03 12:18:28,786 basehttp 94080 133160 "GET /api/announcements/ HTTP/1.1" 200 2
+WARNING 2025-07-03 12:18:29,934 log 94080 142120 Forbidden: /api/logout/
+WARNING 2025-07-03 12:18:29,935 log 94080 145416 Forbidden: /api/logout/
+WARNING 2025-07-03 12:18:29,936 basehttp 94080 145416 "POST /api/logout/ HTTP/1.1" 403 109
+WARNING 2025-07-03 12:18:29,936 basehttp 94080 142120 "POST /api/logout/ HTTP/1.1" 403 109
+WARNING 2025-07-03 12:18:40,955 log 94080 146748 Forbidden: /api/login/
+WARNING 2025-07-03 12:18:40,956 basehttp 94080 146748 "POST /api/login/ HTTP/1.1" 403 109
+WARNING 2025-07-03 12:18:49,635 log 94080 146592 Forbidden: /api/login/
+WARNING 2025-07-03 12:18:49,637 basehttp 94080 146592 "POST /api/login/ HTTP/1.1" 403 109
+INFO 2025-07-03 12:18:53,303 basehttp 94080 144208 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+INFO 2025-07-03 12:18:53,314 basehttp 94080 146220 "GET /api/knowledge_base_articles/ HTTP/1.1" 200 2
+WARNING 2025-07-03 12:19:04,261 log 94080 90900 Not Found: /api/company_info/
+WARNING 2025-07-03 12:19:04,262 basehttp 94080 90900 "GET /api/company_info/ HTTP/1.1" 404 28
+WARNING 2025-07-03 12:19:04,298 log 94080 142764 Not Found: /api/company_info/
+WARNING 2025-07-03 12:19:04,305 basehttp 94080 142764 "GET /api/company_info/ HTTP/1.1" 404 28
+INFO 2025-07-03 12:19:04,676 basehttp 94080 146056 "GET /api/announcements/ HTTP/1.1" 200 2
+INFO 2025-07-03 12:19:04,687 basehttp 94080 127776 "GET /api/announcements/ HTTP/1.1" 200 2
+INFO 2025-07-03 12:19:06,103 basehttp 94080 142024 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 12:19:06,115 basehttp 94080 130536 "GET /api/security_center/ HTTP/1.1" 200 86
+INFO 2025-07-03 12:19:06,407 basehttp 94080 138560 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 12:19:06,452 views 94080 146228 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 12:19:06,550 views 94080 146228 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 12:19:06,552 basehttp 94080 146228 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 12:19:06,654 basehttp 94080 81796 "GET /api/dashboard_ticket_summary/ HTTP/1.1" 200 69
+ERROR 2025-07-03 12:19:06,788 views 94080 120916 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
+ERROR 2025-07-03 12:19:06,895 views 94080 120916 Google status fetch error: 'list' object has no attribute 'get'
+INFO 2025-07-03 12:19:06,897 basehttp 94080 120916 "GET /api/status/ HTTP/1.1" 200 41

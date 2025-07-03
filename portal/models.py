@@ -36,6 +36,8 @@ class Tenant(models.Model):
 class User(AbstractUser):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, null=True, blank=True)
     support_role = models.CharField(max_length=100, blank=True, help_text="Optional support role, e.g. 'Password Resets', 'Billing Contact'")
+    phone = models.CharField(max_length=50, blank=True)
+    avatar = models.ImageField(upload_to='user_avatars/', blank=True, null=True)
 
 class Announcement(models.Model):
     CATEGORY_CHOICES = [
