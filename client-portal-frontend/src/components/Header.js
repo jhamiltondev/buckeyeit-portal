@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaMoon, FaSun, FaBell, FaUserCircle, FaSearch } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
 
 export default function Header() {
   const { theme, toggleTheme } = useTheme();
+  const { user } = useUser();
   const [notifOpen, setNotifOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
   const notifRef = useRef();
@@ -52,7 +54,7 @@ export default function Header() {
         <div className="relative" ref={userRef}>
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => setUserOpen(o => !o)}>
             <FaUserCircle size={28} />
-            <span className="font-medium">Test User</span>
+            <span className="font-medium">{user ? (user.first_name || user.username) : 'User'}</span>
             <span className="text-xs text-gray-400">▼</span>
           </div>
           {userOpen && (

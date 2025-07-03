@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaUserCircle, FaHeadset, FaBook, FaUser, FaBuilding, FaBullhorn, FaSignOutAlt, FaTachometerAlt, FaBars } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: <FaTachometerAlt /> },
@@ -13,6 +14,7 @@ const navItems = [
 ];
 
 export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) {
+  const { user } = useUser();
   // Collapsed for desktop, mobileOpen for mobile
   return (
     <>
@@ -51,9 +53,9 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
         </div>
         <div className="flex flex-col items-center py-6 border-b border-gray-200">
           <FaUserCircle className="text-5xl text-gray-400" />
-          {!collapsed && <>
-            <div className="mt-2 font-semibold">Test User</div>
-            <div className="text-xs text-gray-500">Reed Minerals</div>
+          {!collapsed && user && <>
+            <div className="mt-2 font-semibold">{user.first_name || user.username}</div>
+            <div className="text-xs text-gray-500">{user.tenant?.name || ''}</div>
           </>}
         </div>
         <nav className="flex-1 px-2 py-4">
