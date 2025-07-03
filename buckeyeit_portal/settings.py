@@ -87,10 +87,23 @@ WSGI_APPLICATION = 'buckeyeit_portal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# Development DB (comment out for production)
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# Production DB (uncomment and set your real credentials)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'buckeyeit',
+        'PASSWORD': 'weareself12!',
+        'HOST': 'buckeyeitsql.postgres.database.azure.com',
+        'PORT': '5432',
     }
 }
 

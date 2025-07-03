@@ -1724,3 +1724,27 @@ INFO 2025-07-03 12:19:06,654 basehttp 94080 81796 "GET /api/dashboard_ticket_sum
 ERROR 2025-07-03 12:19:06,788 views 94080 120916 Microsoft status fetch error: Expecting value: line 1 column 1 (char 0)
 ERROR 2025-07-03 12:19:06,895 views 94080 120916 Google status fetch error: 'list' object has no attribute 'get'
 INFO 2025-07-03 12:19:06,897 basehttp 94080 120916 "GET /api/status/ HTTP/1.1" 200 41
+INFO 2025-07-03 12:20:05,125 autoreload 135632 136464 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-03 12:20:05,305 autoreload 142284 139924 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-03 12:20:05,763 autoreload 94080 126096 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-03 12:20:05,781 autoreload 78916 145492 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-03 12:20:06,900 autoreload 137780 125072 Watching for file changes with StatReloader
+INFO 2025-07-03 12:20:07,122 autoreload 140580 57000 Watching for file changes with StatReloader
+INFO 2025-07-03 12:20:07,292 autoreload 142040 126128 Watching for file changes with StatReloader
+INFO 2025-07-03 12:20:07,373 autoreload 146324 139624 Watching for file changes with StatReloader
+INFO 2025-07-03 12:20:48,152 autoreload 137780 125072 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-03 12:20:48,168 autoreload 140580 57000 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-03 12:20:48,695 autoreload 142040 126128 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-03 12:20:48,696 autoreload 146324 139624 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-03 12:20:49,292 autoreload 145420 83516 Watching for file changes with StatReloader
+INFO 2025-07-03 12:20:49,296 autoreload 131316 141508 Watching for file changes with StatReloader
+INFO 2025-07-03 12:20:49,817 autoreload 145720 83268 Watching for file changes with StatReloader
+INFO 2025-07-03 12:20:49,828 autoreload 102724 129424 Watching for file changes with StatReloader
+INFO 2025-07-03 12:21:22,381 autoreload 145420 83516 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-03 12:21:22,392 autoreload 131316 141508 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-03 12:21:22,942 autoreload 102724 129424 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-03 12:21:22,943 autoreload 145720 83268 C:\BuckeyeITClientPortal\buckeyeit-portal\buckeyeit_portal\settings.py changed, reloading.
+INFO 2025-07-03 12:21:23,600 autoreload 146932 123972 Watching for file changes with StatReloader
+INFO 2025-07-03 12:21:23,608 autoreload 145820 110584 Watching for file changes with StatReloader
+INFO 2025-07-03 12:21:24,116 autoreload 83344 121484 Watching for file changes with StatReloader
+INFO 2025-07-03 12:21:24,123 autoreload 125072 137780 Watching for file changes with StatReloader
