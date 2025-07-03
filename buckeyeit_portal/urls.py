@@ -54,7 +54,7 @@ def root_redirect(request):
 
 urlpatterns = [
     path('accounts/', include('allauth.urls')),
-    path('adminpanel/', include('adminpanel.urls', namespace='adminpanel')),
+    path('adminpanel/', spa_index),
     path('', root_redirect, name='root-redirect'),
     path('', include(('portal.urls', 'portal'), namespace='portal')),
     path('api/', include('portal.urls')),

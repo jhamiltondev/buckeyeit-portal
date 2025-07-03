@@ -16,6 +16,7 @@ import { useUser } from './context/UserContext';
 import './App.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FaQuestionCircle } from 'react-icons/fa';
+import AdminDashboard from './pages/AdminDashboard';
 
 // ProtectedRoute component
 function ProtectedRoute({ children }) {
@@ -72,6 +73,11 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/adminpanel/*" element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
           <Route path="/*" element={
             <ProtectedRoute>
               <>
