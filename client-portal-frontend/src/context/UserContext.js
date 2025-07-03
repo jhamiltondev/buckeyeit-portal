@@ -56,11 +56,22 @@ export function UserProvider({ children }) {
   };
 
   const logout = async () => {
-    await fetch('/api/logout/', {
-      method: 'POST',
-      credentials: 'include',
-    });
-    setUser(null);
+    try {
+      await fetch('/api/logout/', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.error('Logout API error:', error);
+    } finally {
+      // Clear user state regardless of API response
+      setUser(null);
+      // Clear any client-side storage
+      localStorage.clear();
+      sessionStorage.clear();
+      // Force a page reload to clear any cached state
+      window.location.href = '/login';
+    }
   };
 
   return (

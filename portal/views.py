@@ -673,14 +673,20 @@ def api_login(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def api_logout(request):
-    django_logout(request)
+    logout(request)
     response = JsonResponse({'success': True})
-    # Delete default session and CSRF cookies
+    # Delete all session-related cookies
     response.delete_cookie('sessionid')
     response.delete_cookie('csrftoken')
     # Delete custom session cookie if set
     if hasattr(settings, 'SESSION_COOKIE_NAME'):
         response.delete_cookie(settings.SESSION_COOKIE_NAME)
+    # Clear any other potential session cookies
+    response.delete_cookie('sessionid', domain='.buckeyeit.com')
+    response.delete_cookie('csrftoken', domain='.buckeyeit.com')
+    # Set cookies to expire in the past to ensure they're deleted
+    response.set_cookie('sessionid', '', max_age=0, expires='Thu, 01 Jan 1970 00:00:00 GMT')
+    response.set_cookie('csrftoken', '', max_age=0, expires='Thu, 01 Jan 1970 00:00:00 GMT')
     return response
 
 @api_view(['GET'])
