@@ -22,6 +22,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from .serializers import AnnouncementSerializer, KnowledgeBaseArticleSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.conf import settings
 
 # Set up logger for views
 logger = logging.getLogger('portal.views')
@@ -674,7 +675,12 @@ def api_login(request):
 def api_logout(request):
     django_logout(request)
     response = JsonResponse({'success': True})
+    # Delete default session and CSRF cookies
     response.delete_cookie('sessionid')
+    response.delete_cookie('csrftoken')
+    # Delete custom session cookie if set
+    if hasattr(settings, 'SESSION_COOKIE_NAME'):
+        response.delete_cookie(settings.SESSION_COOKIE_NAME)
     return response
 
 @api_view(['GET'])
