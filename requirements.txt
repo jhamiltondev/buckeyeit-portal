@@ -17,7 +17,7 @@ django-import-export
 django-widget-tweaks
 pytz
 # REST API
-djangorestframework
+djangorestframework>=3.14.0
 # For image/file uploads
 Pillow
 # For CORS if needed
