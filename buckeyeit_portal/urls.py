@@ -15,13 +15,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import logout
+from django.views.generic import TemplateView
 
 def superuser_only(view_func):
     return user_passes_test(lambda u: u.is_superuser)(view_func)
@@ -55,6 +56,10 @@ urlpatterns = [
     path('adminpanel/', include('adminpanel.urls', namespace='adminpanel')),
     path('', root_redirect, name='root-redirect'),
     path('', include(('portal.urls', 'portal'), namespace='portal')),
+    path('api/', include('portal.urls')),
+    path('admin/', include('django.contrib.admin.urls')),
     # path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     # path('logout/', auth_views.LogoutView.as_view(next_page='/login/'), name='logout'),
+    # Catch-all: serve React index.html for all other routes
+    re_path(r'^(?!api/|admin/).*$', TemplateView.as_view(template_name='index.html')),
 ]
