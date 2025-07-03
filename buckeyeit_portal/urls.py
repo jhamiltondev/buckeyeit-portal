@@ -58,7 +58,7 @@ urlpatterns = [
     path('', root_redirect, name='root-redirect'),
     path('', include(('portal.urls', 'portal'), namespace='portal')),
     path('api/', include('portal.urls')),
-    path('admin/', include('django.contrib.admin.urls')),
+    path('admin/', admin.site.urls),
     # path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     # path('logout/', auth_views.LogoutView.as_view(next_page='/login/'), name='logout'),
     # Catch-all: serve React index.html as a static file for all other routes
