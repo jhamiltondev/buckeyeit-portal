@@ -11,6 +11,7 @@ import Announcements from './pages/Announcements';
 import Logout from './pages/Logout';
 import Login from './pages/Login';
 import Tickets from './pages/Tickets';
+import ErrorBoundary from './components/ErrorBoundary';
 import { UserProvider } from './context/UserContext';
 import { useUser } from './context/UserContext';
 import './App.css';
@@ -51,7 +52,11 @@ function ProtectedLayout() {
               <Routes location={location}>
                 <Route path="/" element={<Navigate to="/dashboard" />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/support" element={<Support />} />
+                <Route path="/support" element={
+                  <ErrorBoundary>
+                    <Support />
+                  </ErrorBoundary>
+                } />
                 <Route path="/tickets" element={<Tickets />} />
                 <Route path="/knowledge-base" element={<KnowledgeBase />} />
                 <Route path="/profile" element={<Profile />} />
@@ -69,37 +74,39 @@ function ProtectedLayout() {
 
 function App() {
   return (
-    <UserProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/adminpanel/*" element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/*" element={
-            <ProtectedRoute>
-              <>
-                <ProtectedLayout />
-                {/* Copyright and Help Icon */}
-                <div className="fixed bottom-2 right-4 z-50 flex items-end gap-4 pointer-events-none">
-                  <span className="text-xs text-gray-400 dark:text-gray-500 opacity-70 pointer-events-auto select-none">© {new Date().getFullYear()} Buckeye IT</span>
-                  <button
-                    className="pointer-events-auto bg-white dark:bg-gray-800 rounded-full shadow p-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-                    style={{ fontSize: 28 }}
-                    aria-label="Help"
-                    onClick={() => alert('Help coming soon!')}
-                  >
-                    <FaQuestionCircle />
-                  </button>
-                </div>
-              </>
-            </ProtectedRoute>
-          } />
-        </Routes>
-      </Router>
-    </UserProvider>
+    <ErrorBoundary>
+      <UserProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/adminpanel/*" element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/*" element={
+              <ProtectedRoute>
+                <>
+                  <ProtectedLayout />
+                  {/* Copyright and Help Icon */}
+                  <div className="fixed bottom-2 right-4 z-50 flex items-end gap-4 pointer-events-none">
+                    <span className="text-xs text-gray-400 dark:text-gray-500 opacity-70 pointer-events-auto select-none">© {new Date().getFullYear()} Buckeye IT</span>
+                    <button
+                      className="pointer-events-auto bg-white dark:bg-gray-800 rounded-full shadow p-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                      style={{ fontSize: 28 }}
+                      aria-label="Help"
+                      onClick={() => alert('Help coming soon!')}
+                    >
+                      <FaQuestionCircle />
+                    </button>
+                  </div>
+                </>
+              </ProtectedRoute>
+            } />
+          </Routes>
+        </Router>
+      </UserProvider>
+    </ErrorBoundary>
   );
 }
 
