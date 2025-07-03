@@ -42,7 +42,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
         style={{ minWidth: collapsed ? 64 : 224 }}
       >
         <div className="flex items-center justify-center relative px-4 py-3 border-b border-gray-200 bg-white h-14">
-          <img src="/static/portal/react/buckeye-logo.png" alt="Buckeye IT Logo" className="h-8 w-8 mx-auto" />
+          <span className="text-lg font-bold tracking-wide text-red-700">Menu</span>
           <button
             className="absolute right-4 text-gray-400 hover:text-red-700"
             onClick={() => setCollapsed(c => !c)}
