@@ -39,10 +39,10 @@ def root_redirect(request):
         user = request.user
         # If user has a tenant and a valid slug, redirect to tenant dashboard
         if hasattr(user, 'tenant') and user.tenant and getattr(user.tenant, 'slug', None):
-            return redirect('portal:tenant_dashboard', tenant_slug=user.tenant.slug)
+            return redirect(f'/dashboard')
         # If user has no tenant, redirect to generic dashboard
         elif not hasattr(user, 'tenant') or not user.tenant:
-            return redirect('portal:dashboard')
+            return redirect('/dashboard')
         # If tenant exists but no slug, log out and show error
         else:
             logout(request)
@@ -50,7 +50,7 @@ def root_redirect(request):
     # Prevent redirect loop if already on /login/
     if request.path == '/login/':
         return HttpResponse()
-    return redirect('portal:login')
+    return redirect('/login/')
 
 urlpatterns = [
     path('accounts/', include('allauth.urls')),
