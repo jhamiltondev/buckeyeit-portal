@@ -23,6 +23,7 @@ from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import logout
 from django.views.generic import TemplateView
+from .views import spa_index
 
 def superuser_only(view_func):
     return user_passes_test(lambda u: u.is_superuser)(view_func)
@@ -60,6 +61,6 @@ urlpatterns = [
     path('admin/', include('django.contrib.admin.urls')),
     # path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     # path('logout/', auth_views.LogoutView.as_view(next_page='/login/'), name='logout'),
-    # Catch-all: serve React index.html for all other routes
-    re_path(r'^(?!api/|admin/).*$', TemplateView.as_view(template_name='index.html')),
+    # Catch-all: serve React index.html as a static file for all other routes
+    re_path(r'^(?!api/|admin/).*$', spa_index),
 ]
