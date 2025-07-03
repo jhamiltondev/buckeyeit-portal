@@ -1,7 +1,7 @@
 asgiref==3.8.1
 certifi==2025.6.15
 charset-normalizer==3.4.2
-Django==5.2.3
+Django>=3.2,<5.0
 django-allauth==65.9.0
 idna==3.10
 psycopg2-binary
@@ -16,3 +16,11 @@ whitenoise
 django-import-export
 django-widget-tweaks
 pytz
+# REST API
+djangorestframework
+# For image/file uploads
+Pillow
+# For CORS if needed
+django-cors-headers
+# For authentication (if used)
+django-crispy-forms
