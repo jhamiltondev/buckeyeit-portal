@@ -133,37 +133,51 @@ export default function Support() {
           />
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
-            <thead>
-              <tr className="text-left text-gray-500 border-b">
-                <th className="py-2 pr-4">ID</th>
-                <th className="py-2 pr-4">Subject</th>
-                <th className="py-2 pr-4">Status</th>
-                <th className="py-2 pr-4">Urgency</th>
-                <th className="py-2 pr-4">Type</th>
-                <th className="py-2 pr-4">Created</th>
-                <th className="py-2 pr-4">Last Updated</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {safeTickets.length === 0 && (
-                <tr><td colSpan={8} className="text-center text-gray-400 py-6">No tickets found</td></tr>
-              )}
-              {safeTickets.slice(0, 5).map((t, idx) => (
-                <tr key={t.id || idx} className="border-b hover:bg-blue-50 cursor-pointer" onClick={() => setSelectedTicket(t)}>
-                  <td className="py-2 pr-4 font-mono">{t.id}</td>
-                  <td className="py-2 pr-4 font-medium">{t.summary} {t.newReply && <span className="ml-2 bg-green-200 text-green-800 text-xs rounded px-2 py-0.5">New!</span>}</td>
-                  <td className="py-2 pr-4"><span className={`px-2 py-0.5 rounded text-xs ${getStatusColor(t.status?.name)}`}>{t.status?.name}</span></td>
-                  <td className="py-2 pr-4"><span className={`px-2 py-0.5 rounded text-xs ${getUrgencyColor(t.urgency)}`}>{t.urgency}</span></td>
-                  <td className="py-2 pr-4"><span className="inline-flex items-center gap-1"><FaTag className="text-gray-400" />{t.type}</span></td>
-                  <td className="py-2 pr-4">{t.created}</td>
-                  <td className="py-2 pr-4">{t.updated}</td>
-                  <td></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {/* Debug: Wrap table rendering in try/catch */}
+          {(() => {
+            try {
+              return (
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-gray-500 border-b">
+                      <th className="py-2 pr-4">ID</th>
+                      <th className="py-2 pr-4">Subject</th>
+                      <th className="py-2 pr-4">Status</th>
+                      <th className="py-2 pr-4">Urgency</th>
+                      <th className="py-2 pr-4">Type</th>
+                      <th className="py-2 pr-4">Created</th>
+                      <th className="py-2 pr-4">Last Updated</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {safeTickets.length === 0 && (
+                      <tr><td colSpan={8} className="text-center text-gray-400 py-6">No tickets found</td></tr>
+                    )}
+                    {safeTickets.slice(0, 5).map((t, idx) => {
+                      const key = t.id || idx;
+                      console.log('Rendering ticket row', { key, t });
+                      return (
+                        <tr key={key} className="border-b hover:bg-blue-50 cursor-pointer" onClick={() => setSelectedTicket(t)}>
+                          <td className="py-2 pr-4 font-mono">{t.id}</td>
+                          <td className="py-2 pr-4 font-medium">{t.summary} {t.newReply && <span className="ml-2 bg-green-200 text-green-800 text-xs rounded px-2 py-0.5">New!</span>}</td>
+                          <td className="py-2 pr-4"><span className={`px-2 py-0.5 rounded text-xs ${getStatusColor(t.status?.name)}`}>{t.status?.name}</span></td>
+                          <td className="py-2 pr-4"><span className={`px-2 py-0.5 rounded text-xs ${getUrgencyColor(t.urgency)}`}>{t.urgency}</span></td>
+                          <td className="py-2 pr-4"><span className="inline-flex items-center gap-1"><FaTag className="text-gray-400" />{t.type}</span></td>
+                          <td className="py-2 pr-4">{t.created}</td>
+                          <td className="py-2 pr-4">{t.updated}</td>
+                          <td></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              );
+            } catch (err) {
+              console.error('Error rendering ticket table:', err);
+              return <tr><td colSpan={8} className="text-red-500">Error rendering tickets: {err.message}</td></tr>;
+            }
+          })()}
         </div>
         {safeTickets.length > 5 && (
           <div className="mt-2 text-right">
