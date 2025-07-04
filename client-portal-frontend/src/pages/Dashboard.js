@@ -66,6 +66,20 @@ export default function Dashboard() {
       .catch(() => setSecurityData({ mfa_status: 'Error', last_blocked_login: 'Error', risky_signins: 'Error' }));
   }, []);
 
+  // System Usage State
+  const [systemUsage, setSystemUsage] = useState({ usage_percent: '--', details: '--' });
+  const [systemUsageLoading, setSystemUsageLoading] = useState(true);
+  const [systemUsageError, setSystemUsageError] = useState(null);
+  useEffect(() => {
+    setSystemUsageLoading(true);
+    setSystemUsageError(null);
+    fetch('/api/system_usage/')
+      .then(res => res.ok ? res.json() : Promise.reject(res))
+      .then(data => setSystemUsage(data))
+      .catch(() => setSystemUsageError('Error fetching system usage'))
+      .finally(() => setSystemUsageLoading(false));
+  }, []);
+
   return (
     <motion.div className="w-full py-6 px-2 md:px-6">
       <div className="mx-auto max-w-6xl">
@@ -299,7 +313,7 @@ export default function Dashboard() {
               <div className="text-xs text-gray-400 mt-2">(Slideshow auto-advances)</div>
             </div>
           </motion.div>
-          {/* Example Extra Card: System Usage (mock) */}
+          {/* Example Extra Card: System Usage (live) */}
           <motion.div
             className="bg-orange-100/60 border-t-4 border-orange-400 rounded-xl shadow p-5 flex flex-col hover:shadow-lg transition cursor-pointer"
             custom={8}
@@ -314,10 +328,18 @@ export default function Dashboard() {
               <h3 className="font-semibold text-lg">System Usage</h3>
             </div>
             <div className="flex flex-col gap-1 mt-2">
-              <div className="w-full h-2 bg-orange-200 rounded-full overflow-hidden">
-                <div className="h-full bg-orange-500" style={{width: '71%'}}></div>
-              </div>
-              <div className="text-xs text-orange-700">71% of resources used</div>
+              {systemUsageLoading ? (
+                <div className="w-full h-2 bg-orange-200 rounded-full overflow-hidden animate-pulse"></div>
+              ) : systemUsageError ? (
+                <div className="text-xs text-orange-700">{systemUsageError}</div>
+              ) : (
+                <>
+                  <div className="w-full h-2 bg-orange-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-orange-500" style={{width: `${systemUsage.usage_percent || 0}%`}}></div>
+                  </div>
+                  <div className="text-xs text-orange-700">{systemUsage.details}</div>
+                </>
+              )}
             </div>
           </motion.div>
         </div>

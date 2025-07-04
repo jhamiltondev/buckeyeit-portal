@@ -1,7 +1,7 @@
 from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
-from .views import LogoutViewAllowGet, logout_allow_get, dashboard, login_view, password_view, root_redirect, debug_urls, support_view, submit_ticket_view, knowledge_base_view, knowledge_article_view, profile_view, company_info_view, announcements_view, all_tickets_view, connectwise_ticket_detail, debug_tech_news, notifications_api, dashboard_tickets_api, dashboard_tech_news_api, dashboard_announcements_api, support_tickets_api, api_announcements_list, status_proxy, dashboard_ticket_summary_api, security_center_api, api_knowledge_base_articles, RoleViewSet, UserGroupViewSet, api_suspended_users, api_deleted_users, api_restore_user, api_permanent_delete_user
+from .views import LogoutViewAllowGet, logout_allow_get, dashboard, login_view, password_view, root_redirect, debug_urls, support_view, submit_ticket_view, knowledge_base_view, knowledge_article_view, profile_view, company_info_view, announcements_view, all_tickets_view, connectwise_ticket_detail, debug_tech_news, notifications_api, dashboard_tickets_api, dashboard_tech_news_api, dashboard_announcements_api, support_tickets_api, api_announcements_list, status_proxy, dashboard_ticket_summary_api, security_center_api, api_knowledge_base_articles, RoleViewSet, UserGroupViewSet, api_suspended_users, api_deleted_users, api_restore_user, api_permanent_delete_user, api_system_usage, api_security_center
 from rest_framework.routers import DefaultRouter
 
 app_name = 'portal'
@@ -57,4 +57,6 @@ urlpatterns = [
     path('api/users/deleted/', api_deleted_users, name='api_deleted_users'),
     path('api/users/<int:user_id>/restore/', api_restore_user, name='api_restore_user'),
     path('api/users/<int:user_id>/permanent_delete/', api_permanent_delete_user, name='api_permanent_delete_user'),
+    path('api/system_usage/', api_system_usage, name='api_system_usage'),
+    path('api/security_center/', api_security_center, name='api_security_center'),
 ] 

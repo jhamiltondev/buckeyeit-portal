@@ -1010,3 +1010,22 @@ def api_permanent_delete_user(request, user_id):
         return Response({'status': 'deleted'})
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_system_usage(request):
+    # TODO: Replace with real system usage data
+    return Response({
+        'usage_percent': 71,
+        'details': '71% of resources used'
+    })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_security_center(request):
+    # TODO: Replace with real security data
+    return Response({
+        'mfa_status': 'Enabled',
+        'last_blocked_login': '2 days ago',
+        'risky_signins': 'None'
+    })

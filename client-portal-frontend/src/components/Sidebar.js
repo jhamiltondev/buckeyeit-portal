@@ -41,15 +41,19 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
         `}
         style={{ minWidth: collapsed ? 64 : 224 }}
       >
-        <div className="flex items-center justify-center relative px-4 py-3 border-b border-gray-200 bg-white h-14">
-          <span className="text-lg font-bold tracking-wide text-red-700">Menu</span>
-          <button
-            className="absolute right-4 text-gray-400 hover:text-red-700"
-            onClick={() => setCollapsed(c => !c)}
-            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            <FaBars size={22} />
-          </button>
+        <div className="sidebar-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 64 }}>
+          {collapsed ? (
+            <button className="sidebar-toggle" onClick={() => setCollapsed(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+              <FaBars size={28} />
+            </button>
+          ) : (
+            <div className="sidebar-title" style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ color: '#c00', fontWeight: 'bold', fontSize: 24 }}>Menu</span>
+              <button className="sidebar-toggle" onClick={() => setCollapsed(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginLeft: 8 }}>
+                <FaBars size={20} />
+              </button>
+            </div>
+          )}
         </div>
         <div className="flex flex-col items-center py-6 border-b border-gray-200">
           <FaUserCircle className="text-5xl text-gray-400" />
