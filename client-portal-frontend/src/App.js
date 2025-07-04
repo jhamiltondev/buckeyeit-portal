@@ -20,6 +20,7 @@ import { FaQuestionCircle } from 'react-icons/fa';
 import AdminDashboard from './pages/AdminDashboard';
 import Groups from './pages/Groups';
 import ActiveUsers from './pages/ActiveUsers';
+import SuspendedDeletedUsers from './pages/SuspendedDeletedUsers';
 
 // ProtectedRoute component
 function ProtectedRoute({ children }) {
@@ -65,8 +66,9 @@ function ProtectedLayout() {
                 <Route path="/company-info" element={<CompanyInfo />} />
                 <Route path="/announcements" element={<Announcements />} />
                 <Route path="/logout" element={<Logout />} />
-                <Route path="/admin/groups" element={<Groups />} />
-                <Route path="/admin/users/active" element={<ActiveUsers />} />
+                <Route path="/adminpanel/groups" element={<Groups />} />
+                <Route path="/adminpanel/users/active" element={<ActiveUsers />} />
+                <Route path="/adminpanel/users/suspended" element={<SuspendedDeletedUsers />} />
               </Routes>
             </motion.div>
           </AnimatePresence>

@@ -38,6 +38,14 @@ class User(AbstractUser):
     support_role = models.CharField(max_length=100, blank=True, help_text="Optional support role, e.g. 'Password Resets', 'Billing Contact'")
     phone = models.CharField(max_length=50, blank=True)
     avatar = models.ImageField(upload_to='user_avatars/', blank=True, null=True)
+    # Suspension/Deletion fields:
+    is_deleted = models.BooleanField(default=False)
+    suspended_at = models.DateTimeField(null=True, blank=True)
+    suspended_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='suspended_users', on_delete=models.SET_NULL)
+    suspension_reason = models.TextField(blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='deleted_users', on_delete=models.SET_NULL)
+    deletion_reason = models.TextField(blank=True)
 
 class Announcement(models.Model):
     CATEGORY_CHOICES = [

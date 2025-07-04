@@ -35,4 +35,17 @@ class UserGroupSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'description', 'is_default', 'tenant',
             'roles', 'users', 'created_at', 'updated_at'
+        ]
+
+class SuspendedDeletedUserSerializer(serializers.ModelSerializer):
+    tenant = TenantSerializer(read_only=True)
+    suspended_by = UserSummarySerializer(read_only=True)
+    deleted_by = UserSummarySerializer(read_only=True)
+    class Meta:
+        model = User
+        fields = [
+            'id', 'first_name', 'last_name', 'email', 'support_role', 'tenant', 'is_active', 'is_deleted',
+            'suspended_at', 'suspended_by', 'suspension_reason',
+            'deleted_at', 'deleted_by', 'deletion_reason',
+            'date_joined', 'last_login'
         ] 

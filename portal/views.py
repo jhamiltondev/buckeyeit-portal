@@ -20,10 +20,11 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .serializers import AnnouncementSerializer, KnowledgeBaseArticleSerializer, RoleSerializer, UserGroupSerializer, TenantSerializer
+from .serializers import AnnouncementSerializer, KnowledgeBaseArticleSerializer, RoleSerializer, UserGroupSerializer, TenantSerializer, SuspendedDeletedUserSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.conf import settings
 from rest_framework import viewsets, filters
+from django.db import models
 
 # Set up logger for views
 logger = logging.getLogger('portal.views')
@@ -921,3 +922,91 @@ class UserGroupViewSet(viewsets.ModelViewSet):
         if tenant:
             queryset = queryset.filter(tenant__id=tenant)
         return queryset
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_suspended_users(request):
+    users = User.objects.filter(is_active=False, is_deleted=False)
+    # Filtering
+    name = request.GET.get('name')
+    email = request.GET.get('email')
+    tenant = request.GET.get('tenant')
+    role = request.GET.get('role')
+    admin = request.GET.get('admin')
+    if name:
+        users = users.filter(models.Q(first_name__icontains=name) | models.Q(last_name__icontains=name))
+    if email:
+        users = users.filter(email__icontains=email)
+    if tenant:
+        users = users.filter(tenant__id=tenant)
+    if role:
+        users = users.filter(support_role__icontains=role)
+    if admin:
+        users = users.filter(suspended_by__id=admin)
+    # Date range filter (suspended_at)
+    start = request.GET.get('start')
+    end = request.GET.get('end')
+    if start:
+        users = users.filter(suspended_at__gte=start)
+    if end:
+        users = users.filter(suspended_at__lte=end)
+    data = SuspendedDeletedUserSerializer(users, many=True).data
+    return Response(data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_deleted_users(request):
+    users = User.objects.filter(is_deleted=True)
+    # Filtering (same as above, but for deleted fields)
+    name = request.GET.get('name')
+    email = request.GET.get('email')
+    tenant = request.GET.get('tenant')
+    role = request.GET.get('role')
+    admin = request.GET.get('admin')
+    if name:
+        users = users.filter(models.Q(first_name__icontains=name) | models.Q(last_name__icontains=name))
+    if email:
+        users = users.filter(email__icontains=email)
+    if tenant:
+        users = users.filter(tenant__id=tenant)
+    if role:
+        users = users.filter(support_role__icontains=role)
+    if admin:
+        users = users.filter(deleted_by__id=admin)
+    # Date range filter (deleted_at)
+    start = request.GET.get('start')
+    end = request.GET.get('end')
+    if start:
+        users = users.filter(deleted_at__gte=start)
+    if end:
+        users = users.filter(deleted_at__lte=end)
+    data = SuspendedDeletedUserSerializer(users, many=True).data
+    return Response(data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_restore_user(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        user.is_active = True
+        user.suspended_at = None
+        user.suspended_by = None
+        user.suspension_reason = ''
+        user.is_deleted = False
+        user.deleted_at = None
+        user.deleted_by = None
+        user.deletion_reason = ''
+        user.save()
+        return Response({'status': 'restored'})
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def api_permanent_delete_user(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        user.delete()
+        return Response({'status': 'deleted'})
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)

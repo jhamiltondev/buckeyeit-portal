@@ -73,7 +73,13 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
             </NavLink>
           ))}
           <li>
-            <Link to="/admin/users/active">Active Users</Link>
+            <Link to="/adminpanel/users/active">Active Users</Link>
+          </li>
+          <li>
+            <Link to="/adminpanel/users/suspended">Suspended/Deleted Users</Link>
+          </li>
+          <li>
+            <Link to="/adminpanel/groups">Groups</Link>
           </li>
         </nav>
       </aside>
