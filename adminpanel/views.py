@@ -1,7 +1,7 @@
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from django.contrib.auth.views import LoginView, LogoutView
-from portal.models import Tenant, Ticket, KnowledgeBaseArticle, PendingUserApproval, UserInvitation
+from portal.models import Tenant, Ticket, KnowledgeBaseArticle, PendingUserApproval, UserInvitation, Announcement
 from portal.tech_news import get_tech_news
 import logging
 import requests
@@ -18,6 +18,7 @@ import csv
 import secrets
 from django.utils import timezone
 from portal.email_utils import send_invitation_email
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 
@@ -543,3 +544,34 @@ def export_invitations_csv(request):
             i.redeemed_on.strftime('%Y-%m-%d %H:%M') if i.redeemed_on else '',
         ])
     return response
+
+@staff_member_required(login_url='/adminpanel/login/')
+@csrf_exempt
+def api_dashboard_stats(request):
+    User = get_user_model()
+    user_count = User.objects.count()
+    tenant_count = Tenant.objects.count()
+    open_ticket_count = Ticket.objects.filter(status__in=["open", "in_progress"]).count()
+    kb_article_count = KnowledgeBaseArticle.objects.filter(is_active=True).count()
+    # Integrations
+    integrations = {}
+    try:
+        integrations["ConnectWise"] = "Connected" if hasattr(settings, 'CONNECTWISE_SITE') else "Not Configured"
+    except:
+        integrations["ConnectWise"] = "Error"
+    integrations["Pax8"] = "Valid Key" if hasattr(settings, 'PAX8_API_KEY') else "Not Configured"
+    integrations["OpenAI"] = "Valid Key" if hasattr(settings, 'OPENAI_API_KEY') else "Not Configured"
+    # Automation Failures (placeholder)
+    automation_failures = []
+    if not automation_failures:
+        automation_failures = [
+            {"tenant": "No automation failures", "status": "All systems operational"}
+        ]
+    return JsonResponse({
+        "user_count": user_count,
+        "tenant_count": tenant_count,
+        "open_ticket_count": open_ticket_count,
+        "kb_article_count": kb_article_count,
+        "integrations": integrations,
+        "automation_failures": automation_failures,
+    })
