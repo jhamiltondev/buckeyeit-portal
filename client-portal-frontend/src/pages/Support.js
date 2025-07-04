@@ -63,6 +63,7 @@ export default function Support() {
     t.summary?.toLowerCase().includes(search.toLowerCase()) ||
     t.id?.toString().includes(search)
   );
+  console.log('filteredTickets', filteredTickets);
   const openTickets = filteredTickets.filter(t => t.status?.name === 'Open' || t.status?.name === 'Needs Info');
   const closedTickets = filteredTickets.filter(t => t.status?.name === 'Resolved' || t.status?.name === 'Closed');
 
@@ -88,8 +89,8 @@ export default function Support() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="bg-white rounded-xl shadow p-5">
           <div className="font-semibold text-lg mb-2">Open Tickets</div>
-          {openTickets.slice(0, 3).map(t => (
-            <div key={t.id} className="flex items-center justify-between border-b last:border-b-0 py-2 cursor-pointer hover:bg-blue-50 rounded" onClick={() => setSelectedTicket(t)}>
+          {openTickets.slice(0, 3).map((t, idx) => (
+            <div key={t.id || idx} className="flex items-center justify-between border-b last:border-b-0 py-2 cursor-pointer hover:bg-blue-50 rounded" onClick={() => setSelectedTicket(t)}>
               <div>
                 <span className="font-medium">{t.summary}</span>
                 <span className={`ml-2 px-2 py-0.5 rounded text-xs ${getStatusColor(t.status?.name)}`}>{t.status?.name}</span>
@@ -103,8 +104,8 @@ export default function Support() {
         </div>
         <div className="bg-white rounded-xl shadow p-5">
           <div className="font-semibold text-lg mb-2">Closed Tickets</div>
-          {closedTickets.slice(0, 3).map(t => (
-            <div key={t.id} className="flex items-center justify-between border-b last:border-b-0 py-2 cursor-pointer hover:bg-green-50 rounded" onClick={() => setSelectedTicket(t)}>
+          {closedTickets.slice(0, 3).map((t, idx) => (
+            <div key={t.id || idx} className="flex items-center justify-between border-b last:border-b-0 py-2 cursor-pointer hover:bg-green-50 rounded" onClick={() => setSelectedTicket(t)}>
               <div>
                 <span className="font-medium">{t.summary}</span>
                 <span className={`ml-2 px-2 py-0.5 rounded text-xs ${getStatusColor(t.status?.name)}`}>{t.status?.name}</span>
@@ -147,8 +148,8 @@ export default function Support() {
               {filteredTickets.length === 0 && (
                 <tr><td colSpan={8} className="text-center text-gray-400 py-6">No tickets found</td></tr>
               )}
-              {filteredTickets.slice(0, 5).map(t => (
-                <tr key={t.id} className="border-b hover:bg-blue-50 cursor-pointer" onClick={() => setSelectedTicket(t)}>
+              {filteredTickets.slice(0, 5).map((t, idx) => (
+                <tr key={t.id || idx} className="border-b hover:bg-blue-50 cursor-pointer" onClick={() => setSelectedTicket(t)}>
                   <td className="py-2 pr-4 font-mono">{t.id}</td>
                   <td className="py-2 pr-4 font-medium">{t.summary} {t.newReply && <span className="ml-2 bg-green-200 text-green-800 text-xs rounded px-2 py-0.5">New!</span>}</td>
                   <td className="py-2 pr-4"><span className={`px-2 py-0.5 rounded text-xs ${getStatusColor(t.status?.name)}`}>{t.status?.name}</span></td>
