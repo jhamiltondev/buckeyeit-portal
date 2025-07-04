@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlus, FaSearch, FaTimes, FaTag } from 'react-icons/fa';
+import { FaPlus, FaSearch, FaTimes, FaTag, FaUser } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 // Remove mockTickets, will use real data
@@ -42,6 +42,8 @@ export default function Support() {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [ticketNotes, setTicketNotes] = useState([]);
+  const [notesLoading, setNotesLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,6 +59,25 @@ export default function Support() {
         setLoading(false);
       });
   }, []);
+
+  // Fetch notes when a ticket is selected
+  useEffect(() => {
+    if (selectedTicket) {
+      setNotesLoading(true);
+      fetch(`/api/support/tickets/${selectedTicket.id}/notes/`)
+        .then(res => res.ok ? res.json() : Promise.reject(res))
+        .then(data => {
+          setTicketNotes(data.notes || []);
+          setNotesLoading(false);
+        })
+        .catch(() => {
+          setTicketNotes([]);
+          setNotesLoading(false);
+        });
+    } else {
+      setTicketNotes([]);
+    }
+  }, [selectedTicket]);
 
   // Filtered tickets for dashboard
   const filteredTickets = tickets.filter(t =>
@@ -106,7 +127,7 @@ export default function Support() {
         </div>
         <div className="bg-white rounded-xl shadow p-5">
           <div className="font-semibold text-lg mb-2">Closed Tickets</div>
-          {closedTickets.slice(0, 3).map((t, idx) => (
+          {closedTickets.slice(0, 5).map((t, idx) => (
             <div key={t.id || idx} className="flex items-center justify-between border-b last:border-b-0 py-2 cursor-pointer hover:bg-green-50 rounded" onClick={() => setSelectedTicket(t)}>
               <div>
                 <span className="font-medium">{t.summary}</span>
@@ -115,7 +136,7 @@ export default function Support() {
               <div className="text-xs text-gray-500">{t.updated}</div>
             </div>
           ))}
-          {closedTickets.length > 3 && <div className="mt-2 text-right"><button className="text-blue-600 hover:underline text-sm">See all closed tickets</button></div>}
+          {closedTickets.length > 5 && <div className="mt-2 text-right"><button className="text-blue-600 hover:underline text-sm" onClick={() => navigate('/tickets?filter=closed')}>See all closed tickets</button></div>}
           {closedTickets.length === 0 && <div className="text-gray-400 text-sm">No closed tickets</div>}
         </div>
       </div>
@@ -143,16 +164,17 @@ export default function Support() {
                       <th className="py-2 pr-4">ID</th>
                       <th className="py-2 pr-4">Subject</th>
                       <th className="py-2 pr-4">Status</th>
-                      <th className="py-2 pr-4">Urgency</th>
+                      <th className="py-2 pr-4">Priority</th>
                       <th className="py-2 pr-4">Type</th>
                       <th className="py-2 pr-4">Created</th>
                       <th className="py-2 pr-4">Last Updated</th>
+                      <th className="py-2 pr-4">Technician Assigned</th>
                       <th></th>
                     </tr>
                   </thead>
                   <tbody>
                     {safeTickets.length === 0 && (
-                      <tr><td colSpan={8} className="text-center text-gray-400 py-6">No tickets found</td></tr>
+                      <tr><td colSpan={9} className="text-center text-gray-400 py-6">No tickets found</td></tr>
                     )}
                     {safeTickets.slice(0, 5).map((t, idx) => {
                       const key = t.id || idx;
@@ -171,6 +193,7 @@ export default function Support() {
                           <td className="py-2 pr-4"><span className="inline-flex items-center gap-1"><FaTag className="text-gray-400" />{t.type?.name}</span></td>
                           <td className="py-2 pr-4">{t.created}</td>
                           <td className="py-2 pr-4">{t.updated}</td>
+                          <td className="py-2 pr-4"><span className="inline-flex items-center gap-1"><FaUser className="text-gray-400" />{t.assigned_tech || t.technician || 'Unassigned'}</span></td>
                           <td></td>
                         </tr>
                       );
@@ -180,7 +203,7 @@ export default function Support() {
               );
             } catch (err) {
               console.error('Error rendering ticket table:', err);
-              return <tr><td colSpan={8} className="text-red-500">Error rendering tickets: {err.message}</td></tr>;
+              return <tr><td colSpan={9} className="text-red-500">Error rendering tickets: {err.message}</td></tr>;
             }
           })()}
         </div>
@@ -218,16 +241,29 @@ export default function Support() {
 
       {/* Ticket Detail Modal */}
       {selectedTicket && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center animate-fadeIn">
           <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-lg relative">
             <button className="absolute top-3 right-3 text-gray-400 hover:text-red-500" onClick={() => setSelectedTicket(null)}><FaTimes size={20} /></button>
             <div className="mb-2 text-lg font-bold">Ticket #{selectedTicket.id}</div>
             <div className="mb-1 text-gray-700 font-medium">{selectedTicket.summary}</div>
             <div className="mb-2 text-xs text-gray-500">Status: <span className={`px-2 py-0.5 rounded ${getStatusColor(selectedTicket.status?.name)}`}>{selectedTicket.status?.name}</span></div>
+            <div className="mb-2 text-xs text-gray-500">Priority: <span className={`px-2 py-0.5 rounded ${getUrgencyColor(selectedTicket.priority?.name || selectedTicket.urgency)}`}>{selectedTicket.priority?.name || selectedTicket.urgency}</span></div>
+            <div className="mb-2 text-xs text-gray-500">Assigned Tech: <span className="font-medium">{selectedTicket.assigned_tech || selectedTicket.technician || 'Unassigned'}</span></div>
             <div className="mb-4 text-xs text-gray-500">Created: {selectedTicket.created} | Last Updated: {selectedTicket.updated}</div>
             <div className="mb-4">
               <div className="font-semibold mb-1">Communication</div>
-              <div className="bg-gray-50 rounded p-2 h-32 overflow-y-auto text-xs text-gray-700 mb-2">(Conversation thread here...)</div>
+              <div className="bg-gray-50 rounded p-2 h-32 overflow-y-auto text-xs text-gray-700 mb-2">
+                {notesLoading ? <div>Loading notes…</div> : (
+                  ticketNotes.length === 0 ? <div className="text-gray-400">No notes yet.</div> :
+                  ticketNotes.map((note, i) => (
+                    <div key={i} className="mb-2">
+                      <div className="font-semibold text-gray-800">{note.author || note.display_name || 'Tech'}</div>
+                      <div className="text-gray-600">{note.text}</div>
+                      <div className="text-gray-400 text-xs">{note.dateCreated || note.created}</div>
+                    </div>
+                  ))
+                )}
+              </div>
               <form className="flex gap-2" onSubmit={e => { e.preventDefault(); setReply(''); }}>
                 <input
                   type="text"
@@ -239,6 +275,13 @@ export default function Support() {
                 />
                 <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Send</button>
               </form>
+              {['Closed', 'Resolved'].includes(selectedTicket.status?.name) && (
+                <button className="mt-4 w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg font-semibold transition" onClick={async () => {
+                  await fetch(`/api/support/tickets/${selectedTicket.id}/reopen/`, { method: 'POST' });
+                  setSelectedTicket(null);
+                  // Optionally: refetch tickets
+                }}>Re-open Ticket</button>
+              )}
             </div>
           </div>
         </div>
@@ -255,6 +298,12 @@ export default function Support() {
           </div>
         </div>
       )}
+
+      {/* Add fade-in animation */}
+      <style>{`
+      @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+      .animate-fadeIn { animation: fadeIn 0.3s ease; }
+      `}</style>
     </div>
   );
 } 
