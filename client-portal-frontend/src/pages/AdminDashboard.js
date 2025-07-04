@@ -107,7 +107,7 @@ function Sidebar({ activeSection, setActiveSection, openDropdowns, setOpenDropdo
       <div className="p-6 font-bold text-xl text-red-700 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 text-white shadow">
         <FaChartBar className="text-2xl" /> Buckeye IT Admin
       </div>
-      <nav className="flex-1 overflow-y-auto py-4">
+      <nav className="flex-1 overflow-y-auto py-4 pr-2">
         {sidebarSections.map(section => (
           <div key={section.key}>
             <button
@@ -123,7 +123,9 @@ function Sidebar({ activeSection, setActiveSection, openDropdowns, setOpenDropdo
               {section.icon}
               <span>{section.label}</span>
               {section.children && (
-                <span className={`transition-transform duration-300 ${openDropdowns[section.key] ? 'rotate-180' : ''}`}>{openDropdowns[section.key] ? <FaChevronUp className="ml-auto" /> : <FaChevronDown className="ml-auto" />}</span>
+                <span className="ml-auto flex-1 flex justify-end">
+                  <FaChevronDown className={`transition-transform duration-300 ${openDropdowns[section.key] ? 'rotate-180' : ''}`} />
+                </span>
               )}
             </button>
             <div
@@ -141,7 +143,6 @@ function Sidebar({ activeSection, setActiveSection, openDropdowns, setOpenDropdo
                       className={`w-full flex items-center gap-2 px-3 py-2 text-left rounded hover:bg-red-100 transition ${activeSection === child.key ? 'bg-red-200 text-red-900 font-semibold' : 'text-gray-600'}`}
                       onClick={() => setActiveSection(child.key)}
                     >
-                      {child.icon}
                       {child.label}
                     </button>
                   ))}
@@ -180,6 +181,7 @@ const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [openDropdowns, setOpenDropdowns] = useState({});
   const [fadeOut, setFadeOut] = useState(false);
+  const [lastSubsection, setLastSubsection] = useState('dashboard');
   const [dashboardData, setDashboardData] = useState({
     user_count: 0,
     tenant_count: 0,
@@ -353,15 +355,30 @@ const AdminDashboard = () => {
     );
   };
 
+  const handleSetActiveSection = (key) => {
+    if (key !== activeSection && isSubsection(key)) {
+      setLastSubsection(key);
+    }
+    setActiveSection(key);
+  };
+
+  function isSubsection(key) {
+    return sidebarSections.some(section => section.children && section.children.some(child => child.key === key));
+  }
+
   return (
     <div className={`flex min-h-screen bg-gray-50 transition-opacity duration-700 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}>
-      <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} openDropdowns={openDropdowns} setOpenDropdowns={setOpenDropdowns} />
+      <Sidebar activeSection={activeSection} setActiveSection={handleSetActiveSection} openDropdowns={openDropdowns} setOpenDropdowns={setOpenDropdowns} />
       <div className="flex-1 flex flex-col">
         <Topbar onSignOut={handleSignOut} />
         <main className="flex-1 p-8 overflow-y-auto">
-          <SectionFade keyProp={activeSection}>
-            {sectionContent[activeSection] || <div>Section coming soon…</div>}
-          </SectionFade>
+          {isSubsection(activeSection) ? (
+            <SectionFade keyProp={activeSection}>
+              {sectionContent[activeSection] || <div>Section coming soon…</div>}
+            </SectionFade>
+          ) : (
+            sectionContent[activeSection] || <div>Section coming soon…</div>
+          )}
         </main>
       </div>
       <style>{`

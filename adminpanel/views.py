@@ -19,6 +19,8 @@ import secrets
 from django.utils import timezone
 from portal.email_utils import send_invitation_email
 from django.utils.decorators import method_decorator
+from django.core.paginator import Paginator
+from django.db import models
 
 # Create your views here.
 
@@ -575,3 +577,64 @@ def api_dashboard_stats(request):
         "integrations": integrations,
         "automation_failures": automation_failures,
     })
+
+@staff_member_required(login_url='/adminpanel/login/')
+@csrf_exempt
+def api_users(request):
+    User = get_user_model()
+    page = int(request.GET.get('page', 1))
+    per_page = int(request.GET.get('per_page', 10))
+    search = request.GET.get('search', '').strip().lower()
+    role = request.GET.get('role', '')
+    tenant = request.GET.get('tenant', '')
+    status = request.GET.get('status', '')
+    users = User.objects.select_related('tenant').all()
+    if search:
+        users = users.filter(
+            models.Q(first_name__icontains=search) |
+            models.Q(last_name__icontains=search) |
+            models.Q(email__icontains=search)
+        )
+    if role and role != 'All Roles':
+        if role == 'Admin':
+            users = users.filter(is_staff=True, is_superuser=False)
+        elif role == 'Tech':
+            users = users.filter(groups__name='Tech')
+        elif role == 'Client':
+            users = users.filter(groups__name='Client')
+    if tenant and tenant != 'All Tenants':
+        users = users.filter(tenant__name=tenant)
+    if status and status != 'All Statuses':
+        if status == 'Active':
+            users = users.filter(is_active=True)
+        elif status == 'Suspended':
+            users = users.filter(is_active=False)
+    users = users.order_by('first_name', 'last_name')
+    paginator = Paginator(users, per_page)
+    page_obj = paginator.get_page(page)
+    user_list = []
+    for user in page_obj:
+        user_list.append({
+            'id': user.id,
+            'fullName': user.get_full_name() or user.username,
+            'email': user.email,
+            'role': 'Admin' if user.is_staff else 'User',
+            'tenant': user.tenant.name if hasattr(user, 'tenant') and user.tenant else '',
+            'status': 'Active' if user.is_active else 'Suspended',
+            'lastLogin': user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login else '',
+            'dateCreated': user.date_joined.strftime('%Y-%m-%d') if user.date_joined else '',
+            'avatar': user.avatar.url if hasattr(user, 'avatar') and user.avatar else '',
+        })
+    return JsonResponse({
+        'results': user_list,
+        'total': paginator.count,
+        'page': page,
+        'totalPages': paginator.num_pages,
+    })
+
+@staff_member_required(login_url='/adminpanel/login/')
+@csrf_exempt
+def api_tenants(request):
+    tenants = Tenant.objects.all().order_by('name')
+    tenant_list = [{'id': t.id, 'name': t.name} for t in tenants]
+    return JsonResponse({'results': tenant_list})

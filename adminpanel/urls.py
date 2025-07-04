@@ -52,6 +52,8 @@ urlpatterns = [
     path('admin/role-manager/', views.role_manager, name='role_manager'),
     path('admin/system-health/', views.system_health, name='system_health'),
     path('api/dashboard-stats/', views.api_dashboard_stats, name='api_dashboard_stats'),
+    path('api/users/', views.api_users, name='api_users'),
+    path('api/tenants/', views.api_tenants, name='api_tenants'),
     path('login/', AdminLoginView.as_view(), name='login'),
     path('logout/', AdminLogoutView.as_view(), name='logout'),
 ] 
