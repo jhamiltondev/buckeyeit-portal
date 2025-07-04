@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 
-export default function Login() {
+const Login = ({ title = "Buckeye IT Client Portal" }) => {
   const { login, isAuthenticated } = useUser();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -37,7 +37,7 @@ export default function Login() {
         {/* Left: Branding */}
         <div className="hidden md:flex flex-col items-center justify-center bg-gradient-to-br from-red-600 to-red-400 text-white p-10 w-1/2">
           <img src="/static/portal/react/buckeyeit-logo-white.png" alt="Buckeye IT Logo" className="w-24 h-24 mb-6 drop-shadow-lg" />
-          <h1 className="text-3xl font-bold mb-2 text-center">Buckeye IT Client Portal</h1>
+          <h1 className="text-3xl font-bold mb-2 text-center">{title}</h1>
           <p className="text-center text-lg opacity-90">Welcome! Please sign in to access your client dashboard.</p>
         </div>
         {/* Right: Login Form */}
@@ -79,4 +79,6 @@ export default function Login() {
       </div>
     </div>
   );
-} 
+};
+
+export default Login; 
