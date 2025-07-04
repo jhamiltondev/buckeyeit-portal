@@ -157,13 +157,18 @@ export default function Support() {
                     {safeTickets.slice(0, 5).map((t, idx) => {
                       const key = t.id || idx;
                       console.log('Rendering ticket row', { key, t });
+                      console.log('status', t.status, typeof t.status);
+                      console.log('urgency', t.urgency, typeof t.urgency);
+                      console.log('type', t.type, typeof t.type);
+                      console.log('created', t.created, typeof t.created);
+                      console.log('updated', t.updated, typeof t.updated);
                       return (
                         <tr key={key} className="border-b hover:bg-blue-50 cursor-pointer" onClick={() => setSelectedTicket(t)}>
                           <td className="py-2 pr-4 font-mono">{t.id}</td>
                           <td className="py-2 pr-4 font-medium">{t.summary} {t.newReply && <span className="ml-2 bg-green-200 text-green-800 text-xs rounded px-2 py-0.5">New!</span>}</td>
                           <td className="py-2 pr-4"><span className={`px-2 py-0.5 rounded text-xs ${getStatusColor(t.status?.name)}`}>{t.status?.name}</span></td>
                           <td className="py-2 pr-4"><span className={`px-2 py-0.5 rounded text-xs ${getUrgencyColor(t.urgency)}`}>{t.urgency}</span></td>
-                          <td className="py-2 pr-4"><span className="inline-flex items-center gap-1"><FaTag className="text-gray-400" />{t.type}</span></td>
+                          <td className="py-2 pr-4"><span className="inline-flex items-center gap-1"><FaTag className="text-gray-400" />{t.type?.name}</span></td>
                           <td className="py-2 pr-4">{t.created}</td>
                           <td className="py-2 pr-4">{t.updated}</td>
                           <td></td>
