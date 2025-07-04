@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
 from django.urls import get_resolver
-from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument, TicketStatusSeen
+from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument, TicketStatusSeen, Role, UserGroup
 from django.contrib.admin.views.decorators import staff_member_required
 import requests
 from .adapters import get_connectwise_tickets, create_connectwise_ticket, get_connectwise_ticket_notes, post_connectwise_ticket_note, get_connectwise_ticket, split_ticket_notes, get_connectwise_contact_id
@@ -20,9 +20,10 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .serializers import AnnouncementSerializer, KnowledgeBaseArticleSerializer
+from .serializers import AnnouncementSerializer, KnowledgeBaseArticleSerializer, RoleSerializer, UserGroupSerializer, TenantSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.conf import settings
+from rest_framework import viewsets, filters
 
 # Set up logger for views
 logger = logging.getLogger('portal.views')
@@ -897,3 +898,26 @@ def api_frontend_log(request):
     data = request.data
     logger.info(f"[ReactLog] {data}")
     return Response({'status': 'ok'})
+
+class RoleViewSet(viewsets.ModelViewSet):
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
+    permission_classes = [IsAuthenticated]
+
+class UserGroupViewSet(viewsets.ModelViewSet):
+    queryset = UserGroup.objects.all().prefetch_related('roles', 'users', 'tenant')
+    serializer_class = UserGroupSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'description']
+    ordering_fields = ['updated_at', 'name']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        role = self.request.query_params.get('role')
+        tenant = self.request.query_params.get('tenant')
+        if role:
+            queryset = queryset.filter(roles__name=role)
+        if tenant:
+            queryset = queryset.filter(tenant__id=tenant)
+        return queryset

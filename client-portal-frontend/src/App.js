@@ -18,6 +18,7 @@ import './App.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FaQuestionCircle } from 'react-icons/fa';
 import AdminDashboard from './pages/AdminDashboard';
+import Groups from './pages/Groups';
 
 // ProtectedRoute component
 function ProtectedRoute({ children }) {
@@ -63,6 +64,7 @@ function ProtectedLayout() {
                 <Route path="/company-info" element={<CompanyInfo />} />
                 <Route path="/announcements" element={<Announcements />} />
                 <Route path="/logout" element={<Logout />} />
+                <Route path="/admin/groups" element={<Groups />} />
               </Routes>
             </motion.div>
           </AnimatePresence>

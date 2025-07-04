@@ -160,3 +160,24 @@ class UserInvitation(models.Model):
 
     def get_status_display(self):
         return dict(UserInvitation.STATUS_CHOICES).get(str(self.status), self.status)
+
+class Role(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+class UserGroup(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    is_default = models.BooleanField(default=False, help_text="If true, all new users are added to this group.")
+    tenant = models.ForeignKey(Tenant, null=True, blank=True, on_delete=models.SET_NULL)
+    roles = models.ManyToManyField(Role, blank=True)
+    users = models.ManyToManyField('portal.User', blank=True, related_name="user_groups")
+    created_by = models.ForeignKey('portal.User', related_name="created_groups", on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name

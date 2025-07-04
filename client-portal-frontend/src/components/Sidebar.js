@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaUserCircle, FaHeadset, FaBook, FaUser, FaBuilding, FaBullhorn, FaSignOutAlt, FaTachometerAlt, FaBars } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 
 const navItems = [
@@ -72,6 +72,9 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
               {!collapsed && item.label}
             </NavLink>
           ))}
+          <li>
+            <Link to="/admin/groups">Groups</Link>
+          </li>
         </nav>
       </aside>
     </>
