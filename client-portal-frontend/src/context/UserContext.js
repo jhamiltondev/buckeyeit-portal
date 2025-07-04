@@ -6,6 +6,22 @@ export function useUser() {
   return useContext(UserContext);
 }
 
+// Helper to get CSRF token from cookie
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
 export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -57,9 +73,14 @@ export function UserProvider({ children }) {
 
   const logout = async () => {
     try {
+      const csrftoken = getCookie('csrftoken');
       const logoutRes = await fetch('/api/logout/', {
         method: 'POST',
         credentials: 'include',
+        headers: {
+          'X-CSRFToken': csrftoken,
+          'Content-Type': 'application/json',
+        },
       });
       console.log('Logout API response:', await logoutRes.json());
       // Wait 500ms to ensure backend clears session
