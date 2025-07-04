@@ -36,7 +36,7 @@ export default function Login() {
       <div className="bg-white rounded-2xl shadow-2xl flex w-full max-w-4xl overflow-hidden">
         {/* Left: Branding */}
         <div className="hidden md:flex flex-col items-center justify-center bg-gradient-to-br from-red-600 to-red-400 text-white p-10 w-1/2">
-          <img src="/buckeyeit-logo-white.png" alt="Buckeye IT Logo" className="w-24 h-24 mb-6" />
+          <img src="/static/portal/react/buckeyeit-logo-white.png" alt="Buckeye IT Logo" className="w-24 h-24 mb-6 drop-shadow-lg" />
           <h1 className="text-3xl font-bold mb-2 text-center">Buckeye IT Client Portal</h1>
           <p className="text-center text-lg opacity-90">Welcome! Please sign in to access your client dashboard.</p>
         </div>
