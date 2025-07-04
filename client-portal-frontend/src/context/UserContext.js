@@ -57,19 +57,30 @@ export function UserProvider({ children }) {
 
   const logout = async () => {
     try {
-      await fetch('/api/logout/', {
+      const logoutRes = await fetch('/api/logout/', {
         method: 'POST',
         credentials: 'include',
       });
+      console.log('Logout API response:', await logoutRes.json());
+      // Wait 500ms to ensure backend clears session
+      await new Promise(res => setTimeout(res, 500));
+      // Check user status
+      const userRes = await fetch('/api/user/', { credentials: 'include' });
+      const userData = await userRes.json();
+      console.log('User after logout:', userData);
+      if (!userData.is_authenticated) {
+        setUser(null);
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = '/login';
+      } else {
+        alert('Logout failed: still authenticated. Please clear cookies and try again.');
+      }
     } catch (error) {
-      console.error('Logout API error:', error);
-    } finally {
-      // Clear user state regardless of API response
+      console.error('Logout error:', error);
       setUser(null);
-      // Clear any client-side storage
       localStorage.clear();
       sessionStorage.clear();
-      // Force a page reload to clear any cached state
       window.location.href = '/login';
     }
   };
