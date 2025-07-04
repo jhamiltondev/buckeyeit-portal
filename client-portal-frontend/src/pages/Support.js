@@ -64,8 +64,10 @@ export default function Support() {
     t.id?.toString().includes(search)
   );
   console.log('filteredTickets', filteredTickets);
-  const openTickets = filteredTickets.filter(t => t.status?.name === 'Open' || t.status?.name === 'Needs Info');
-  const closedTickets = filteredTickets.filter(t => t.status?.name === 'Resolved' || t.status?.name === 'Closed');
+  // Defensive: only tickets with a valid id
+  const safeTickets = filteredTickets.filter(t => t && (typeof t.id === 'string' || typeof t.id === 'number'));
+  const openTickets = safeTickets.filter(t => t.status?.name === 'Open' || t.status?.name === 'Needs Info');
+  const closedTickets = safeTickets.filter(t => t.status?.name === 'Resolved' || t.status?.name === 'Closed');
 
   // AI/keyword-matched KB suggestions
   const suggestedArticles = search
@@ -145,10 +147,10 @@ export default function Support() {
               </tr>
             </thead>
             <tbody>
-              {filteredTickets.length === 0 && (
+              {safeTickets.length === 0 && (
                 <tr><td colSpan={8} className="text-center text-gray-400 py-6">No tickets found</td></tr>
               )}
-              {filteredTickets.slice(0, 5).map((t, idx) => (
+              {safeTickets.slice(0, 5).map((t, idx) => (
                 <tr key={t.id || idx} className="border-b hover:bg-blue-50 cursor-pointer" onClick={() => setSelectedTicket(t)}>
                   <td className="py-2 pr-4 font-mono">{t.id}</td>
                   <td className="py-2 pr-4 font-medium">{t.summary} {t.newReply && <span className="ml-2 bg-green-200 text-green-800 text-xs rounded px-2 py-0.5">New!</span>}</td>
@@ -163,7 +165,7 @@ export default function Support() {
             </tbody>
           </table>
         </div>
-        {filteredTickets.length > 5 && (
+        {safeTickets.length > 5 && (
           <div className="mt-2 text-right">
             <button className="text-blue-600 hover:underline text-sm" onClick={() => navigate('/tickets')}>See all tickets</button>
           </div>
