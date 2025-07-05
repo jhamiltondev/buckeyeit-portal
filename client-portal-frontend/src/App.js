@@ -18,6 +18,9 @@ import './App.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FaQuestionCircle } from 'react-icons/fa';
 import AdminDashboard from './pages/AdminDashboard';
+import ActiveUsers from './pages/ActiveUsers';
+import Groups from './pages/Groups';
+import SuspendedDeletedUsers from './pages/SuspendedDeletedUsers';
 
 // ProtectedRoute component
 function ProtectedRoute({ children }) {
@@ -84,7 +87,19 @@ function App() {
               <ProtectedRoute>
                 <AdminDashboard />
               </ProtectedRoute>
-            } />
+            }>
+              <Route index element={<div className="text-center py-12">
+                <h1 className="text-3xl font-bold text-gray-800 mb-4">Welcome to the Admin Center</h1>
+                <p className="text-gray-600">Select an option from the sidebar to get started.</p>
+              </div>} />
+              <Route path="users/active" element={<ActiveUsers />} />
+              <Route path="groups" element={<Groups />} />
+              <Route path="users/suspended" element={<SuspendedDeletedUsers />} />
+              <Route path="*" element={<div className="text-center py-12">
+                <h1 className="text-2xl font-bold text-gray-800 mb-4">Page Not Found</h1>
+                <p className="text-gray-600">The requested admin page could not be found.</p>
+              </div>} />
+            </Route>
             <Route path="/*" element={
               <ProtectedRoute>
                 <>

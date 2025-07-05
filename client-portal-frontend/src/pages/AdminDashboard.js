@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaUser, FaUsers, FaBuilding, FaUserShield, FaUserTimes, FaBook, FaBullhorn, FaCogs, FaChartBar, FaChevronDown, FaChevronUp, FaHome, FaCog, FaList, FaArchive, FaEye, FaLock, FaKey, FaEnvelope, FaBell, FaPalette, FaShieldAlt, FaRobot, FaChartPie, FaCheckCircle, FaExclamationTriangle, FaClock, FaSearch, FaPlus, FaEdit, FaTrash, FaCalendarAlt, FaGroup, FaSitemap, FaStar, FaSync, FaFileAlt, FaCommentDots, FaUserEdit, FaUsersCog, FaUserCheck, FaUserSlash, FaUserSecret, FaUserFriends, FaUserTag, FaUserCircle, FaUserGraduate, FaUserNinja, FaUserMd, FaUserTie, FaUserAlt, FaUserAstronaut, FaUserInjured, FaUserLock, FaUserMinus, FaUserPlus, FaUserTimes as FaUserTimesAlt, FaTicketAlt } from 'react-icons/fa';
-import { NavLink, Routes, Route, useLocation } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 import ActiveUsers from './ActiveUsers';
 import Groups from './Groups';
 import SuspendedDeletedUsers from './SuspendedDeletedUsers';
@@ -107,9 +107,9 @@ const sidebarSections = [
 
 function Sidebar() {
   return (
-    <aside className="w-64 bg-gradient-to-b from-red-100 via-white to-gray-100 border-r h-screen flex flex-col shadow-lg">
-      <div className="p-6 font-bold text-xl text-red-700 flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-400 text-white shadow">
-        <FaChartBar className="text-2xl" /> Buckeye IT Admin
+    <aside className="w-64 bg-gray-900 border-r h-screen flex flex-col shadow-lg">
+      <div className="p-6 font-bold text-xl text-white flex items-center gap-2 bg-gray-900 border-b border-gray-800 shadow-none">
+        <FaChartBar className="text-2xl text-blue-400" /> Buckeye IT Admin
       </div>
       <nav className="flex-1 overflow-y-auto py-4 pr-2">
         <ul className="space-y-2">
@@ -117,7 +117,7 @@ function Sidebar() {
             <NavLink 
               to="users/active" 
               className={({ isActive }) => 
-                `block px-4 py-2 rounded-lg transition-colors ${isActive ? 'bg-red-200 text-red-900 font-semibold' : 'text-gray-700 hover:bg-red-50'}`
+                `block px-4 py-2 rounded-lg transition-colors ${isActive ? 'bg-gray-800 text-blue-500 font-semibold' : 'text-gray-200 hover:bg-gray-800'}`
               }
             >
               Active Users
@@ -127,7 +127,7 @@ function Sidebar() {
             <NavLink 
               to="groups" 
               className={({ isActive }) => 
-                `block px-4 py-2 rounded-lg transition-colors ${isActive ? 'bg-red-200 text-red-900 font-semibold' : 'text-gray-700 hover:bg-red-50'}`
+                `block px-4 py-2 rounded-lg transition-colors ${isActive ? 'bg-gray-800 text-blue-500 font-semibold' : 'text-gray-200 hover:bg-gray-800'}`
               }
             >
               Groups
@@ -137,7 +137,7 @@ function Sidebar() {
             <NavLink 
               to="users/suspended" 
               className={({ isActive }) => 
-                `block px-4 py-2 rounded-lg transition-colors ${isActive ? 'bg-red-200 text-red-900 font-semibold' : 'text-gray-700 hover:bg-red-50'}`
+                `block px-4 py-2 rounded-lg transition-colors ${isActive ? 'bg-gray-800 text-blue-500 font-semibold' : 'text-gray-200 hover:bg-gray-800'}`
               }
             >
               Suspended/Deleted Users
@@ -145,7 +145,7 @@ function Sidebar() {
           </li>
         </ul>
       </nav>
-      <div className="p-4 text-xs text-gray-400">© {new Date().getFullYear()} Buckeye IT</div>
+      <div className="p-4 text-xs text-gray-500">© {new Date().getFullYear()} Buckeye IT</div>
     </aside>
   );
 }
@@ -153,16 +153,19 @@ function Sidebar() {
 function Topbar({ onSignOut }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   return (
-    <header className="h-16 bg-gradient-to-r from-red-100 via-white to-gray-100 border-b flex items-center justify-between px-8 shadow-sm relative">
-      <div className="font-bold text-lg text-red-700">Admin Center</div>
+    <header className="h-16 bg-gray-100 border-b flex items-center justify-between px-8 shadow-sm relative">
+      <div className="font-bold text-lg text-gray-800">Admin Center</div>
       <div className="flex items-center gap-4 relative">
+        <button className="rounded-full p-2 bg-gray-200 hover:bg-gray-300 text-gray-700" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <FaPalette />
+        </button>
         <span className="text-gray-600">admin@buckeyeit.com</span>
         <button onClick={() => setDropdownOpen(v => !v)} className="focus:outline-none">
-          <img src="/static/portal/react/buckeyeit-logo-white.png" alt="Buckeye IT Logo" className="w-8 h-8 rounded-full shadow border-2 border-red-200" />
+          <img src="/static/portal/react/buckeyeit-logo-white.png" alt="Buckeye IT Logo" className="w-8 h-8 rounded-full shadow border-2 border-gray-200" />
         </button>
         {dropdownOpen && (
           <div className="absolute right-0 top-12 bg-white rounded shadow-lg py-2 w-40 z-50 animate-fadeInSlow">
-            <button className="w-full text-left px-4 py-2 hover:bg-red-50 text-gray-700" onClick={onSignOut}>Sign out</button>
+            <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700" onClick={onSignOut}>Sign out</button>
           </div>
         )}
       </div>
@@ -170,27 +173,27 @@ function Topbar({ onSignOut }) {
   );
 }
 
+function QuickActions() {
+  return (
+    <div className="bg-gray-100 border border-gray-200 rounded-xl p-4 mb-6 flex flex-col gap-2 w-full max-w-xs ml-auto">
+      <div className="font-semibold text-gray-700 mb-2">Quick Actions</div>
+      <button className="bg-blue-600 text-white rounded px-3 py-2 font-semibold border border-blue-700 hover:bg-blue-700 transition">Add User</button>
+      <button className="bg-gray-50 text-gray-800 rounded px-3 py-2 font-semibold border border-gray-300 hover:bg-gray-200 transition">Sync Data</button>
+      <button className="bg-gray-50 text-gray-800 rounded px-3 py-2 font-semibold border border-gray-300 hover:bg-gray-200 transition">Post Announcement</button>
+      <button className="bg-white text-red-600 rounded px-3 py-2 font-semibold border border-red-300 hover:bg-red-50 transition">Open Settings</button>
+    </div>
+  );
+}
+
 const AdminDashboard = () => {
-  const location = useLocation();
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Topbar onSignOut={() => { window.location.href = '/adminpanel/login/'; }} />
         <main className="flex-1 p-8 overflow-y-auto">
-          <Routes>
-            <Route path="users/active" element={<ActiveUsers />} />
-            <Route path="groups" element={<Groups />} />
-            <Route path="users/suspended" element={<SuspendedDeletedUsers />} />
-            <Route path="" element={<div className="text-center py-12">
-              <h1 className="text-3xl font-bold text-gray-800 mb-4">Welcome to the Admin Center</h1>
-              <p className="text-gray-600">Select an option from the sidebar to get started.</p>
-            </div>} />
-            <Route path="*" element={<div className="text-center py-12">
-              <h1 className="text-2xl font-bold text-gray-800 mb-4">Page Not Found</h1>
-              <p className="text-gray-600">The requested admin page could not be found.</p>
-            </div>} />
-          </Routes>
+          <QuickActions />
+          <Outlet />
         </main>
       </div>
     </div>

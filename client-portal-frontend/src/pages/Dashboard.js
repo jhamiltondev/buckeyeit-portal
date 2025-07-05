@@ -87,22 +87,22 @@ export default function Dashboard() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
           <p className="text-lg text-gray-500 dark:text-gray-300 mt-1">Welcome back, {user?.first_name || user?.username || 'User'}! Explore the dashboard.</p>
-        </div>
+      </div>
 
-        {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+      {/* Dashboard Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
           {/* Ticket Summary Card (spans 2 cols) */}
           <motion.div
-            className="col-span-1 md:col-span-2 bg-white rounded-xl shadow p-5 flex flex-col justify-between hover:shadow-lg transition cursor-pointer"
+            className="col-span-1 md:col-span-2 bg-white border border-gray-200 rounded-xl shadow p-5 flex flex-col justify-between hover:shadow-lg transition cursor-pointer"
             custom={-1}
             initial="hidden"
             animate="visible"
             variants={tileVariants}
           >
-            <div className="flex items-center mb-2">
+          <div className="flex items-center mb-2">
               <span className="bg-blue-100 text-blue-600 rounded-full p-2 mr-3">
                 <FaRegFileAlt size={24} />
-              </span>
+            </span>
               <h3 className="font-semibold text-lg">Ticket Summary</h3>
             </div>
             <div className="flex flex-col md:flex-row gap-4 mt-2">
@@ -122,7 +122,7 @@ export default function Dashboard() {
           </motion.div>
           {/* Security Center Card */}
           <motion.div
-            className="bg-blue-100/60 border-t-4 border-blue-400 rounded-xl shadow p-5 flex flex-col justify-between hover:shadow-lg transition cursor-pointer"
+            className="bg-white border border-gray-200 rounded-xl shadow p-5 flex flex-col justify-between hover:shadow-lg transition cursor-pointer"
             custom={0}
             initial="hidden"
             animate="visible"
@@ -143,23 +143,23 @@ export default function Dashboard() {
               <div className="flex items-center gap-2">
                 <span className="font-medium">Risky Sign-ins:</span>
                 <span className="font-normal">{securityData.risky_signins || '--'}</span>
-              </div>
-            </div>
+          </div>
+        </div>
           </motion.div>
-          {/* Announcements Card */}
+        {/* Announcements Card */}
           <motion.div
-            className="bg-purple-100/60 border-t-4 border-purple-400 rounded-xl shadow p-5 flex flex-col justify-between hover:shadow-lg transition cursor-pointer"
+            className="bg-white border border-gray-200 rounded-xl shadow p-5 flex flex-col justify-between hover:shadow-lg transition cursor-pointer"
             custom={1}
             initial="hidden"
             animate="visible"
             variants={tileVariants}
           >
-            <div className="flex items-center mb-2">
+          <div className="flex items-center mb-2">
               <span className="bg-purple-200 text-purple-600 rounded-full p-2 mr-3">
                 <FaBullhorn size={24} />
-              </span>
-              <h3 className="font-semibold text-lg">Announcements</h3>
-            </div>
+            </span>
+            <h3 className="font-semibold text-lg">Announcements</h3>
+          </div>
             {announcement ? (
               <>
                 <div className="text-lg font-semibold mb-1 truncate">{announcement.title}</div>
@@ -170,43 +170,43 @@ export default function Dashboard() {
               <div className="text-sm text-gray-400">No new announcements</div>
             )}
           </motion.div>
-          {/* Knowledge Base Card */}
+        {/* Knowledge Base Card */}
           <motion.div
-            className="bg-green-100/60 border-t-4 border-green-400 rounded-xl shadow p-5 flex flex-col justify-between hover:shadow-lg transition cursor-pointer"
+            className="bg-white border border-gray-200 rounded-xl shadow p-5 flex flex-col justify-between hover:shadow-lg transition cursor-pointer"
             custom={2}
             initial="hidden"
             animate="visible"
             variants={tileVariants}
           >
-            <div className="flex items-center mb-2">
+          <div className="flex items-center mb-2">
               <span className="bg-green-200 text-green-600 rounded-full p-2 mr-3">
                 <FaBook size={24} />
-              </span>
-              <h3 className="font-semibold text-lg">Knowledge Base</h3>
-            </div>
+            </span>
+            <h3 className="font-semibold text-lg">Knowledge Base</h3>
+          </div>
             <div className="text-2xl font-bold mb-1">--</div>
             <div className="text-xs text-green-700">Browse articles</div>
           </motion.div>
-          {/* Company Info Card */}
+        {/* Company Info Card */}
           <motion.div
-            className="bg-yellow-100/60 border-t-4 border-yellow-400 rounded-xl shadow p-5 flex flex-col justify-between hover:shadow-lg transition cursor-pointer"
+            className="bg-white border border-gray-200 rounded-xl shadow p-5 flex flex-col justify-between hover:shadow-lg transition cursor-pointer"
             custom={3}
             initial="hidden"
             animate="visible"
             variants={tileVariants}
           >
-            <div className="flex items-center mb-2">
+          <div className="flex items-center mb-2">
               <span className="bg-yellow-200 text-yellow-600 rounded-full p-2 mr-3">
                 <FaBuilding size={24} />
-              </span>
-              <h3 className="font-semibold text-lg">Company Info</h3>
-            </div>
+            </span>
+            <h3 className="font-semibold text-lg">Company Info</h3>
+          </div>
             <div className="text-2xl font-bold mb-1">--</div>
             <div className="text-xs text-yellow-700">View company details</div>
           </motion.div>
           {/* Recent Logins Card */}
           <motion.div
-            className="bg-pink-100/60 border-t-4 border-pink-400 rounded-xl shadow p-5 flex flex-col hover:shadow-lg transition cursor-pointer"
+            className="bg-white border border-gray-200 rounded-xl shadow p-5 flex flex-col hover:shadow-lg transition cursor-pointer"
             custom={4}
             initial="hidden"
             animate="visible"
@@ -230,7 +230,7 @@ export default function Dashboard() {
           </motion.div>
           {/* Health Status Card */}
           <motion.div
-            className="bg-teal-100/60 border-t-4 border-teal-400 rounded-xl shadow p-5 flex flex-col hover:shadow-lg transition cursor-pointer"
+            className="bg-white border border-gray-200 rounded-xl shadow p-5 flex flex-col hover:shadow-lg transition cursor-pointer"
             custom={5}
             initial="hidden"
             animate="visible"
@@ -260,7 +260,7 @@ export default function Dashboard() {
           </motion.div>
           {/* Quick Links Card */}
           <motion.div
-            className="bg-gray-100/60 border-t-4 border-gray-300 rounded-xl shadow p-5 flex flex-col hover:shadow-lg transition cursor-pointer"
+            className="bg-gray-100 border border-gray-300 rounded-xl shadow p-5 flex flex-col hover:shadow-lg transition cursor-pointer"
             custom={6}
             initial="hidden"
             animate="visible"
@@ -280,7 +280,7 @@ export default function Dashboard() {
           </motion.div>
           {/* Tech News Card (slideshow) */}
           <motion.div
-            className="bg-indigo-100/60 border-t-4 border-indigo-400 rounded-xl shadow p-5 flex flex-col hover:shadow-lg transition cursor-pointer xl:col-span-2"
+            className="bg-white border border-gray-200 rounded-xl shadow p-5 flex flex-col hover:shadow-lg transition cursor-pointer xl:col-span-2"
             custom={7}
             initial="hidden"
             animate="visible"
@@ -315,7 +315,7 @@ export default function Dashboard() {
           </motion.div>
           {/* Example Extra Card: System Usage (live) */}
           <motion.div
-            className="bg-orange-100/60 border-t-4 border-orange-400 rounded-xl shadow p-5 flex flex-col hover:shadow-lg transition cursor-pointer"
+            className="bg-white border border-gray-200 rounded-xl shadow p-5 flex flex-col hover:shadow-lg transition cursor-pointer"
             custom={8}
             initial="hidden"
             animate="visible"
