@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaUser, FaUsers, FaSearch, FaFilter, FaEye, FaEdit, FaTrash, FaPlus, FaUserShield, FaUserCheck, FaUserSlash, FaUserTimes, FaBuilding, FaKey, FaUserSecret, FaSync, FaLock, FaUnlock, FaChevronLeft, FaChevronRight, FaDownload } from 'react-icons/fa';
 
-const roles = ['All Roles', 'Admin', 'Tech', 'Client'];
-// Tenants will be fetched from API
 const statuses = ['All Statuses', 'Active', 'Suspended', 'Pending'];
 
 // Placeholder user data
@@ -153,12 +151,16 @@ export default function ActiveUsers() {
   const [error, setError] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [roles, setRoles] = useState(['All Roles']);
+  const [rolesLoading, setRolesLoading] = useState(true);
+  const [rolesError, setRolesError] = useState(null);
 
   const usersPerPage = 10;
 
   useEffect(() => {
     fetchUsers();
     fetchTenants();
+    fetchRoles();
     // eslint-disable-next-line
   }, [search, role, tenant, status, page]);
 
@@ -174,7 +176,7 @@ export default function ActiveUsers() {
         page,
         per_page: usersPerPage,
       });
-      const res = await fetch(`/adminpanel/api/users/?${params.toString()}`);
+      const res = await fetch(`/api/user/?${params.toString()}`);
       if (!res.ok) throw new Error('Failed to fetch users');
       const data = await res.json();
       setUsers(data.results);
@@ -198,6 +200,22 @@ export default function ActiveUsers() {
     }
   };
 
+  const fetchRoles = async () => {
+    setRolesLoading(true);
+    setRolesError(null);
+    try {
+      const res = await fetch('/api/roles/');
+      if (!res.ok) throw new Error('Failed to fetch roles');
+      const data = await res.json();
+      setRoles(['All Roles', ...data.map(r => r.name)]);
+    } catch (err) {
+      setRoles(['All Roles']);
+      setRolesError('Error loading roles');
+    } finally {
+      setRolesLoading(false);
+    }
+  };
+
   const pagedUsers = users;
 
   return (
@@ -217,9 +235,17 @@ export default function ActiveUsers() {
           <FaSearch className="text-gray-400" />
           <input value={search} onChange={e => { setPage(1); setSearch(e.target.value); }} placeholder="Search by name or email" className="outline-none bg-transparent" />
         </div>
-        <select value={role} onChange={e => { setPage(1); setRole(e.target.value); }} className="bg-white rounded shadow px-3 py-2">
-          {roles.map(r => <option key={r}>{r}</option>)}
+        <select
+          value={role}
+          onChange={e => setRole(e.target.value)}
+          className="bg-white rounded shadow px-3 py-2"
+          disabled={rolesLoading}
+        >
+          {roles.map(r => (
+            <option key={r} value={r}>{r}</option>
+          ))}
         </select>
+        {rolesError && <div className="text-xs text-red-500 mt-1">{rolesError}</div>}
         <select value={tenant} onChange={e => { setPage(1); setTenant(e.target.value); }} className="bg-white rounded shadow px-3 py-2">
           {tenants.map(t => <option key={t}>{t}</option>)}
         </select>

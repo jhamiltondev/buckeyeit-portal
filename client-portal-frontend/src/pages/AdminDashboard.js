@@ -6,6 +6,7 @@ import Groups from './Groups';
 import SuspendedDeletedUsers from './SuspendedDeletedUsers';
 import './AdminDashboard.css';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useUser } from '../context/UserContext';
 
 const sidebarSections = [
   {
@@ -108,8 +109,9 @@ const sidebarSections = [
 ];
 
 function Sidebar() {
-  const [expandedSections, setExpandedSections] = useState(new Set(['users'])); // Default to users expanded
+  const [expandedSections, setExpandedSections] = useState(new Set(['users']));
   const navigate = useNavigate();
+  const { user } = useUser();
 
   const toggleSection = (sectionKey) => {
     const newExpanded = new Set(expandedSections);
@@ -143,30 +145,38 @@ function Sidebar() {
                     </div>
                     {expandedSections.has(section.key) ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
                   </button>
-                  {expandedSections.has(section.key) && (
-                    <ul className="ml-8 mt-2 space-y-1">
-                      {section.children.map(child => (
-                        <li key={child.key}>
-                          <NavLink
-                            to={child.path}
-                            className={({ isActive }) =>
-                              `block px-3 py-2 rounded-lg transition-colors text-sm ${
-                                isActive 
-                                  ? 'bg-gray-800 text-blue-500 font-semibold' 
-                                  : 'text-gray-300 hover:bg-gray-800 hover:text-gray-100'
-                              }`
-                            }
-                            onClick={() => handleNavClick(child.path)}
-                          >
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm">{child.icon}</span>
-                              <span>{child.label}</span>
-                            </div>
-                          </NavLink>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                  <AnimatePresence initial={false}>
+                    {expandedSections.has(section.key) && (
+                      <motion.ul
+                        className="ml-8 mt-2 space-y-1"
+                        initial={{ height: 0, opacity: 0, y: -10 }}
+                        animate={{ height: 'auto', opacity: 1, y: 0 }}
+                        exit={{ height: 0, opacity: 0, y: -10 }}
+                        transition={{ duration: 0.25, ease: 'easeInOut' }}
+                      >
+                        {section.children.map(child => (
+                          <li key={child.key}>
+                            <NavLink
+                              to={child.path}
+                              className={({ isActive }) =>
+                                `block px-3 py-2 rounded-lg transition-colors text-sm ${
+                                  isActive
+                                    ? 'bg-gray-800 text-blue-500 font-semibold'
+                                    : 'text-gray-300 hover:bg-gray-800 hover:text-gray-100'
+                                }`
+                              }
+                              onClick={() => handleNavClick(child.path)}
+                            >
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm">{child.icon}</span>
+                                <span>{child.label}</span>
+                              </div>
+                            </NavLink>
+                          </li>
+                        ))}
+                      </motion.ul>
+                    )}
+                  </AnimatePresence>
                 </>
               ) : (
                 <NavLink
@@ -195,6 +205,7 @@ function Sidebar() {
 }
 
 function Topbar({ onSignOut }) {
+  const { user } = useUser();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [results, setResults] = useState([]);
@@ -210,7 +221,7 @@ function Topbar({ onSignOut }) {
     }
     setLoading(true);
     Promise.all([
-      fetch(`/api/users/?search=${encodeURIComponent(search)}`, { credentials: 'include' }).then(r => r.ok ? r.json() : []),
+      fetch(`/api/user/?search=${encodeURIComponent(search)}`, { credentials: 'include' }).then(r => r.ok ? r.json() : []),
       fetch(`/api/group/?search=${encodeURIComponent(search)}`, { credentials: 'include' }).then(r => r.ok ? r.json() : [])
     ]).then(([users, groups]) => {
       setResults([
@@ -263,7 +274,7 @@ function Topbar({ onSignOut }) {
         </div>
       </div>
       <div className="admin-topbar-col admin-topbar-right">
-        <span className="admin-user-email">admin@buckeyeit.com</span>
+        <span className="admin-user-name">{user ? `${user.first_name} ${user.last_name}`.trim() || user.username : ''}</span>
         <button onClick={() => setDropdownOpen(v => !v)} className="admin-profile-btn">
           <img src="/static/portal/react/buckeyeit-logo-white.png" alt="Buckeye IT Logo" className="admin-profile-img" />
         </button>
@@ -340,59 +351,96 @@ function useAdminTabTitle() {
 }
 
 function DashboardContent() {
+  const [stats, setStats] = useState({ users: null, tenants: null, tickets: null, failures: null });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    Promise.all([
+      fetch('/api/user/?per_page=1').then(r => r.ok ? r.json() : Promise.reject()),
+      fetch('/adminpanel/api/tenants/').then(r => r.ok ? r.json() : Promise.reject()),
+      fetch('/api/dashboard_ticket_summary/').then(r => r.ok ? r.json() : Promise.reject()),
+      fetch('/api/system_usage/').then(r => r.ok ? r.json() : Promise.reject()),
+    ])
+      .then(([userData, tenantData, ticketData, systemUsage]) => {
+        setStats({
+          users: userData.total || 0,
+          tenants: tenantData.results ? tenantData.results.length : 0,
+          tickets: ticketData.open_tickets || 0,
+          failures: systemUsage.failures || 0,
+        });
+      })
+      .catch(() => setError('Error loading dashboard data'))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <div className="admin-dashboard-content">
       <div className="admin-dashboard-masonry">
-        <motion.div className="admin-dashboard-card card-users" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.05 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
-          <div className="admin-card-header">{dashboardCards[0].icon}<span className="admin-card-title">{dashboardCards[0].title}</span></div>
-          <div className="admin-card-metric">{dashboardCards[0].metric}</div>
-          <div className="admin-card-subtext">{dashboardCards[0].subtext}</div>
-        </motion.div>
-        <motion.div className="admin-dashboard-card card-tenants" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.10 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
-          <div className="admin-card-header">{dashboardCards[1].icon}<span className="admin-card-title">{dashboardCards[1].title}</span></div>
-          <div className="admin-card-metric">{dashboardCards[1].metric}</div>
-          <div className="admin-card-subtext">{dashboardCards[1].subtext}</div>
-        </motion.div>
-        <motion.div className="admin-dashboard-card card-tickets" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
-          <div className="admin-card-header">{dashboardCards[2].icon}<span className="admin-card-title">{dashboardCards[2].title}</span></div>
-          <div className="admin-card-metric">{dashboardCards[2].metric}</div>
-          <div className="admin-card-subtext">{dashboardCards[2].subtext}</div>
-        </motion.div>
-        <motion.div className="admin-dashboard-card card-failures" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.20 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
-          <div className="admin-card-header">{dashboardCards[3].icon}<span className="admin-card-title">{dashboardCards[3].title}</span></div>
-          <div className="admin-card-metric">{dashboardCards[3].metric}</div>
-          <div className="admin-card-subtext">{dashboardCards[3].subtext}</div>
-        </motion.div>
-        <motion.div className="admin-dashboard-card card-activity" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
-          <div className="admin-card-header"><FaCheckCircle className="admin-card-icon" /><span className="admin-card-title">Recent Admin Activity</span></div>
-          <ul className="admin-activity-list">
-            <li className="admin-activity-item">admin logged in at Jul/03/2025 04:06 PM</li>
-            <li className="admin-activity-item">testuser logged in at Jul/01/2025 12:43 PM</li>
-          </ul>
-        </motion.div>
-        <motion.div className="admin-dashboard-card card-integrations" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.30 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
-          <div className="admin-card-header"><FaCogs className="admin-card-icon" /><span className="admin-card-title">System Integrations</span></div>
-          <ul className="admin-integrations-list">
-            <li className="admin-integration-item"><FaCogs /> ConnectWise <span className="admin-integration-dot connected"></span><span className="admin-integration-status">Connected</span></li>
-            <li className="admin-integration-item"><FaCogs /> Pax8 <span className="admin-integration-dot not_configured"></span><span className="admin-integration-status">Not Configured</span></li>
-            <li className="admin-integration-item"><FaCogs /> OpenAI <span className="admin-integration-dot not_configured"></span><span className="admin-integration-status">Not Configured</span></li>
-          </ul>
-        </motion.div>
-        <motion.div className="admin-dashboard-card card-announcement" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
-          <div className="admin-card-header"><FaBullhorn className="admin-card-icon" /><span className="admin-card-title">Announcements</span></div>
-          <div className="admin-announcement-title">Scheduled Maintenance July 10</div>
-          <div className="admin-announcement-time">Jul/02/2025 09:00 AM</div>
-          <button className="admin-btn-primary admin-announcement-btn">View All</button>
-        </motion.div>
-        <motion.div className="admin-dashboard-card card-roadmap" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.40 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
-          <div className="admin-roadmap-title">Coming Soon / Roadmap</div>
-          <ul className="admin-roadmap-list">
-            <li>Advanced reporting & analytics</li>
-            <li>Customizable dashboard widgets</li>
-            <li>Role-based access controls</li>
-            <li>Integration with more platforms</li>
-          </ul>
-        </motion.div>
+        {loading ? (
+          <div className="admin-loading-overlay">
+            {error ? (
+              <div className="admin-error-message">{error}</div>
+            ) : (
+              <div className="admin-loading-spinner"></div>
+            )}
+          </div>
+        ) : (
+          <>
+            <motion.div className="admin-dashboard-card card-users" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.05 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+              <div className="admin-card-header">{dashboardCards[0].icon}<span className="admin-card-title">{dashboardCards[0].title}</span></div>
+              <div className="admin-card-metric">{stats.users}</div>
+              <div className="admin-card-subtext">{dashboardCards[0].subtext}</div>
+            </motion.div>
+            <motion.div className="admin-dashboard-card card-tenants" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.10 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+              <div className="admin-card-header">{dashboardCards[1].icon}<span className="admin-card-title">{dashboardCards[1].title}</span></div>
+              <div className="admin-card-metric">{stats.tenants}</div>
+              <div className="admin-card-subtext">{dashboardCards[1].subtext}</div>
+            </motion.div>
+            <motion.div className="admin-dashboard-card card-tickets" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+              <div className="admin-card-header">{dashboardCards[2].icon}<span className="admin-card-title">{dashboardCards[2].title}</span></div>
+              <div className="admin-card-metric">{stats.tickets}</div>
+              <div className="admin-card-subtext">{dashboardCards[2].subtext}</div>
+            </motion.div>
+            <motion.div className="admin-dashboard-card card-failures" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.20 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+              <div className="admin-card-header">{dashboardCards[3].icon}<span className="admin-card-title">{dashboardCards[3].title}</span></div>
+              <div className="admin-card-metric">{stats.failures}</div>
+              <div className="admin-card-subtext">{dashboardCards[3].subtext}</div>
+            </motion.div>
+            <motion.div className="admin-dashboard-card card-activity" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+              <div className="admin-card-header"><FaCheckCircle className="admin-card-icon" /><span className="admin-card-title">Recent Admin Activity</span></div>
+              <ul className="admin-activity-list">
+                <li className="admin-activity-item">admin logged in at Jul/03/2025 04:06 PM</li>
+                <li className="admin-activity-item">testuser logged in at Jul/01/2025 12:43 PM</li>
+              </ul>
+            </motion.div>
+            <motion.div className="admin-dashboard-card card-integrations" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.30 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+              <div className="admin-card-header"><FaCogs className="admin-card-icon" /><span className="admin-card-title">System Integrations</span></div>
+              <ul className="admin-integrations-list">
+                <li className="admin-integration-item"><FaCogs /> ConnectWise <span className="admin-integration-dot connected"></span><span className="admin-integration-status">Connected</span></li>
+                <li className="admin-integration-item"><FaCogs /> Pax8 <span className="admin-integration-dot not_configured"></span><span className="admin-integration-status">Not Configured</span></li>
+                <li className="admin-integration-item"><FaCogs /> OpenAI <span className="admin-integration-dot not_configured"></span><span className="admin-integration-status">Not Configured</span></li>
+              </ul>
+            </motion.div>
+            <motion.div className="admin-dashboard-card card-announcement" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+              <div className="admin-card-header"><FaBullhorn className="admin-card-icon" /><span className="admin-card-title">Announcements</span></div>
+              <div className="admin-announcement-title">Scheduled Maintenance July 10</div>
+              <div className="admin-announcement-time">Jul/02/2025 09:00 AM</div>
+              <button className="admin-btn-primary admin-announcement-btn">View All</button>
+            </motion.div>
+            <motion.div className="admin-dashboard-card card-roadmap" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.40 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+              <div className="admin-roadmap-title">Coming Soon / Roadmap</div>
+              <ul className="admin-roadmap-list">
+                <li>Advanced reporting & analytics</li>
+                <li>Customizable dashboard widgets</li>
+                <li>Role-based access controls</li>
+                <li>Integration with more platforms</li>
+              </ul>
+            </motion.div>
+          </>
+        )}
       </div>
       <QuickActions />
     </div>
