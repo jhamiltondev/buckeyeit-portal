@@ -32,11 +32,13 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 420px;
+  max-width: 100vw;
   pointer-events: none;
 }
 .admin-topbar-center > * {
   pointer-events: auto;
+  width: 100%;
 }
 .admin-topbar-left {
   justify-content: flex-start;
@@ -207,9 +209,10 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   display: grid;
   grid-template-areas:
     'users tenants tickets failures'
-    'activity activity integrations announcement';
+    'activity activity integrations announcement'
+    'roadmap roadmap roadmap roadmap';
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 1fr 1fr auto;
   gap: 28px;
   margin-bottom: 24px;
 }
@@ -241,9 +244,10 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
     grid-template-areas:
       'users tenants tickets'
       'failures activity integrations'
-      'announcement announcement announcement';
+      'announcement announcement announcement'
+      'roadmap roadmap roadmap';
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto auto auto;
+    grid-template-rows: auto auto auto auto;
   }
 }
 @media (max-width: 900px) {
@@ -252,9 +256,10 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
       'users tenants'
       'tickets failures'
       'activity integrations'
-      'announcement announcement';
+      'announcement announcement'
+      'roadmap roadmap';
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto auto auto auto;
+    grid-template-rows: auto auto auto auto auto;
   }
 }
 @media (max-width: 600px) {
@@ -266,7 +271,8 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
       'failures'
       'activity'
       'integrations'
-      'announcement';
+      'announcement'
+      'roadmap';
     grid-template-columns: 1fr;
     grid-template-rows: auto;
   }
@@ -405,4 +411,34 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   color: #222;
 }
 
-/* Fade transitions handled by Framer Motion in JS */ 
+/* Fade transitions handled by Framer Motion in JS */
+.admin-sidebar-dropdown {
+  overflow: hidden;
+  transition: height 0.32s cubic-bezier(.4,0,.2,1), opacity 0.22s cubic-bezier(.4,0,.2,1), transform 0.22s cubic-bezier(.4,0,.2,1);
+}
+
+/* Roadmap Card */
+.card-roadmap {
+  grid-area: roadmap;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 24px 24px 18px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* Card Fade-in Fallback */
+.fade-in {
+  opacity: 0;
+  animation: fadeInUp 0.7s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+} 

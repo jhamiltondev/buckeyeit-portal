@@ -148,11 +148,11 @@ function Sidebar() {
                   <AnimatePresence initial={false}>
                     {expandedSections.has(section.key) && (
                       <motion.ul
-                        className="ml-8 mt-2 space-y-1"
+                        className="ml-8 mt-2 space-y-1 admin-sidebar-dropdown"
                         initial={{ height: 0, opacity: 0, y: -10 }}
                         animate={{ height: 'auto', opacity: 1, y: 0 }}
                         exit={{ height: 0, opacity: 0, y: -10 }}
-                        transition={{ duration: 0.25, ease: 'easeInOut' }}
+                        transition={{ duration: 0.32, ease: 'easeInOut' }}
                       >
                         {section.children.map(child => (
                           <li key={child.key}>
@@ -376,9 +376,22 @@ function DashboardContent() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Framer Motion variants for staggered fade-in
+  const containerVariants = {
+    show: {
+      transition: {
+        staggerChildren: 0.12,
+      },
+    },
+  };
+  const cardVariants = {
+    hidden: { opacity: 0, y: 24 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.4, 0, 0.2, 1] } },
+  };
+
   return (
     <div className="admin-dashboard-content">
-      <div className="admin-dashboard-masonry">
+      <motion.div className="admin-dashboard-masonry" variants={containerVariants} initial="hidden" animate="show">
         {loading ? (
           <div className="admin-loading-overlay">
             {error ? (
@@ -389,34 +402,34 @@ function DashboardContent() {
           </div>
         ) : (
           <>
-            <motion.div className="admin-dashboard-card card-users" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.05 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+            <motion.div className="admin-dashboard-card card-users" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
               <div className="admin-card-header">{dashboardCards[0].icon}<span className="admin-card-title">{dashboardCards[0].title}</span></div>
               <div className="admin-card-metric">{stats.users}</div>
               <div className="admin-card-subtext">{dashboardCards[0].subtext}</div>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-tenants" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.10 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+            <motion.div className="admin-dashboard-card card-tenants" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
               <div className="admin-card-header">{dashboardCards[1].icon}<span className="admin-card-title">{dashboardCards[1].title}</span></div>
               <div className="admin-card-metric">{stats.tenants}</div>
               <div className="admin-card-subtext">{dashboardCards[1].subtext}</div>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-tickets" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+            <motion.div className="admin-dashboard-card card-tickets" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
               <div className="admin-card-header">{dashboardCards[2].icon}<span className="admin-card-title">{dashboardCards[2].title}</span></div>
               <div className="admin-card-metric">{stats.tickets}</div>
               <div className="admin-card-subtext">{dashboardCards[2].subtext}</div>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-failures" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.20 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+            <motion.div className="admin-dashboard-card card-failures" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
               <div className="admin-card-header">{dashboardCards[3].icon}<span className="admin-card-title">{dashboardCards[3].title}</span></div>
               <div className="admin-card-metric">{stats.failures}</div>
               <div className="admin-card-subtext">{dashboardCards[3].subtext}</div>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-activity" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+            <motion.div className="admin-dashboard-card card-activity" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
               <div className="admin-card-header"><FaCheckCircle className="admin-card-icon" /><span className="admin-card-title">Recent Admin Activity</span></div>
               <ul className="admin-activity-list">
                 <li className="admin-activity-item">admin logged in at Jul/03/2025 04:06 PM</li>
                 <li className="admin-activity-item">testuser logged in at Jul/01/2025 12:43 PM</li>
               </ul>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-integrations" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.30 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+            <motion.div className="admin-dashboard-card card-integrations" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
               <div className="admin-card-header"><FaCogs className="admin-card-icon" /><span className="admin-card-title">System Integrations</span></div>
               <ul className="admin-integrations-list">
                 <li className="admin-integration-item"><FaCogs /> ConnectWise <span className="admin-integration-dot connected"></span><span className="admin-integration-status">Connected</span></li>
@@ -424,13 +437,13 @@ function DashboardContent() {
                 <li className="admin-integration-item"><FaCogs /> OpenAI <span className="admin-integration-dot not_configured"></span><span className="admin-integration-status">Not Configured</span></li>
               </ul>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-announcement" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+            <motion.div className="admin-dashboard-card card-announcement" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
               <div className="admin-card-header"><FaBullhorn className="admin-card-icon" /><span className="admin-card-title">Announcements</span></div>
               <div className="admin-announcement-title">Scheduled Maintenance July 10</div>
               <div className="admin-announcement-time">Jul/02/2025 09:00 AM</div>
               <button className="admin-btn-primary admin-announcement-btn">View All</button>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-roadmap" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.40 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+            <motion.div className="admin-dashboard-card card-roadmap" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
               <div className="admin-roadmap-title">Coming Soon / Roadmap</div>
               <ul className="admin-roadmap-list">
                 <li>Advanced reporting & analytics</li>
@@ -441,7 +454,7 @@ function DashboardContent() {
             </motion.div>
           </>
         )}
-      </div>
+      </motion.div>
       <QuickActions />
     </div>
   );
