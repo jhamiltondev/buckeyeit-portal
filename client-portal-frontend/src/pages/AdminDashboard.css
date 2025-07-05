@@ -24,7 +24,19 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   min-width: 0;
 }
 .admin-topbar-center {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 100%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
   justify-content: center;
+  width: 100%;
+  pointer-events: none;
+}
+.admin-topbar-center > * {
+  pointer-events: auto;
 }
 .admin-topbar-left {
   justify-content: flex-start;
@@ -208,6 +220,7 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
 .card-activity { grid-area: activity; min-height: 140px; }
 .card-integrations { grid-area: integrations; min-height: 140px; }
 .card-announcement { grid-area: announcement; min-height: 140px; }
+.card-roadmap { grid-area: roadmap; }
 
 .admin-dashboard-card {
   background: #fff;
@@ -221,6 +234,7 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   justify-content: flex-start;
   gap: 8px;
   min-width: 0;
+  transition: box-shadow 0.18s cubic-bezier(.4,0,.2,1), transform 0.18s cubic-bezier(.4,0,.2,1);
 }
 @media (max-width: 1200px) {
   .admin-dashboard-masonry {

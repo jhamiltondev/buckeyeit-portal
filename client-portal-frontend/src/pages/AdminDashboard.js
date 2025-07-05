@@ -343,58 +343,58 @@ function DashboardContent() {
   return (
     <div className="admin-dashboard-content">
       <div className="admin-dashboard-masonry">
-        <div className="admin-dashboard-card card-users">
+        <motion.div className="admin-dashboard-card card-users" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.05 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
           <div className="admin-card-header">{dashboardCards[0].icon}<span className="admin-card-title">{dashboardCards[0].title}</span></div>
           <div className="admin-card-metric">{dashboardCards[0].metric}</div>
           <div className="admin-card-subtext">{dashboardCards[0].subtext}</div>
-        </div>
-        <div className="admin-dashboard-card card-tenants">
+        </motion.div>
+        <motion.div className="admin-dashboard-card card-tenants" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.10 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
           <div className="admin-card-header">{dashboardCards[1].icon}<span className="admin-card-title">{dashboardCards[1].title}</span></div>
           <div className="admin-card-metric">{dashboardCards[1].metric}</div>
           <div className="admin-card-subtext">{dashboardCards[1].subtext}</div>
-        </div>
-        <div className="admin-dashboard-card card-tickets">
+        </motion.div>
+        <motion.div className="admin-dashboard-card card-tickets" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
           <div className="admin-card-header">{dashboardCards[2].icon}<span className="admin-card-title">{dashboardCards[2].title}</span></div>
           <div className="admin-card-metric">{dashboardCards[2].metric}</div>
           <div className="admin-card-subtext">{dashboardCards[2].subtext}</div>
-        </div>
-        <div className="admin-dashboard-card card-failures">
+        </motion.div>
+        <motion.div className="admin-dashboard-card card-failures" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.20 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
           <div className="admin-card-header">{dashboardCards[3].icon}<span className="admin-card-title">{dashboardCards[3].title}</span></div>
           <div className="admin-card-metric">{dashboardCards[3].metric}</div>
           <div className="admin-card-subtext">{dashboardCards[3].subtext}</div>
-        </div>
-        <div className="admin-dashboard-card card-activity">
+        </motion.div>
+        <motion.div className="admin-dashboard-card card-activity" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
           <div className="admin-card-header"><FaCheckCircle className="admin-card-icon" /><span className="admin-card-title">Recent Admin Activity</span></div>
           <ul className="admin-activity-list">
             <li className="admin-activity-item">admin logged in at Jul/03/2025 04:06 PM</li>
             <li className="admin-activity-item">testuser logged in at Jul/01/2025 12:43 PM</li>
           </ul>
-        </div>
-        <div className="admin-dashboard-card card-integrations">
+        </motion.div>
+        <motion.div className="admin-dashboard-card card-integrations" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.30 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
           <div className="admin-card-header"><FaCogs className="admin-card-icon" /><span className="admin-card-title">System Integrations</span></div>
           <ul className="admin-integrations-list">
             <li className="admin-integration-item"><FaCogs /> ConnectWise <span className="admin-integration-dot connected"></span><span className="admin-integration-status">Connected</span></li>
             <li className="admin-integration-item"><FaCogs /> Pax8 <span className="admin-integration-dot not_configured"></span><span className="admin-integration-status">Not Configured</span></li>
             <li className="admin-integration-item"><FaCogs /> OpenAI <span className="admin-integration-dot not_configured"></span><span className="admin-integration-status">Not Configured</span></li>
           </ul>
-        </div>
-        <div className="admin-dashboard-card card-announcement">
+        </motion.div>
+        <motion.div className="admin-dashboard-card card-announcement" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
           <div className="admin-card-header"><FaBullhorn className="admin-card-icon" /><span className="admin-card-title">Announcements</span></div>
           <div className="admin-announcement-title">Scheduled Maintenance July 10</div>
           <div className="admin-announcement-time">Jul/02/2025 09:00 AM</div>
           <button className="admin-btn-primary admin-announcement-btn">View All</button>
-        </div>
+        </motion.div>
+        <motion.div className="admin-dashboard-card card-roadmap" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.40 }} whileHover={{ scale: 1.035, boxShadow: '0 6px 24px rgba(0,0,0,0.10)' }}>
+          <div className="admin-roadmap-title">Coming Soon / Roadmap</div>
+          <ul className="admin-roadmap-list">
+            <li>Advanced reporting & analytics</li>
+            <li>Customizable dashboard widgets</li>
+            <li>Role-based access controls</li>
+            <li>Integration with more platforms</li>
+          </ul>
+        </motion.div>
       </div>
       <QuickActions />
-      <div className="admin-roadmap-section">
-        <div className="admin-roadmap-title">Coming Soon / Roadmap</div>
-        <ul className="admin-roadmap-list">
-          <li>Advanced reporting & analytics</li>
-          <li>Customizable dashboard widgets</li>
-          <li>Role-based access controls</li>
-          <li>Integration with more platforms</li>
-        </ul>
-      </div>
     </div>
   );
 }
