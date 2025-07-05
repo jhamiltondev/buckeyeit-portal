@@ -47,6 +47,10 @@ class User(AbstractUser):
     deleted_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='deleted_users', on_delete=models.SET_NULL)
     deletion_reason = models.TextField(blank=True)
 
+    def has_role(self, role_name):
+        """Check if the user has a given role via their user groups."""
+        return self.user_groups.filter(roles__name=role_name).exists()  # type: ignore[attr-defined]
+
 class Announcement(models.Model):
     CATEGORY_CHOICES = [
         ('general', 'General'),
@@ -170,8 +174,13 @@ class UserInvitation(models.Model):
         return dict(UserInvitation.STATUS_CHOICES).get(str(self.status), self.status)
 
 class Role(models.Model):
+    ROLE_TYPE_CHOICES = [
+        ('admin', 'Admin Center'),
+        ('client', 'Client Portal'),
+    ]
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField(blank=True)
+    type = models.CharField(max_length=16, choices=ROLE_TYPE_CHOICES, default='admin', help_text='Role scope: admin or client')
 
     def __str__(self):
         return self.name
