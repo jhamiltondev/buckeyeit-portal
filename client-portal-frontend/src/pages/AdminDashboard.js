@@ -3,6 +3,7 @@ import { FaUser, FaUsers, FaBuilding, FaUserShield, FaUserTimes, FaBook, FaBullh
 import { NavLink, Routes, Route, useLocation } from 'react-router-dom';
 import ActiveUsers from './ActiveUsers';
 import Groups from './Groups';
+import SuspendedDeletedUsers from './SuspendedDeletedUsers';
 
 const sidebarSections = [
   {
@@ -111,12 +112,36 @@ function Sidebar() {
         <FaChartBar className="text-2xl" /> Buckeye IT Admin
       </div>
       <nav className="flex-1 overflow-y-auto py-4 pr-2">
-        <ul>
+        <ul className="space-y-2">
           <li>
-            <NavLink to="/adminpanel/users/active" className={({ isActive }) => isActive ? 'text-red-700 font-bold' : ''}>Active Users</NavLink>
+            <NavLink 
+              to="users/active" 
+              className={({ isActive }) => 
+                `block px-4 py-2 rounded-lg transition-colors ${isActive ? 'bg-red-200 text-red-900 font-semibold' : 'text-gray-700 hover:bg-red-50'}`
+              }
+            >
+              Active Users
+            </NavLink>
           </li>
           <li>
-            <NavLink to="/adminpanel/groups" className={({ isActive }) => isActive ? 'text-red-700 font-bold' : ''}>Groups</NavLink>
+            <NavLink 
+              to="groups" 
+              className={({ isActive }) => 
+                `block px-4 py-2 rounded-lg transition-colors ${isActive ? 'bg-red-200 text-red-900 font-semibold' : 'text-gray-700 hover:bg-red-50'}`
+              }
+            >
+              Groups
+            </NavLink>
+          </li>
+          <li>
+            <NavLink 
+              to="users/suspended" 
+              className={({ isActive }) => 
+                `block px-4 py-2 rounded-lg transition-colors ${isActive ? 'bg-red-200 text-red-900 font-semibold' : 'text-gray-700 hover:bg-red-50'}`
+              }
+            >
+              Suspended/Deleted Users
+            </NavLink>
           </li>
         </ul>
       </nav>
@@ -153,11 +178,18 @@ const AdminDashboard = () => {
       <div className="flex-1 flex flex-col">
         <Topbar onSignOut={() => { window.location.href = '/adminpanel/login/'; }} />
         <main className="flex-1 p-8 overflow-y-auto">
-          <Routes location={location}>
-            <Route path="/adminpanel/users/active" element={<ActiveUsers />} />
-            <Route path="/adminpanel/groups" element={<Groups />} />
-            {/* Add more admin routes here as needed */}
-            <Route path="*" element={<div>Welcome to the Admin Center</div>} />
+          <Routes>
+            <Route path="users/active" element={<ActiveUsers />} />
+            <Route path="groups" element={<Groups />} />
+            <Route path="users/suspended" element={<SuspendedDeletedUsers />} />
+            <Route path="" element={<div className="text-center py-12">
+              <h1 className="text-3xl font-bold text-gray-800 mb-4">Welcome to the Admin Center</h1>
+              <p className="text-gray-600">Select an option from the sidebar to get started.</p>
+            </div>} />
+            <Route path="*" element={<div className="text-center py-12">
+              <h1 className="text-2xl font-bold text-gray-800 mb-4">Page Not Found</h1>
+              <p className="text-gray-600">The requested admin page could not be found.</p>
+            </div>} />
           </Routes>
         </main>
       </div>

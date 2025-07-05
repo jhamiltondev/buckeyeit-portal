@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaUser, FaSearch, FaPlus, FaDownload, FaChevronLeft, FaChevronRight, FaCheckCircle, FaTimesCircle, FaUserShield, FaUserLock, FaEnvelope, FaBuilding, FaKey, FaEdit, FaTrash, FaImpersonate, FaSync, FaLock, FaUnlock } from 'react-icons/fa';
+import { FaUser, FaUsers, FaSearch, FaFilter, FaEye, FaEdit, FaTrash, FaPlus, FaUserShield, FaUserCheck, FaUserSlash, FaUserTimes, FaBuilding, FaKey, FaUserSecret, FaSync, FaLock, FaUnlock, FaChevronLeft, FaChevronRight, FaDownload } from 'react-icons/fa';
 
 const roles = ['All Roles', 'Admin', 'Tech', 'Client'];
 // Tenants will be fetched from API
@@ -125,9 +125,9 @@ function UserDetailsModal({ user, open, onClose }) {
         </div>
         <div className="flex gap-2 mt-6 justify-end">
           <button className="bg-gray-100 text-gray-700 px-4 py-2 rounded font-semibold flex items-center gap-2"><FaEdit /> Edit Info</button>
-          <button className="bg-yellow-100 text-yellow-700 px-4 py-2 rounded font-semibold flex items-center gap-2"><FaUserLock /> Disable</button>
+          <button className="bg-yellow-100 text-yellow-700 px-4 py-2 rounded font-semibold flex items-center gap-2"><FaLock /> Disable</button>
           <button className="bg-blue-100 text-blue-700 px-4 py-2 rounded font-semibold flex items-center gap-2"><FaKey /> Reset Password</button>
-          <button className="bg-green-100 text-green-700 px-4 py-2 rounded font-semibold flex items-center gap-2"><FaImpersonate /> Impersonate</button>
+          <button className="bg-green-100 text-green-700 px-4 py-2 rounded font-semibold flex items-center gap-2"><FaUserSecret /> Impersonate</button>
           <button className="bg-red-100 text-red-700 px-4 py-2 rounded font-semibold flex items-center gap-2"><FaTrash /> Delete</button>
         </div>
       </div>

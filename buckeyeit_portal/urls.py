@@ -54,13 +54,14 @@ def root_redirect(request):
 
 urlpatterns = [
     path('accounts/', include('allauth.urls')),
+    # React admin panel - handles all /adminpanel/* routes
     path('adminpanel/', spa_index),
-    path('', root_redirect, name='root-redirect'),
-    path('', include(('portal.urls', 'portal'), namespace='portal')),
-    path('api/', include('portal.urls')),
+    # Django admin - only for superusers
     path('admin/', admin.site.urls),
-    # path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
-    # path('logout/', auth_views.LogoutView.as_view(next_page='/login/'), name='logout'),
-    # Catch-all: serve React index.html as a static file for all other routes
+    # API routes
+    path('api/', include('portal.urls')),
+    # Root redirect
+    path('', root_redirect, name='root-redirect'),
+    # Catch-all: serve React index.html for all other routes (including main portal)
     re_path(r'^(?!api/|admin/).*$', spa_index),
 ]
