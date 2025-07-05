@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaUser, FaUsers, FaBuilding, FaUserShield, FaUserTimes, FaBook, FaBullhorn, FaCogs, FaChartBar, FaChevronDown, FaChevronUp, FaHome, FaCog, FaList, FaArchive, FaEye, FaLock, FaKey, FaEnvelope, FaBell, FaPalette, FaShieldAlt, FaRobot, FaChartPie, FaCheckCircle, FaExclamationTriangle, FaClock, FaSearch, FaPlus, FaEdit, FaTrash, FaCalendarAlt, FaGroup, FaSitemap, FaStar, FaSync, FaFileAlt, FaCommentDots, FaUserEdit, FaUsersCog, FaUserCheck, FaUserSlash, FaUserSecret, FaUserFriends, FaUserTag, FaUserCircle, FaUserGraduate, FaUserNinja, FaUserMd, FaUserTie, FaUserAlt, FaUserAstronaut, FaUserInjured, FaUserLock, FaUserMinus, FaUserPlus, FaUserTimes as FaUserTimesAlt, FaTicketAlt } from 'react-icons/fa';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import ActiveUsers from './ActiveUsers';
 import Groups from './Groups';
 import SuspendedDeletedUsers from './SuspendedDeletedUsers';
@@ -16,10 +16,10 @@ const sidebarSections = [
     icon: <FaUser />,
     key: 'users',
     children: [
-      { label: 'Active Users', key: 'active-users', icon: <FaUserCheck /> },
-      { label: 'Groups', key: 'groups', icon: <FaUsersCog /> },
-      { label: 'Suspended/Deleted Users', key: 'suspended-users', icon: <FaUserSlash /> },
-      { label: 'Audit/Logs', key: 'user-logs', icon: <FaList /> },
+      { label: 'Active Users', key: 'active-users', icon: <FaUserCheck />, path: 'users/active' },
+      { label: 'Groups', key: 'groups', icon: <FaUsersCog />, path: 'groups' },
+      { label: 'Suspended/Deleted Users', key: 'suspended-users', icon: <FaUserSlash />, path: 'users/suspended' },
+      { label: 'Audit/Logs', key: 'user-logs', icon: <FaList />, path: 'users/logs' },
     ],
   },
   {
@@ -27,9 +27,9 @@ const sidebarSections = [
     icon: <FaBuilding />,
     key: 'tenants',
     children: [
-      { label: 'Active Tenants', key: 'active-tenants', icon: <FaCheckCircle /> },
-      { label: 'VIP Tenants', key: 'vip-tenants', icon: <FaStar /> },
-      { label: 'Suspended/Deleted Tenants', key: 'suspended-tenants', icon: <FaUserTimesAlt /> },
+      { label: 'Active Tenants', key: 'active-tenants', icon: <FaCheckCircle />, path: 'tenants/active' },
+      { label: 'VIP Tenants', key: 'vip-tenants', icon: <FaStar />, path: 'tenants/vip' },
+      { label: 'Suspended/Deleted Tenants', key: 'suspended-tenants', icon: <FaUserTimesAlt />, path: 'tenants/suspended' },
     ],
   },
   {
@@ -37,13 +37,13 @@ const sidebarSections = [
     icon: <FaBook />,
     key: 'kb',
     children: [
-      { label: 'All Articles', key: 'kb-articles', icon: <FaFileAlt /> },
-      { label: 'Categories', key: 'kb-categories', icon: <FaSitemap /> },
-      { label: 'Draft & Pending Review', key: 'kb-drafts', icon: <FaEdit /> },
-      { label: 'Archived Articles', key: 'kb-archived', icon: <FaArchive /> },
-      { label: 'Most Viewed / Popular', key: 'kb-popular', icon: <FaEye /> },
-      { label: 'Tenant Access Control', key: 'kb-access', icon: <FaUserShield /> },
-      { label: 'Article Feedback', key: 'kb-feedback', icon: <FaCommentDots /> },
+      { label: 'All Articles', key: 'kb-articles', icon: <FaFileAlt />, path: 'kb/articles' },
+      { label: 'Categories', key: 'kb-categories', icon: <FaSitemap />, path: 'kb/categories' },
+      { label: 'Draft & Pending Review', key: 'kb-drafts', icon: <FaEdit />, path: 'kb/drafts' },
+      { label: 'Archived Articles', key: 'kb-archived', icon: <FaArchive />, path: 'kb/archived' },
+      { label: 'Most Viewed / Popular', key: 'kb-popular', icon: <FaEye />, path: 'kb/popular' },
+      { label: 'Tenant Access Control', key: 'kb-access', icon: <FaUserShield />, path: 'kb/access' },
+      { label: 'Article Feedback', key: 'kb-feedback', icon: <FaCommentDots />, path: 'kb/feedback' },
     ],
   },
   {
@@ -51,12 +51,12 @@ const sidebarSections = [
     icon: <FaBullhorn />,
     key: 'announcements',
     children: [
-      { label: 'All Announcements', key: 'announcements-all', icon: <FaBullhorn /> },
-      { label: 'Drafts', key: 'announcements-drafts', icon: <FaEdit /> },
-      { label: 'Scheduled Announcements', key: 'announcements-scheduled', icon: <FaCalendarAlt /> },
-      { label: 'Expired / Archived', key: 'announcements-archived', icon: <FaArchive /> },
-      { label: 'Audience View Matrix', key: 'announcements-audience', icon: <FaUsers /> },
-      { label: 'Analytics & Read Tracking', key: 'announcements-analytics', icon: <FaChartPie /> },
+      { label: 'All Announcements', key: 'announcements-all', icon: <FaBullhorn />, path: 'announcements/all' },
+      { label: 'Drafts', key: 'announcements-drafts', icon: <FaEdit />, path: 'announcements/drafts' },
+      { label: 'Scheduled Announcements', key: 'announcements-scheduled', icon: <FaCalendarAlt />, path: 'announcements/scheduled' },
+      { label: 'Expired / Archived', key: 'announcements-archived', icon: <FaArchive />, path: 'announcements/archived' },
+      { label: 'Audience View Matrix', key: 'announcements-audience', icon: <FaUsers />, path: 'announcements/audience' },
+      { label: 'Analytics & Read Tracking', key: 'announcements-analytics', icon: <FaChartPie />, path: 'announcements/analytics' },
     ],
   },
   {
@@ -64,13 +64,13 @@ const sidebarSections = [
     icon: <FaCogs />,
     key: 'integrations',
     children: [
-      { label: 'All Integrations', key: 'integrations-all', icon: <FaCogs /> },
-      { label: 'Available Integrations', key: 'integrations-available', icon: <FaPlus /> },
-      { label: 'Connected Integrations', key: 'integrations-connected', icon: <FaCheckCircle /> },
-      { label: 'Add New Integration', key: 'integrations-add', icon: <FaPlus /> },
-      { label: 'Integration Log', key: 'integrations-log', icon: <FaList /> },
-      { label: 'Automation Settings', key: 'integrations-automation', icon: <FaRobot /> },
-      { label: 'Tenant-Level Integration Settings', key: 'integrations-tenant', icon: <FaBuilding /> },
+      { label: 'All Integrations', key: 'integrations-all', icon: <FaCogs />, path: 'integrations/all' },
+      { label: 'Available Integrations', key: 'integrations-available', icon: <FaPlus />, path: 'integrations/available' },
+      { label: 'Connected Integrations', key: 'integrations-connected', icon: <FaCheckCircle />, path: 'integrations/connected' },
+      { label: 'Add New Integration', key: 'integrations-add', icon: <FaPlus />, path: 'integrations/add' },
+      { label: 'Integration Log', key: 'integrations-log', icon: <FaList />, path: 'integrations/log' },
+      { label: 'Automation Settings', key: 'integrations-automation', icon: <FaRobot />, path: 'integrations/automation' },
+      { label: 'Tenant-Level Integration Settings', key: 'integrations-tenant', icon: <FaBuilding />, path: 'integrations/tenant' },
     ],
   },
   {
@@ -78,13 +78,13 @@ const sidebarSections = [
     icon: <FaList />,
     key: 'logs',
     children: [
-      { label: 'User Activity Logs', key: 'logs-user', icon: <FaUser /> },
-      { label: 'Admin Actions Logs', key: 'logs-admin', icon: <FaUserShield /> },
-      { label: 'Login & Access Logs', key: 'logs-login', icon: <FaLock /> },
-      { label: 'Audit Trails', key: 'logs-audit', icon: <FaKey /> },
-      { label: 'Integration Logs', key: 'logs-integration', icon: <FaCogs /> },
-      { label: 'Automation Logs', key: 'logs-automation', icon: <FaRobot /> },
-      { label: 'Email & Notification Logs', key: 'logs-email', icon: <FaEnvelope /> },
+      { label: 'User Activity Logs', key: 'logs-user', icon: <FaUser />, path: 'logs/user' },
+      { label: 'Admin Actions Logs', key: 'logs-admin', icon: <FaUserShield />, path: 'logs/admin' },
+      { label: 'Login & Access Logs', key: 'logs-login', icon: <FaLock />, path: 'logs/login' },
+      { label: 'Audit Trails', key: 'logs-audit', icon: <FaKey />, path: 'logs/audit' },
+      { label: 'Integration Logs', key: 'logs-integration', icon: <FaCogs />, path: 'logs/integration' },
+      { label: 'Automation Logs', key: 'logs-automation', icon: <FaRobot />, path: 'logs/automation' },
+      { label: 'Email & Notification Logs', key: 'logs-email', icon: <FaEnvelope />, path: 'logs/email' },
     ],
   },
   {
@@ -92,54 +92,99 @@ const sidebarSections = [
     icon: <FaCog />,
     key: 'settings',
     children: [
-      { label: 'General Settings', key: 'settings-general', icon: <FaCog /> },
-      { label: 'User & Authentication Settings', key: 'settings-auth', icon: <FaUserLock /> },
-      { label: 'Tenant Defaults', key: 'settings-tenant', icon: <FaBuilding /> },
-      { label: 'Email & Notification Settings', key: 'settings-email', icon: <FaEnvelope /> },
-      { label: 'Permissions & Roles', key: 'settings-permissions', icon: <FaUserTag /> },
-      { label: 'Automation Rules', key: 'settings-automation', icon: <FaRobot /> },
-      { label: 'Branding & Theme', key: 'settings-branding', icon: <FaPalette /> },
-      { label: 'Security Settings', key: 'settings-security', icon: <FaShieldAlt /> },
-      { label: 'API Access', key: 'settings-api', icon: <FaKey /> },
+      { label: 'General Settings', key: 'settings-general', icon: <FaCog />, path: 'settings/general' },
+      { label: 'User & Authentication Settings', key: 'settings-auth', icon: <FaUserLock />, path: 'settings/auth' },
+      { label: 'Tenant Defaults', key: 'settings-tenant', icon: <FaBuilding />, path: 'settings/tenant' },
+      { label: 'Email & Notification Settings', key: 'settings-email', icon: <FaEnvelope />, path: 'settings/email' },
+      { label: 'Permissions & Roles', key: 'settings-permissions', icon: <FaUserTag />, path: 'settings/permissions' },
+      { label: 'Automation Rules', key: 'settings-automation', icon: <FaRobot />, path: 'settings/automation' },
+      { label: 'Branding & Theme', key: 'settings-branding', icon: <FaPalette />, path: 'settings/branding' },
+      { label: 'Security Settings', key: 'settings-security', icon: <FaShieldAlt />, path: 'settings/security' },
+      { label: 'API Access', key: 'settings-api', icon: <FaKey />, path: 'settings/api' },
     ],
   },
 ];
 
 function Sidebar() {
+  const [expandedSections, setExpandedSections] = useState(new Set(['users'])); // Default to users expanded
+  const navigate = useNavigate();
+
+  const toggleSection = (sectionKey) => {
+    const newExpanded = new Set(expandedSections);
+    if (newExpanded.has(sectionKey)) {
+      newExpanded.delete(sectionKey);
+    } else {
+      newExpanded.add(sectionKey);
+    }
+    setExpandedSections(newExpanded);
+  };
+
+  const handleNavClick = (path) => {
+    navigate(path);
+  };
+
   return (
     <aside className="w-64 bg-gray-900 border-r h-[calc(100vh-4rem)] flex flex-col shadow-lg">
       <nav className="flex-1 overflow-y-auto py-4 pr-2">
         <ul className="space-y-2">
-          <li>
-            <NavLink 
-              to="users/active" 
-              className={({ isActive }) => 
-                `block px-4 py-2 rounded-lg transition-colors ${isActive ? 'bg-gray-800 text-blue-500 font-semibold' : 'text-gray-200 hover:bg-gray-800'}`
-              }
-            >
-              Active Users
-            </NavLink>
-          </li>
-          <li>
-            <NavLink 
-              to="groups" 
-              className={({ isActive }) => 
-                `block px-4 py-2 rounded-lg transition-colors ${isActive ? 'bg-gray-800 text-blue-500 font-semibold' : 'text-gray-200 hover:bg-gray-800'}`
-              }
-            >
-              Groups
-            </NavLink>
-          </li>
-          <li>
-            <NavLink 
-              to="users/suspended" 
-              className={({ isActive }) => 
-                `block px-4 py-2 rounded-lg transition-colors ${isActive ? 'bg-gray-800 text-blue-500 font-semibold' : 'text-gray-200 hover:bg-gray-800'}`
-              }
-            >
-              Suspended/Deleted Users
-            </NavLink>
-          </li>
+          {sidebarSections.map(section => (
+            <li key={section.key}>
+              {section.children ? (
+                <>
+                  <button
+                    onClick={() => toggleSection(section.key)}
+                    className="w-full flex items-center justify-between px-4 py-2 text-gray-200 hover:bg-gray-800 rounded-lg transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-lg">{section.icon}</span>
+                      <span>{section.label}</span>
+                    </div>
+                    {expandedSections.has(section.key) ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+                  </button>
+                  {expandedSections.has(section.key) && (
+                    <ul className="ml-8 mt-2 space-y-1">
+                      {section.children.map(child => (
+                        <li key={child.key}>
+                          <NavLink
+                            to={child.path}
+                            className={({ isActive }) =>
+                              `block px-3 py-2 rounded-lg transition-colors text-sm ${
+                                isActive 
+                                  ? 'bg-gray-800 text-blue-500 font-semibold' 
+                                  : 'text-gray-300 hover:bg-gray-800 hover:text-gray-100'
+                              }`
+                            }
+                            onClick={() => handleNavClick(child.path)}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm">{child.icon}</span>
+                              <span>{child.label}</span>
+                            </div>
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </>
+              ) : (
+                <NavLink
+                  to={section.path || ''}
+                  className={({ isActive }) =>
+                    `block px-4 py-2 rounded-lg transition-colors ${
+                      isActive 
+                        ? 'bg-gray-800 text-blue-500 font-semibold' 
+                        : 'text-gray-200 hover:bg-gray-800'
+                    }`
+                  }
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">{section.icon}</span>
+                    <span>{section.label}</span>
+                  </div>
+                </NavLink>
+              )}
+            </li>
+          ))}
         </ul>
       </nav>
       <div className="p-4 text-xs text-gray-500">© {new Date().getFullYear()} Buckeye IT</div>

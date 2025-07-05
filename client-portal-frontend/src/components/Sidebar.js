@@ -76,15 +76,6 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
               {!collapsed && item.label}
             </NavLink>
           ))}
-          <li>
-            <NavLink to="/adminpanel/users/active">Active Users</NavLink>
-          </li>
-          <li>
-            <NavLink to="/adminpanel/users/suspended">Suspended/Deleted Users</NavLink>
-          </li>
-          <li>
-            <NavLink to="/adminpanel/groups">Groups</NavLink>
-          </li>
         </nav>
       </aside>
     </>

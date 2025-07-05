@@ -92,7 +92,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login title="Buckeye IT Client Portal" />} />
             <Route path="/adminpanel/login" element={<Login title="Buckeye IT Admin Center" />} />
-            <Route path="/adminpanel/*" element={
+            <Route path="/adminpanel" element={
               <ProtectedRoute>
                 <AdminDashboard />
               </ProtectedRoute>
