@@ -107,10 +107,7 @@ const sidebarSections = [
 
 function Sidebar() {
   return (
-    <aside className="w-64 bg-gray-900 border-r h-screen flex flex-col shadow-lg">
-      <div className="p-6 font-bold text-xl text-white flex items-center gap-2 bg-gray-900 border-b border-gray-800 shadow-none">
-        <FaChartBar className="text-2xl text-blue-400" /> Buckeye IT Admin
-      </div>
+    <aside className="w-64 bg-gray-900 border-r h-[calc(100vh-4rem)] flex flex-col shadow-lg">
       <nav className="flex-1 overflow-y-auto py-4 pr-2">
         <ul className="space-y-2">
           <li>
@@ -152,9 +149,68 @@ function Sidebar() {
 
 function Topbar({ onSignOut }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const [results, setResults] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = window.location.assign ? (url) => window.location.assign(url) : () => {};
+
+  useEffect(() => {
+    if (search.length < 2) {
+      setResults([]);
+      setShowDropdown(false);
+      return;
+    }
+    setLoading(true);
+    Promise.all([
+      fetch(`/api/users/?search=${encodeURIComponent(search)}`, { credentials: 'include' }).then(r => r.ok ? r.json() : []),
+      fetch(`/api/group/?search=${encodeURIComponent(search)}`, { credentials: 'include' }).then(r => r.ok ? r.json() : [])
+    ]).then(([users, groups]) => {
+      setResults([
+        ...users.map(u => ({ type: 'user', id: u.id, name: u.first_name + ' ' + u.last_name, email: u.email })),
+        ...groups.results ? groups.results.map(g => ({ type: 'group', id: g.id, name: g.name })) : []
+      ]);
+      setShowDropdown(true);
+      setLoading(false);
+    });
+  }, [search]);
+
   return (
-    <header className="h-16 bg-gray-100 border-b flex items-center justify-between px-8 shadow-sm relative">
-      <div className="font-bold text-lg text-gray-800">Admin Center</div>
+    <header className="w-full h-16 bg-gray-100 border-b flex items-center justify-between px-8 shadow-sm fixed top-0 left-0 z-40" style={{ minHeight: '4rem' }}>
+      <div className="flex items-center gap-4 w-full">
+        <div className="relative w-full max-w-xl">
+          <input
+            type="text"
+            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="Search users, groups..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            onFocus={() => search.length > 1 && setShowDropdown(true)}
+            onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+          />
+          {showDropdown && results.length > 0 && (
+            <div className="absolute left-0 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-72 overflow-y-auto">
+              {results.map((r, i) => (
+                <div
+                  key={r.type + '-' + r.id}
+                  className="px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2"
+                  onClick={() => {
+                    setShowDropdown(false);
+                    setSearch('');
+                    if (r.type === 'user') navigate(`/adminpanel/users/active?id=${r.id}`);
+                    if (r.type === 'group') navigate(`/adminpanel/groups?id=${r.id}`);
+                  }}
+                >
+                  <span className="text-gray-500 text-sm">{r.type === 'user' ? '👤' : '👥'}</span>
+                  <span className="font-medium">{r.name}</span>
+                  {r.email && <span className="ml-2 text-xs text-gray-400">{r.email}</span>}
+                </div>
+              ))}
+              {loading && <div className="px-4 py-2 text-gray-400">Searching...</div>}
+            </div>
+          )}
+        </div>
+      </div>
       <div className="flex items-center gap-4 relative">
         <button className="rounded-full p-2 bg-gray-200 hover:bg-gray-300 text-gray-700" aria-label="Toggle dark mode" title="Toggle dark mode">
           <FaPalette />
@@ -187,14 +243,16 @@ function QuickActions() {
 
 const AdminDashboard = () => {
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Topbar onSignOut={() => { window.location.href = '/adminpanel/login/'; }} />
-        <main className="flex-1 p-8 overflow-y-auto">
-          <QuickActions />
-          <Outlet />
-        </main>
+    <div className="bg-gray-50 min-h-screen">
+      <Topbar onSignOut={() => { window.location.href = '/adminpanel/login/'; }} />
+      <div className="flex pt-16">
+        <Sidebar />
+        <div className="flex-1 flex flex-col">
+          <main className="flex-1 p-8 overflow-y-auto">
+            <QuickActions />
+            <Outlet />
+          </main>
+        </div>
       </div>
     </div>
   );
