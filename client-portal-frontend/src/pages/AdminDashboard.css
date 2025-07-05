@@ -32,6 +32,8 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   flex: 2;
   display: flex;
   justify-content: center;
+  align-items: center;
+  position: relative;
 }
 .admin-search-input {
   width: 100%;
@@ -177,4 +179,181 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
 .admin-btn-danger:hover {
   background: #fbeaea;
   border: 1.5px solid #eeb4b4;
-} 
+}
+
+.admin-search-input.with-icon {
+  padding-left: 38px;
+}
+.admin-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #b0b8c1;
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+.admin-dashboard-content {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.admin-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+  margin-bottom: 24px;
+}
+.admin-dashboard-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  padding: 24px 24px 18px 24px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 8px;
+}
+.admin-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.admin-card-icon {
+  font-size: 1.5rem;
+  color: #6b7280;
+  stroke-width: 1.5;
+}
+.admin-card-title {
+  font-size: 1.08rem;
+  font-weight: 500;
+  color: #222;
+}
+.admin-card-metric {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 2px;
+}
+.admin-card-subtext {
+  font-size: 1rem;
+  color: #6b7280;
+}
+.admin-dashboard-card-activity {
+  min-height: 140px;
+}
+.admin-activity-list {
+  margin: 0;
+  padding: 0 0 0 2px;
+  list-style: none;
+  font-size: 0.98rem;
+  color: #444;
+}
+.admin-activity-item {
+  margin-bottom: 4px;
+}
+.admin-dashboard-card-integrations {
+  min-height: 140px;
+}
+.admin-integrations-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.admin-integration-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+.admin-integration-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 6px;
+  margin-right: 2px;
+}
+.admin-integration-dot.connected {
+  background: #21a366;
+}
+.admin-integration-dot.not_configured {
+  background: #d1d5db;
+}
+.admin-integration-status {
+  font-size: 0.97rem;
+  color: #6b7280;
+  margin-left: 4px;
+}
+.admin-dashboard-card-announcement {
+  min-height: 140px;
+}
+.admin-announcement-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #222;
+  margin-bottom: 2px;
+}
+.admin-announcement-time {
+  font-size: 0.97rem;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+.admin-announcement-btn {
+  margin-top: 4px;
+}
+.admin-btn-primary {
+  background: #0078D4;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.admin-btn-primary:hover {
+  background: #005fa3;
+}
+.admin-roadmap-section {
+  background: #f6f8fa;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-top: 12px;
+}
+.admin-roadmap-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 8px;
+}
+.admin-roadmap-list {
+  margin: 0;
+  padding-left: 18px;
+  color: #444;
+  font-size: 1rem;
+}
+
+/* Sidebar minimalism */
+.sidebar-title, .sidebar-header, .sidebar-toggle, .sidebar-title span {
+  font-family: 'Segoe UI', 'Inter', 'Roboto', Arial, sans-serif !important;
+}
+.sidebar-title span {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222;
+}
+
+/* Fade transitions handled by Framer Motion in JS */ 

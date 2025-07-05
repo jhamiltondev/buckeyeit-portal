@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { FaUser, FaUsers, FaBuilding, FaUserShield, FaUserTimes, FaBook, FaBullhorn, FaCogs, FaChartBar, FaChevronDown, FaChevronUp, FaHome, FaCog, FaList, FaArchive, FaEye, FaLock, FaKey, FaEnvelope, FaBell, FaPalette, FaShieldAlt, FaRobot, FaChartPie, FaCheckCircle, FaExclamationTriangle, FaClock, FaSearch, FaPlus, FaEdit, FaTrash, FaCalendarAlt, FaGroup, FaSitemap, FaStar, FaSync, FaFileAlt, FaCommentDots, FaUserEdit, FaUsersCog, FaUserCheck, FaUserSlash, FaUserSecret, FaUserFriends, FaUserTag, FaUserCircle, FaUserGraduate, FaUserNinja, FaUserMd, FaUserTie, FaUserAlt, FaUserAstronaut, FaUserInjured, FaUserLock, FaUserMinus, FaUserPlus, FaUserTimes as FaUserTimesAlt, FaTicketAlt } from 'react-icons/fa';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import ActiveUsers from './ActiveUsers';
 import Groups from './Groups';
 import SuspendedDeletedUsers from './SuspendedDeletedUsers';
 import './AdminDashboard.css';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const sidebarSections = [
   {
@@ -228,9 +229,10 @@ function Topbar({ onSignOut }) {
       </div>
       <div className="admin-topbar-center">
         <div className="relative w-full max-w-xl mx-auto">
+          <FaSearch className="admin-search-icon" />
           <input
             type="text"
-            className="admin-search-input"
+            className="admin-search-input with-icon"
             placeholder="Search users, groups..."
             value={search}
             onChange={e => setSearch(e.target.value)}
@@ -287,16 +289,131 @@ function QuickActions() {
   );
 }
 
-const AdminDashboard = () => {
+const dashboardCards = [
+  {
+    title: 'Total Users',
+    metric: '128',
+    subtext: '+5 this week',
+    icon: <FaUser className="admin-card-icon" />,
+  },
+  {
+    title: 'Active Tenants',
+    metric: '12',
+    subtext: 'All healthy',
+    icon: <FaBuilding className="admin-card-icon" />,
+  },
+  {
+    title: 'Open Tickets',
+    metric: '7',
+    subtext: '2 scheduled',
+    icon: <FaTicketAlt className="admin-card-icon" />,
+  },
+  {
+    title: 'Automation Failures',
+    metric: '0',
+    subtext: 'All systems operational',
+    icon: <FaExclamationTriangle className="admin-card-icon" style={{ color: '#c00' }} />,
+  },
+];
+
+const integrations = [
+  { name: 'ConnectWise', status: 'connected', icon: <FaCogs /> },
+  { name: 'Pax8', status: 'not_configured', icon: <FaCogs /> },
+  { name: 'OpenAI', status: 'not_configured', icon: <FaCogs /> },
+];
+
+const adminActivity = [
+  { user: 'admin', action: 'logged in', time: 'Jul/03/2025 04:06 PM' },
+  { user: 'testuser', action: 'logged in', time: 'Jul/01/2025 12:43 PM' },
+];
+
+const lastAnnouncement = { title: 'Scheduled Maintenance July 10', time: 'Jul/02/2025 09:00 AM' };
+
+function DashboardContent() {
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="admin-dashboard-content">
+      <div className="admin-dashboard-grid">
+        {dashboardCards.map(card => (
+          <div className="admin-dashboard-card" key={card.title}>
+            <div className="admin-card-header">
+              {card.icon}
+              <span className="admin-card-title">{card.title}</span>
+            </div>
+            <div className="admin-card-metric">{card.metric}</div>
+            <div className="admin-card-subtext">{card.subtext}</div>
+          </div>
+        ))}
+        <div className="admin-dashboard-card admin-dashboard-card-activity">
+          <div className="admin-card-header">
+            <FaCheckCircle className="admin-card-icon" />
+            <span className="admin-card-title">Recent Admin Activity</span>
+          </div>
+          <ul className="admin-activity-list">
+            {adminActivity.map((a, i) => (
+              <li key={i} className="admin-activity-item">{a.user} {a.action} at {a.time}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="admin-dashboard-card admin-dashboard-card-integrations">
+          <div className="admin-card-header">
+            <FaCogs className="admin-card-icon" />
+            <span className="admin-card-title">System Integrations</span>
+          </div>
+          <ul className="admin-integrations-list">
+            {integrations.map((i, idx) => (
+              <li key={i.name} className="admin-integration-item">
+                {i.icon}
+                <span>{i.name}</span>
+                <span className={`admin-integration-dot ${i.status}`}></span>
+                <span className="admin-integration-status">{i.status === 'connected' ? 'Connected' : 'Not Configured'}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="admin-dashboard-card admin-dashboard-card-announcement">
+          <div className="admin-card-header">
+            <FaBullhorn className="admin-card-icon" />
+            <span className="admin-card-title">Announcements</span>
+          </div>
+          <div className="admin-announcement-title">{lastAnnouncement.title}</div>
+          <div className="admin-announcement-time">{lastAnnouncement.time}</div>
+          <button className="admin-btn-primary admin-announcement-btn">View All</button>
+        </div>
+      </div>
+      <QuickActions />
+      <div className="admin-roadmap-section">
+        <div className="admin-roadmap-title">Coming Soon / Roadmap</div>
+        <ul className="admin-roadmap-list">
+          <li>Advanced reporting & analytics</li>
+          <li>Customizable dashboard widgets</li>
+          <li>Role-based access controls</li>
+          <li>Integration with more platforms</li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+const AdminDashboard = () => {
+  const location = useLocation();
+  return (
+    <div className="bg-gray-50 min-h-screen admin-dashboard-root">
       <Topbar onSignOut={() => { window.location.href = '/adminpanel/login/'; }} />
       <div className="flex pt-16">
         <Sidebar />
         <div className="flex-1 flex flex-col">
           <main className="flex-1 p-8 overflow-y-auto">
-            <QuickActions />
-            <Outlet />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+              >
+                {location.pathname === '/adminpanel' || location.pathname === '/adminpanel/' ? <DashboardContent /> : <Outlet />}
+              </motion.div>
+            </AnimatePresence>
           </main>
         </div>
       </div>
