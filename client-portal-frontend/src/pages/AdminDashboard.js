@@ -224,10 +224,10 @@ function Topbar({ onSignOut }) {
 
   return (
     <header className="admin-topbar">
-      <div className="admin-topbar-left">
+      <div className="admin-topbar-col admin-topbar-left">
         <span className="admin-title">Buckeye IT Admin Center</span>
       </div>
-      <div className="admin-topbar-center">
+      <div className="admin-topbar-col admin-topbar-center">
         <div className="relative w-full max-w-xl mx-auto">
           <FaSearch className="admin-search-icon" />
           <input
@@ -262,7 +262,7 @@ function Topbar({ onSignOut }) {
           )}
         </div>
       </div>
-      <div className="admin-topbar-right">
+      <div className="admin-topbar-col admin-topbar-right">
         <span className="admin-user-email">admin@buckeyeit.com</span>
         <button onClick={() => setDropdownOpen(v => !v)} className="admin-profile-btn">
           <img src="/static/portal/react/buckeyeit-logo-white.png" alt="Buckeye IT Logo" className="admin-profile-img" />
@@ -295,24 +295,28 @@ const dashboardCards = [
     metric: '128',
     subtext: '+5 this week',
     icon: <FaUser className="admin-card-icon" />,
+    area: 'users',
   },
   {
     title: 'Active Tenants',
     metric: '12',
     subtext: 'All healthy',
     icon: <FaBuilding className="admin-card-icon" />,
+    area: 'tenants',
   },
   {
     title: 'Open Tickets',
     metric: '7',
     subtext: '2 scheduled',
     icon: <FaTicketAlt className="admin-card-icon" />,
+    area: 'tickets',
   },
   {
     title: 'Automation Failures',
     metric: '0',
     subtext: 'All systems operational',
     icon: <FaExclamationTriangle className="admin-card-icon" style={{ color: '#c00' }} />,
+    area: 'failures',
   },
 ];
 
@@ -329,54 +333,55 @@ const adminActivity = [
 
 const lastAnnouncement = { title: 'Scheduled Maintenance July 10', time: 'Jul/02/2025 09:00 AM' };
 
+function useAdminTabTitle() {
+  useEffect(() => {
+    document.title = 'Buckeye IT Admin Center';
+  }, []);
+}
+
 function DashboardContent() {
   return (
     <div className="admin-dashboard-content">
-      <div className="admin-dashboard-grid">
-        {dashboardCards.map(card => (
-          <div className="admin-dashboard-card" key={card.title}>
-            <div className="admin-card-header">
-              {card.icon}
-              <span className="admin-card-title">{card.title}</span>
-            </div>
-            <div className="admin-card-metric">{card.metric}</div>
-            <div className="admin-card-subtext">{card.subtext}</div>
-          </div>
-        ))}
-        <div className="admin-dashboard-card admin-dashboard-card-activity">
-          <div className="admin-card-header">
-            <FaCheckCircle className="admin-card-icon" />
-            <span className="admin-card-title">Recent Admin Activity</span>
-          </div>
+      <div className="admin-dashboard-masonry">
+        <div className="admin-dashboard-card card-users">
+          <div className="admin-card-header">{dashboardCards[0].icon}<span className="admin-card-title">{dashboardCards[0].title}</span></div>
+          <div className="admin-card-metric">{dashboardCards[0].metric}</div>
+          <div className="admin-card-subtext">{dashboardCards[0].subtext}</div>
+        </div>
+        <div className="admin-dashboard-card card-tenants">
+          <div className="admin-card-header">{dashboardCards[1].icon}<span className="admin-card-title">{dashboardCards[1].title}</span></div>
+          <div className="admin-card-metric">{dashboardCards[1].metric}</div>
+          <div className="admin-card-subtext">{dashboardCards[1].subtext}</div>
+        </div>
+        <div className="admin-dashboard-card card-tickets">
+          <div className="admin-card-header">{dashboardCards[2].icon}<span className="admin-card-title">{dashboardCards[2].title}</span></div>
+          <div className="admin-card-metric">{dashboardCards[2].metric}</div>
+          <div className="admin-card-subtext">{dashboardCards[2].subtext}</div>
+        </div>
+        <div className="admin-dashboard-card card-failures">
+          <div className="admin-card-header">{dashboardCards[3].icon}<span className="admin-card-title">{dashboardCards[3].title}</span></div>
+          <div className="admin-card-metric">{dashboardCards[3].metric}</div>
+          <div className="admin-card-subtext">{dashboardCards[3].subtext}</div>
+        </div>
+        <div className="admin-dashboard-card card-activity">
+          <div className="admin-card-header"><FaCheckCircle className="admin-card-icon" /><span className="admin-card-title">Recent Admin Activity</span></div>
           <ul className="admin-activity-list">
-            {adminActivity.map((a, i) => (
-              <li key={i} className="admin-activity-item">{a.user} {a.action} at {a.time}</li>
-            ))}
+            <li className="admin-activity-item">admin logged in at Jul/03/2025 04:06 PM</li>
+            <li className="admin-activity-item">testuser logged in at Jul/01/2025 12:43 PM</li>
           </ul>
         </div>
-        <div className="admin-dashboard-card admin-dashboard-card-integrations">
-          <div className="admin-card-header">
-            <FaCogs className="admin-card-icon" />
-            <span className="admin-card-title">System Integrations</span>
-          </div>
+        <div className="admin-dashboard-card card-integrations">
+          <div className="admin-card-header"><FaCogs className="admin-card-icon" /><span className="admin-card-title">System Integrations</span></div>
           <ul className="admin-integrations-list">
-            {integrations.map((i, idx) => (
-              <li key={i.name} className="admin-integration-item">
-                {i.icon}
-                <span>{i.name}</span>
-                <span className={`admin-integration-dot ${i.status}`}></span>
-                <span className="admin-integration-status">{i.status === 'connected' ? 'Connected' : 'Not Configured'}</span>
-              </li>
-            ))}
+            <li className="admin-integration-item"><FaCogs /> ConnectWise <span className="admin-integration-dot connected"></span><span className="admin-integration-status">Connected</span></li>
+            <li className="admin-integration-item"><FaCogs /> Pax8 <span className="admin-integration-dot not_configured"></span><span className="admin-integration-status">Not Configured</span></li>
+            <li className="admin-integration-item"><FaCogs /> OpenAI <span className="admin-integration-dot not_configured"></span><span className="admin-integration-status">Not Configured</span></li>
           </ul>
         </div>
-        <div className="admin-dashboard-card admin-dashboard-card-announcement">
-          <div className="admin-card-header">
-            <FaBullhorn className="admin-card-icon" />
-            <span className="admin-card-title">Announcements</span>
-          </div>
-          <div className="admin-announcement-title">{lastAnnouncement.title}</div>
-          <div className="admin-announcement-time">{lastAnnouncement.time}</div>
+        <div className="admin-dashboard-card card-announcement">
+          <div className="admin-card-header"><FaBullhorn className="admin-card-icon" /><span className="admin-card-title">Announcements</span></div>
+          <div className="admin-announcement-title">Scheduled Maintenance July 10</div>
+          <div className="admin-announcement-time">Jul/02/2025 09:00 AM</div>
           <button className="admin-btn-primary admin-announcement-btn">View All</button>
         </div>
       </div>
@@ -395,6 +400,7 @@ function DashboardContent() {
 }
 
 const AdminDashboard = () => {
+  useAdminTabTitle();
   const location = useLocation();
   return (
     <div className="bg-gray-50 min-h-screen admin-dashboard-root">

@@ -9,7 +9,7 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   height: 64px;
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  box-shadow: 0 1.5px 6px rgba(0,0,0,0.04);
   position: fixed;
   top: 0;
   left: 0;
@@ -17,23 +17,27 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   z-index: 40;
   padding: 0 32px;
 }
-.admin-topbar-left {
-  flex: 1;
+.admin-topbar-col {
+  flex: 1 1 0;
   display: flex;
   align-items: center;
+  min-width: 0;
+}
+.admin-topbar-center {
+  justify-content: center;
+}
+.admin-topbar-left {
+  justify-content: flex-start;
+}
+.admin-topbar-right {
+  justify-content: flex-end;
+  gap: 18px;
 }
 .admin-title {
   font-size: 1.35rem;
   font-weight: 600;
   color: #222;
   letter-spacing: 0.01em;
-}
-.admin-topbar-center {
-  flex: 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
 }
 .admin-search-input {
   width: 100%;
@@ -75,13 +79,6 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
 }
 .admin-search-result:hover {
   background: #f3f6fa;
-}
-.admin-topbar-right {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 18px;
 }
 .admin-user-email {
   color: #444;
@@ -194,6 +191,72 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   pointer-events: none;
 }
 
+.admin-dashboard-masonry {
+  display: grid;
+  grid-template-areas:
+    'users tenants tickets failures'
+    'activity activity integrations announcement';
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr 1fr;
+  gap: 28px;
+  margin-bottom: 24px;
+}
+.card-users { grid-area: users; }
+.card-tenants { grid-area: tenants; }
+.card-tickets { grid-area: tickets; }
+.card-failures { grid-area: failures; }
+.card-activity { grid-area: activity; min-height: 140px; }
+.card-integrations { grid-area: integrations; min-height: 140px; }
+.card-announcement { grid-area: announcement; min-height: 140px; }
+
+.admin-dashboard-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 24px 24px 18px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+@media (max-width: 1200px) {
+  .admin-dashboard-masonry {
+    grid-template-areas:
+      'users tenants tickets'
+      'failures activity integrations'
+      'announcement announcement announcement';
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto auto;
+  }
+}
+@media (max-width: 900px) {
+  .admin-dashboard-masonry {
+    grid-template-areas:
+      'users tenants'
+      'tickets failures'
+      'activity integrations'
+      'announcement announcement';
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto auto auto auto;
+  }
+}
+@media (max-width: 600px) {
+  .admin-dashboard-masonry {
+    grid-template-areas:
+      'users'
+      'tenants'
+      'tickets'
+      'failures'
+      'activity'
+      'integrations'
+      'announcement';
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+}
 .admin-dashboard-content {
   width: 100%;
   max-width: 1400px;
@@ -201,25 +264,6 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   display: flex;
   flex-direction: column;
   gap: 32px;
-}
-.admin-dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 28px;
-  margin-bottom: 24px;
-}
-.admin-dashboard-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  padding: 24px 24px 18px 24px;
-  min-height: 140px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 8px;
 }
 .admin-card-header {
   display: flex;
@@ -247,9 +291,6 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   font-size: 1rem;
   color: #6b7280;
 }
-.admin-dashboard-card-activity {
-  min-height: 140px;
-}
 .admin-activity-list {
   margin: 0;
   padding: 0 0 0 2px;
@@ -259,9 +300,6 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
 }
 .admin-activity-item {
   margin-bottom: 4px;
-}
-.admin-dashboard-card-integrations {
-  min-height: 140px;
 }
 .admin-integrations-list {
   margin: 0;
@@ -293,9 +331,6 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   font-size: 0.97rem;
   color: #6b7280;
   margin-left: 4px;
-}
-.admin-dashboard-card-announcement {
-  min-height: 140px;
 }
 .admin-announcement-title {
   font-size: 1.1rem;
