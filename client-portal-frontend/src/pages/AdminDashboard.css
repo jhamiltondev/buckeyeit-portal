@@ -1,0 +1,180 @@
+body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, .admin-btn-neutral, .admin-btn-danger, .admin-search-input, .admin-search-result, .admin-profile-btn, .admin-profile-img, .admin-profile-dropdown, .admin-user-email {
+  font-family: 'Segoe UI', 'Inter', 'Roboto', Arial, sans-serif !important;
+}
+
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 40;
+  padding: 0 32px;
+}
+.admin-topbar-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+.admin-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #222;
+  letter-spacing: 0.01em;
+}
+.admin-topbar-center {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+}
+.admin-search-input {
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  background: #f9f9f9;
+  transition: border 0.2s;
+  outline: none;
+}
+.admin-search-input:focus {
+  border: 1.5px solid #0078d4;
+  background: #fff;
+}
+.admin-search-dropdown {
+  position: absolute;
+  left: 0;
+  top: 110%;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  z-index: 50;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.admin-search-result {
+  padding: 10px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  color: #222;
+  transition: background 0.15s;
+}
+.admin-search-result:hover {
+  background: #f3f6fa;
+}
+.admin-topbar-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+}
+.admin-user-email {
+  color: #444;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.admin-profile-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 8px;
+  cursor: pointer;
+}
+.admin-profile-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  border: 2px solid #e5e7eb;
+}
+.admin-profile-dropdown {
+  position: absolute;
+  right: 0;
+  top: 48px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 8px 0;
+  min-width: 140px;
+  z-index: 100;
+}
+.admin-profile-dropdown-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 10px 18px;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.admin-profile-dropdown-btn:hover {
+  background: #f3f6fa;
+}
+
+.admin-quick-actions {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px 18px 18px 18px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  margin-left: auto;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+.admin-quick-actions-title {
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 8px;
+  font-size: 1.08rem;
+}
+.admin-btn-neutral {
+  background: #f6f6f6;
+  color: #222;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 8px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border 0.15s;
+}
+.admin-btn-neutral:hover {
+  background: #f3f6fa;
+  border: 1.5px solid #bfc7d1;
+}
+.admin-btn-danger {
+  background: #fff;
+  color: #c00;
+  border: 1px solid #f3d6d6;
+  border-radius: 6px;
+  padding: 8px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border 0.15s;
+}
+.admin-btn-danger:hover {
+  background: #fbeaea;
+  border: 1.5px solid #eeb4b4;
+} 

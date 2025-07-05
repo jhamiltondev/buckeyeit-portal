@@ -4,6 +4,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import ActiveUsers from './ActiveUsers';
 import Groups from './Groups';
 import SuspendedDeletedUsers from './SuspendedDeletedUsers';
+import './AdminDashboard.css';
 
 const sidebarSections = [
   {
@@ -221,12 +222,15 @@ function Topbar({ onSignOut }) {
   }, [search]);
 
   return (
-    <header className="w-full h-16 bg-gray-100 border-b flex items-center justify-between px-8 shadow-sm fixed top-0 left-0 z-40" style={{ minHeight: '4rem' }}>
-      <div className="flex items-center gap-4 w-full">
-        <div className="relative w-full max-w-xl">
+    <header className="admin-topbar">
+      <div className="admin-topbar-left">
+        <span className="admin-title">Buckeye IT Admin Center</span>
+      </div>
+      <div className="admin-topbar-center">
+        <div className="relative w-full max-w-xl mx-auto">
           <input
             type="text"
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="admin-search-input"
             placeholder="Search users, groups..."
             value={search}
             onChange={e => setSearch(e.target.value)}
@@ -234,11 +238,11 @@ function Topbar({ onSignOut }) {
             onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
           />
           {showDropdown && results.length > 0 && (
-            <div className="absolute left-0 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-72 overflow-y-auto">
+            <div className="admin-search-dropdown">
               {results.map((r, i) => (
                 <div
                   key={r.type + '-' + r.id}
-                  className="px-4 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2"
+                  className="admin-search-result"
                   onClick={() => {
                     setShowDropdown(false);
                     setSearch('');
@@ -256,17 +260,14 @@ function Topbar({ onSignOut }) {
           )}
         </div>
       </div>
-      <div className="flex items-center gap-4 relative">
-        <button className="rounded-full p-2 bg-gray-200 hover:bg-gray-300 text-gray-700" aria-label="Toggle dark mode" title="Toggle dark mode">
-          <FaPalette />
-        </button>
-        <span className="text-gray-600">admin@buckeyeit.com</span>
-        <button onClick={() => setDropdownOpen(v => !v)} className="focus:outline-none">
-          <img src="/static/portal/react/buckeyeit-logo-white.png" alt="Buckeye IT Logo" className="w-8 h-8 rounded-full shadow border-2 border-gray-200" />
+      <div className="admin-topbar-right">
+        <span className="admin-user-email">admin@buckeyeit.com</span>
+        <button onClick={() => setDropdownOpen(v => !v)} className="admin-profile-btn">
+          <img src="/static/portal/react/buckeyeit-logo-white.png" alt="Buckeye IT Logo" className="admin-profile-img" />
         </button>
         {dropdownOpen && (
-          <div className="absolute right-0 top-12 bg-white rounded shadow-lg py-2 w-40 z-50 animate-fadeInSlow">
-            <button className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700" onClick={onSignOut}>Sign out</button>
+          <div className="admin-profile-dropdown">
+            <button className="admin-profile-dropdown-btn" onClick={onSignOut}>Sign out</button>
           </div>
         )}
       </div>
@@ -276,12 +277,12 @@ function Topbar({ onSignOut }) {
 
 function QuickActions() {
   return (
-    <div className="bg-gray-100 border border-gray-200 rounded-xl p-4 mb-6 flex flex-col gap-2 w-full max-w-xs ml-auto">
-      <div className="font-semibold text-gray-700 mb-2">Quick Actions</div>
-      <button className="bg-blue-600 text-white rounded px-3 py-2 font-semibold border border-blue-700 hover:bg-blue-700 transition">Add User</button>
-      <button className="bg-gray-50 text-gray-800 rounded px-3 py-2 font-semibold border border-gray-300 hover:bg-gray-200 transition">Sync Data</button>
-      <button className="bg-gray-50 text-gray-800 rounded px-3 py-2 font-semibold border border-gray-300 hover:bg-gray-200 transition">Post Announcement</button>
-      <button className="bg-white text-red-600 rounded px-3 py-2 font-semibold border border-red-300 hover:bg-red-50 transition">Open Settings</button>
+    <div className="admin-quick-actions">
+      <div className="admin-quick-actions-title">Quick Actions</div>
+      <button className="admin-btn-neutral">Add User</button>
+      <button className="admin-btn-neutral">Sync Data</button>
+      <button className="admin-btn-neutral">Post Announcement</button>
+      <button className="admin-btn-danger">Open Settings</button>
     </div>
   );
 }
