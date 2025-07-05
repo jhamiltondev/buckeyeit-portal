@@ -25,8 +25,17 @@ import SuspendedDeletedUsers from './pages/SuspendedDeletedUsers';
 // ProtectedRoute component
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useUser();
+  const location = useLocation();
+  
   if (loading) return null; // or a loading spinner
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  
+  if (!isAuthenticated) {
+    // Redirect to appropriate login page based on current URL
+    const loginUrl = location.pathname.startsWith('/adminpanel') ? '/adminpanel/login' : '/login';
+    return <Navigate to={loginUrl} />;
+  }
+  
+  return children;
 }
 
 function ProtectedLayout() {

@@ -93,7 +93,10 @@ export function UserProvider({ children }) {
         setUser(null);
         localStorage.clear();
         sessionStorage.clear();
-        window.location.href = '/login';
+        // Redirect to appropriate login page based on current URL
+        const currentPath = window.location.pathname;
+        const loginUrl = currentPath.startsWith('/adminpanel') ? '/adminpanel/login/' : '/login';
+        window.location.href = loginUrl;
       } else {
         alert('Logout failed: still authenticated. Please clear cookies and try again.');
       }
@@ -102,7 +105,10 @@ export function UserProvider({ children }) {
       setUser(null);
       localStorage.clear();
       sessionStorage.clear();
-      window.location.href = '/login';
+      // Redirect to appropriate login page based on current URL
+      const currentPath = window.location.pathname;
+      const loginUrl = currentPath.startsWith('/adminpanel') ? '/adminpanel/login/' : '/login';
+      window.location.href = loginUrl;
     }
   };
 
