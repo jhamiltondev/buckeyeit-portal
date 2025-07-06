@@ -206,15 +206,12 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
 }
 
 .admin-dashboard-masonry {
+  height: 100%;
   display: grid;
-  grid-template-areas:
-    'users tenants tickets failures'
-    'activity integrations announcement quickactions'
-    'roadmap roadmap roadmap roadmap';
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 1fr 1fr auto;
-  gap: 28px;
-  margin-bottom: 24px;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  padding: 24px 0 0 0;
+  margin: 0;
 }
 .card-users { grid-area: users; }
 .card-tenants { grid-area: tenants; }
@@ -617,6 +614,7 @@ html, body, #root {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  padding: 0;
 }
 .admin-dashboard-masonry {
   flex: 1 1 auto;

@@ -54,6 +54,8 @@ def root_redirect(request):
 
 urlpatterns = [
     path('accounts/', include('allauth.urls')),
+    # Route adminpanel API endpoints to Django
+    path('adminpanel/api/', include('adminpanel.urls')),
     # React admin panel - handles all /adminpanel/* routes
     path('adminpanel/', spa_index),
     # Django admin - only for superusers

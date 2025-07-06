@@ -1752,3 +1752,4 @@ INFO 2025-07-03 12:39:38,385 autoreload 145820 110584 C:\Users\JohnHamilton\AppD
 INFO 2025-07-03 12:39:38,397 autoreload 125072 137780 C:\Users\JohnHamilton\AppData\Roaming\Python\Python313\site-packages\django\contrib\admin\actions.py changed, reloading.
 INFO 2025-07-03 12:39:38,500 autoreload 83344 121484 C:\Users\JohnHamilton\AppData\Roaming\Python\Python313\site-packages\django\contrib\admin\actions.py changed, reloading.
 INFO 2025-07-03 12:39:38,499 autoreload 146932 123972 C:\Users\JohnHamilton\AppData\Roaming\Python\Python313\site-packages\django\conf\global_settings.py changed, reloading.
+INFO 2025-07-05 22:43:27,417 autoreload 165268 165632 Watching for file changes with StatReloader
