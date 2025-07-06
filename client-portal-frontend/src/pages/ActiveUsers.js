@@ -179,10 +179,13 @@ export default function ActiveUsers() {
       const res = await fetch(`/api/user/?${params.toString()}`);
       if (!res.ok) throw new Error('Failed to fetch users');
       const data = await res.json();
-      setUsers(data.results);
-      setTotal(data.total);
-      setTotalPages(data.totalPages);
+      setUsers((data && Array.isArray(data.results)) ? data.results : []);
+      setTotal(data && typeof data.total === 'number' ? data.total : 0);
+      setTotalPages(data && typeof data.totalPages === 'number' ? data.totalPages : 1);
     } catch (err) {
+      setUsers([]);
+      setTotal(0);
+      setTotalPages(1);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -216,7 +219,7 @@ export default function ActiveUsers() {
     }
   };
 
-  const pagedUsers = users;
+  const pagedUsers = Array.isArray(users) ? users : [];
 
   return (
     <div className="p-8">
@@ -272,7 +275,7 @@ export default function ActiveUsers() {
               <tr><td colSpan={8} className="text-center py-8 text-gray-400">Loading users…</td></tr>
             ) : error ? (
               <tr><td colSpan={8} className="text-center py-8 text-red-400">{error}</td></tr>
-            ) : pagedUsers.length === 0 ? (
+            ) : !pagedUsers || pagedUsers.length === 0 ? (
               <tr>
                 <td colSpan={8} className="text-center py-8 text-gray-400">No active users found. Try adjusting your filters or create a new user.</td>
               </tr>
