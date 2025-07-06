@@ -209,10 +209,10 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   display: grid;
   grid-template-areas:
     'users tenants tickets failures'
-    'activity activity integrations announcement'
+    'activity integrations announcement quickactions'
     'roadmap roadmap roadmap roadmap';
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 1fr 1fr auto auto;
+  grid-template-rows: 1fr 1fr auto;
   gap: 28px;
   margin-bottom: 24px;
 }
@@ -220,67 +220,24 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
 .card-tenants { grid-area: tenants; }
 .card-tickets { grid-area: tickets; }
 .card-failures { grid-area: failures; }
-.card-activity { grid-area: activity; min-height: 140px; }
-.card-integrations { grid-area: integrations; min-height: 140px; }
-.card-announcement { grid-area: announcement; min-height: 140px; }
+.card-activity { grid-area: activity; }
+.card-integrations { grid-area: integrations; }
+.card-announcement { grid-area: announcement; }
+.card-quickactions { grid-area: quickactions; }
 .card-roadmap { grid-area: roadmap; }
-.admin-quick-actions-wrapper {
-  grid-area: quickactions;
-  margin-top: 18px;
-  max-width: 340px;
-  width: 100%;
-}
-@media (max-width: 1200px) {
-  .admin-dashboard-masonry {
-    grid-template-areas:
-      'users tenants tickets'
-      'failures activity integrations'
-      'announcement announcement announcement'
-      'roadmap roadmap roadmap';
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto auto auto auto;
-  }
-}
-@media (max-width: 900px) {
-  .admin-dashboard-masonry {
-    grid-template-areas:
-      'users tenants'
-      'tickets failures'
-      'activity integrations'
-      'announcement announcement'
-      'roadmap roadmap';
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto auto auto auto auto;
-  }
-}
-@media (max-width: 600px) {
-  .admin-dashboard-masonry {
-    grid-template-areas:
-      'users'
-      'tenants'
-      'tickets'
-      'failures'
-      'activity'
-      'integrations'
-      'announcement'
-      'roadmap';
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-  }
-}
-.card-roadmap {
-  min-width: 0;
-  width: 100%;
-  max-width: 100%;
-}
-.admin-dashboard-content {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
+
+.admin-dashboard-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  padding: 24px 28px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  justify-content: flex-start;
+  min-width: 0;
 }
+
 .admin-card-header {
   display: flex;
   align-items: center;
@@ -447,10 +404,10 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   display: grid;
   grid-template-areas:
     'users tenants tickets failures'
-    'activity activity integrations announcement'
+    'activity integrations announcement quickactions'
     'roadmap roadmap roadmap roadmap';
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 1fr 1fr auto auto;
+  grid-template-rows: 1fr 1fr auto;
   gap: 28px;
   margin-bottom: 24px;
 }
@@ -458,9 +415,10 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
 .card-tenants { grid-area: tenants; }
 .card-tickets { grid-area: tickets; }
 .card-failures { grid-area: failures; }
-.card-activity { grid-area: activity; min-height: 140px; }
-.card-integrations { grid-area: integrations; min-height: 140px; }
-.card-announcement { grid-area: announcement; min-height: 140px; }
+.card-activity { grid-area: activity; }
+.card-integrations { grid-area: integrations; }
+.card-announcement { grid-area: announcement; }
+.card-quickactions { grid-area: quickactions; }
 .card-roadmap { grid-area: roadmap; }
 .admin-quick-actions-wrapper {
   grid-area: quickactions;

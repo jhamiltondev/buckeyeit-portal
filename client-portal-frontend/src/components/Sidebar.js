@@ -16,6 +16,20 @@ const navItems = [
 export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) {
   const { user } = useUser();
   // Collapsed for desktop, mobileOpen for mobile
+  const [expandedSections, setExpandedSections] = useState(new Set());
+
+  const handleNavClick = (path) => {
+    if (expandedSections.has(path)) {
+      setExpandedSections(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(path);
+        return newSet;
+      });
+    } else {
+      setExpandedSections(prev => new Set([...prev, path]));
+    }
+  };
+
   return (
     <>
       {/* Hamburger for mobile */}

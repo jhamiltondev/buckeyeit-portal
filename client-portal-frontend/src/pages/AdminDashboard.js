@@ -441,7 +441,7 @@ function DashboardContent() {
               <div className="admin-announcement-time">Jul/02/2025 09:00 AM</div>
               <button className="admin-btn-primary admin-announcement-btn">View All</button>
             </motion.div>
-            <motion.div className="admin-quick-actions-wrapper" variants={cardVariants}>
+            <motion.div className="admin-dashboard-card card-quickactions" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
               <QuickActions />
             </motion.div>
             <motion.div className="admin-dashboard-card card-roadmap" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
