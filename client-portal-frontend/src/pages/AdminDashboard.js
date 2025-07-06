@@ -295,7 +295,6 @@ function QuickActions() {
       <button className="admin-btn-neutral">Add User</button>
       <button className="admin-btn-neutral">Sync Data</button>
       <button className="admin-btn-neutral">Post Announcement</button>
-      <button className="admin-btn-danger">Open Settings</button>
     </div>
   );
 }
@@ -443,21 +442,18 @@ function DashboardContent() {
               <div className="admin-announcement-time">Jul/02/2025 09:00 AM</div>
               <button className="admin-btn-primary admin-announcement-btn">View All</button>
             </motion.div>
-            {/* Last row: Roadmap and Quick Actions side by side */}
-            <div className="admin-dashboard-row-end">
-              <motion.div className="admin-dashboard-card card-roadmap" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
-                <div className="admin-roadmap-title">Coming Soon / Roadmap</div>
-                <ul className="admin-roadmap-list">
-                  <li>Advanced reporting & analytics</li>
-                  <li>Customizable dashboard widgets</li>
-                  <li>Role-based access controls</li>
-                  <li>Integration with more platforms</li>
-                </ul>
-              </motion.div>
-              <motion.div className="admin-quick-actions-wrapper" variants={cardVariants}>
-                <QuickActions />
-              </motion.div>
-            </div>
+            <motion.div className="admin-quick-actions-wrapper" variants={cardVariants}>
+              <QuickActions />
+            </motion.div>
+            <motion.div className="admin-dashboard-card card-roadmap" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
+              <div className="admin-roadmap-title">Coming Soon / Roadmap</div>
+              <ul className="admin-roadmap-list">
+                <li>Advanced reporting & analytics</li>
+                <li>Customizable dashboard widgets</li>
+                <li>Role-based access controls</li>
+                <li>Integration with more platforms</li>
+              </ul>
+            </motion.div>
           </>
         )}
       </motion.div>

@@ -179,6 +179,7 @@ export default function ActiveUsers() {
       const res = await fetch(`/api/user/?${params.toString()}`);
       if (!res.ok) throw new Error('Failed to fetch users');
       const data = await res.json();
+      console.log('Fetched users data:', data);
       setUsers((data && Array.isArray(data.results)) ? data.results : []);
       setTotal(data && typeof data.total === 'number' ? data.total : 0);
       setTotalPages(data && typeof data.totalPages === 'number' ? data.totalPages : 1);
