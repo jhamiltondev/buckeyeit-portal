@@ -387,6 +387,8 @@ function DashboardContent() {
     show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.4, 0, 0.2, 1] } },
   };
 
+  if (loading) return <div className="admin-dashboard-loading" />;
+
   return (
     <div className="admin-dashboard-content">
       <motion.div className="admin-dashboard-masonry" variants={containerVariants} initial="hidden" animate="show">

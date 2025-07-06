@@ -591,4 +591,36 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   padding-left: 18px;
   color: #444;
   font-size: 1rem;
+}
+
+html, body, #root {
+  height: 100vh;
+  overflow: hidden;
+}
+.admin-dashboard-root {
+  display: flex;
+  height: 100vh;
+}
+.admin-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  z-index: 100;
+}
+.admin-main-content {
+  margin-left: 260px;
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.admin-dashboard-masonry {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
 } 

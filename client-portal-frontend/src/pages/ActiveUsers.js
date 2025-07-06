@@ -181,7 +181,9 @@ export default function ActiveUsers() {
       try {
         data = await res.json();
       } catch (e) {
-        setError(`API error: ${res.status} ${res.statusText}`);
+        const text = await res.text().catch(() => '[unreadable]');
+        console.log('Active Users API raw response:', text);
+        setError(`API error: ${res.status} ${res.statusText} - Not JSON`);
         setUsers([]);
         setTotal(0);
         setTotalPages(1);
