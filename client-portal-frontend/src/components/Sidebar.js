@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { FaUserCircle, FaHeadset, FaBook, FaUser, FaBuilding, FaBullhorn, FaSignOutAlt, FaTachometerAlt, FaBars } from 'react-icons/fa';
 import { NavLink, Link } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { AnimatePresence, motion } from 'framer-motion';
 
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: <FaTachometerAlt /> },

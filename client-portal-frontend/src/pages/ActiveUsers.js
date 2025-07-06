@@ -177,8 +177,18 @@ export default function ActiveUsers() {
         per_page: usersPerPage,
       });
       const res = await fetch(`/adminpanel/api/users/?${params.toString()}`);
-      if (!res.ok) throw new Error('Failed to fetch users');
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch (e) {
+        const text = await res.text();
+        setError(`API error: ${res.status} ${res.statusText} - ${text}`);
+        setUsers([]);
+        setTotal(0);
+        setTotalPages(1);
+        setLoading(false);
+        return;
+      }
       console.log('Fetched users data:', data);
       setUsers((data && Array.isArray(data.results)) ? data.results : []);
       setTotal(data && typeof data.total === 'number' ? data.total : 0);
