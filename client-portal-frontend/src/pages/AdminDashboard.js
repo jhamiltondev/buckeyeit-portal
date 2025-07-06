@@ -360,14 +360,13 @@ function DashboardContent() {
     Promise.all([
       fetch('/api/user/?per_page=1').then(r => r.ok ? r.json() : Promise.reject()),
       fetch('/adminpanel/api/tenants/').then(r => r.ok ? r.json() : Promise.reject()),
-      fetch('/api/dashboard_ticket_summary/').then(r => r.ok ? r.json() : Promise.reject()),
       fetch('/api/system_usage/').then(r => r.ok ? r.json() : Promise.reject()),
     ])
-      .then(([userData, tenantData, ticketData, systemUsage]) => {
+      .then(([userData, tenantData, systemUsage]) => {
         setStats({
           users: userData.total || 0,
           tenants: tenantData.results ? tenantData.results.length : 0,
-          tickets: ticketData.open_tickets || 0,
+          tickets: systemUsage.failures || 0,
           failures: systemUsage.failures || 0,
         });
       })

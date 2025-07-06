@@ -176,7 +176,7 @@ export default function ActiveUsers() {
         page,
         per_page: usersPerPage,
       });
-      const res = await fetch(`/api/user/?${params.toString()}`);
+      const res = await fetch(`/adminpanel/api/users/?${params.toString()}`);
       if (!res.ok) throw new Error('Failed to fetch users');
       const data = await res.json();
       console.log('Fetched users data:', data);
