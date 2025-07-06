@@ -181,8 +181,7 @@ export default function ActiveUsers() {
       try {
         data = await res.json();
       } catch (e) {
-        const text = await res.text();
-        setError(`API error: ${res.status} ${res.statusText} - ${text}`);
+        setError(`API error: ${res.status} ${res.statusText}`);
         setUsers([]);
         setTotal(0);
         setTotalPages(1);
