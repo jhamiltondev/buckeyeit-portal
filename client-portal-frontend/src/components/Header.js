@@ -54,7 +54,13 @@ export default function Header() {
         <div className="relative" ref={userRef}>
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => setUserOpen(o => !o)}>
             <FaUserCircle size={28} />
-            <span className="font-medium">{user ? (user.first_name || user.username) : 'User'}</span>
+            <span className="font-medium">
+              {user
+                ? (user.first_name || user.last_name
+                    ? `${user.first_name || ''} ${user.last_name || ''}`.trim()
+                    : user.username || 'User')
+                : 'User'}
+            </span>
             <span className="text-xs text-gray-400">▼</span>
           </div>
           {userOpen && (

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { FaUser, FaUsers, FaBuilding, FaUserShield, FaUserTimes, FaBook, FaBullhorn, FaCogs, FaChartBar, FaChevronDown, FaChevronUp, FaHome, FaCog, FaList, FaArchive, FaEye, FaLock, FaKey, FaEnvelope, FaBell, FaPalette, FaShieldAlt, FaRobot, FaChartPie, FaCheckCircle, FaExclamationTriangle, FaClock, FaSearch, FaPlus, FaEdit, FaTrash, FaCalendarAlt, FaGroup, FaSitemap, FaStar, FaSync, FaFileAlt, FaCommentDots, FaUserEdit, FaUsersCog, FaUserCheck, FaUserSlash, FaUserSecret, FaUserFriends, FaUserTag, FaUserCircle, FaUserGraduate, FaUserNinja, FaUserMd, FaUserTie, FaUserAlt, FaUserAstronaut, FaUserInjured, FaUserLock, FaUserMinus, FaUserPlus, FaUserTimes as FaUserTimesAlt, FaTicketAlt } from 'react-icons/fa';
+import React, { useState, useEffect, useRef } from 'react';
+import { FaUser, FaUsers, FaBuilding, FaUserShield, FaUserTimes, FaBook, FaBullhorn, FaCogs, FaChartBar, FaChevronDown, FaChevronUp, FaHome, FaCog, FaList, FaArchive, FaEye, FaLock, FaKey, FaEnvelope, FaBell, FaPalette, FaShieldAlt, FaRobot, FaChartPie, FaCheckCircle, FaExclamationTriangle, FaClock, FaSearch, FaPlus, FaEdit, FaTrash, FaCalendarAlt, FaGroup, FaSitemap, FaStar, FaSync, FaFileAlt, FaCommentDots, FaUserEdit, FaUsersCog, FaUserCheck, FaUserSlash, FaUserSecret, FaUserFriends, FaUserTag, FaUserCircle, FaUserGraduate, FaUserNinja, FaUserMd, FaUserTie, FaUserAlt, FaUserAstronaut, FaUserInjured, FaUserLock, FaUserMinus, FaUserPlus, FaUserTimes as FaUserTimesAlt, FaTicketAlt, FaLightbulb } from 'react-icons/fa';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import ActiveUsers from './ActiveUsers';
 import Groups from './Groups';
@@ -32,7 +32,7 @@ const sidebarSections = [
     children: [
       { label: 'Active Tenants', key: 'active-tenants', icon: <FaCheckCircle />, path: 'tenants/active' },
       { label: 'VIP Tenants', key: 'vip-tenants', icon: <FaStar />, path: 'tenants/vip' },
-      { label: 'Suspended/Deleted Tenants', key: 'suspended-tenants', icon: <FaUserTimesAlt />, path: 'tenants/suspended' },
+      { label: 'Suspended/Deleted Tenants', key: 'suspended-tenants', icon: <FaUserTimesAlt />, path: 'tenants/suspended-deleted' },
     ],
   },
   {
@@ -42,7 +42,7 @@ const sidebarSections = [
     children: [
       { label: 'All Articles', key: 'kb-articles', icon: <FaFileAlt />, path: 'kb/articles' },
       { label: 'Categories', key: 'kb-categories', icon: <FaSitemap />, path: 'kb/categories' },
-      { label: 'Draft & Pending Review', key: 'kb-drafts', icon: <FaEdit />, path: 'kb/drafts' },
+      { label: 'Draft & Pending Review', key: 'kb-drafts', icon: <FaEdit />, path: 'kb/draft-pending' },
       { label: 'Archived Articles', key: 'kb-archived', icon: <FaArchive />, path: 'kb/archived' },
       { label: 'Most Viewed / Popular', key: 'kb-popular', icon: <FaEye />, path: 'kb/popular' },
       { label: 'Tenant Access Control', key: 'kb-access', icon: <FaUserShield />, path: 'kb/access' },
@@ -349,14 +349,122 @@ function useAdminTabTitle() {
   }, []);
 }
 
-function DashboardContent() {
-  const [stats, setStats] = useState({ users: null, tenants: null, tickets: null, failures: null });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+function IdeasModal({ open, onClose, ideas, onSubmit, loading, error, isAdmin }) {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [priority, setPriority] = useState('medium');
+  const [submitting, setSubmitting] = useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    await onSubmit({ title, description, priority });
+    setSubmitting(false);
+    setTitle('');
+    setDescription('');
+    setPriority('medium');
+  };
+  if (!open) return null;
+  return (
+    <div className="modal-backdrop">
+      <motion.div className="modal" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }}>
+        <div className="modal-header">
+          <FaLightbulb className="mr-2 text-yellow-400" /> Submit an Idea
+          <button className="modal-close" onClick={onClose}>&times;</button>
+        </div>
+        <form className="modal-form" onSubmit={handleSubmit}>
+          <input className="modal-input" placeholder="Title" value={title} onChange={e => setTitle(e.target.value)} required />
+          <textarea className="modal-input" placeholder="Describe your idea..." value={description} onChange={e => setDescription(e.target.value)} required rows={3} />
+          <select className="modal-input" value={priority} onChange={e => setPriority(e.target.value)}>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+          </select>
+          <button className="admin-btn-primary w-full mt-2" type="submit" disabled={submitting}>{submitting ? 'Submitting...' : 'Submit Idea'}</button>
+        </form>
+        <div className="modal-section">
+          <div className="modal-section-title">Recent Ideas</div>
+          {loading ? <div>Loading...</div> : error ? <div className="text-red-500">{error}</div> : (
+            <ul className="modal-ideas-list">
+              {ideas.map(idea => (
+                <li key={idea.id} className="modal-idea-item">
+                  <div className="font-semibold">{idea.title}</div>
+                  <div className="text-xs text-gray-500">{idea.status} • {idea.priority} • {new Date(idea.created_at).toLocaleString()}</div>
+                  <div className="text-sm text-gray-700">{idea.description}</div>
+                  <div className="text-xs text-gray-400">By {idea.submitted_by?.name || 'Unknown'}</div>
+                  {isAdmin && (
+                    <div className="modal-idea-actions">
+                      {/* Admin actions: Approve/Reject/Implement (scaffold only) */}
+                      <button className="admin-btn-neutral text-xs mr-1">Approve</button>
+                      <button className="admin-btn-neutral text-xs mr-1">Reject</button>
+                      <button className="admin-btn-neutral text-xs">Mark Implemented</button>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </motion.div>
+    </div>
+  );
+}
 
+function DashboardSkeleton() {
+  // Skeleton loader for dashboard layout
+  return (
+    <div className="admin-dashboard-new-layout dashboard-skeleton">
+      <div className="dashboard-summary-row">
+        {[1,2,3].map(i => (
+          <div key={i} className="dashboard-summary-card skeleton-box" />
+        ))}
+      </div>
+      <div className="dashboard-main-row">
+        <div className="dashboard-main-card half-width skeleton-box" style={{height: 220}} />
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '16px', width: '100%' }}>
+          <div className="dashboard-main-card compact-announcements skeleton-box" style={{width: '100%', height: 90}} />
+          <div className="dashboard-main-card placeholder-card skeleton-box" style={{width: '100%', height: 80}} />
+          <div className="dashboard-main-card placeholder-card skeleton-box" style={{width: '100%', height: 80}} />
+        </div>
+        <div className="dashboard-sidebar">
+          {[1,2,3,4].map(i => (
+            <div key={i} className="dashboard-sidebar-card skeleton-box" style={{height: 80}} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DashboardContent() {
+  const [stats, setStats] = useState({ users: 0, tenants: 0, tickets: 0, failures: 0, automations_ran: 0, automation_fails: 0 });
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [statsError, setStatsError] = useState(null);
+  const [announcements, setAnnouncements] = useState([]);
+  const [announcementsLoading, setAnnouncementsLoading] = useState(true);
+  const [announcementsError, setAnnouncementsError] = useState(null);
+  const [ideasOpen, setIdeasOpen] = useState(false);
+  const [ideas, setIdeas] = useState([]);
+  const [ideasLoading, setIdeasLoading] = useState(false);
+  const [ideasError, setIdeasError] = useState(null);
+  const { user } = useUser();
+  const isAdmin = user?.is_staff || user?.is_superuser;
+  const firstLoadRef = useRef(true);
+
+  const containerVariants = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.18 } },
+  };
+  const fadeInCard = {
+    hidden: { opacity: 0, y: 24 },
+    visible: { opacity: 1, y: 0, transition: { duration: 1.1, ease: 'easeInOut' } },
+    hover: { scale: 1.04, transition: { duration: 0.45, ease: 'easeInOut' } },
+  };
+
+  // Fetch stats (users, tenants, tickets, failures)
   useEffect(() => {
-    setLoading(true);
-    setError(null);
+    setStatsLoading(true);
+    setStatsError(null);
     Promise.all([
       fetch('/api/user/?per_page=1').then(r => r.ok ? r.json() : Promise.reject()),
       fetch('/adminpanel/api/tenants/').then(r => r.ok ? r.json() : Promise.reject()),
@@ -366,123 +474,181 @@ function DashboardContent() {
         setStats({
           users: userData.total || 0,
           tenants: tenantData.results ? tenantData.results.length : 0,
-          tickets: systemUsage.failures || 0,
+          tickets: systemUsage.tickets || 0,
           failures: systemUsage.failures || 0,
+          automations_ran: systemUsage.automations_ran || 0,
+          automation_fails: systemUsage.automation_fails || 0,
         });
       })
-      .catch(() => setError('Error loading dashboard data'))
-      .finally(() => setLoading(false));
+      .catch(() => setStatsError('Failed to load stats'))
+      .finally(() => {
+        setStatsLoading(false);
+        firstLoadRef.current = false;
+      });
   }, []);
 
-  // Framer Motion variants for staggered fade-in
-  const containerVariants = {
-    show: {
-      transition: {
-        staggerChildren: 0.12,
-      },
-    },
+  // Fetch announcements
+  useEffect(() => {
+    setAnnouncementsLoading(true);
+    setAnnouncementsError(null);
+    fetch('/api/announcements/')
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => setAnnouncements(Array.isArray(data) ? data : []))
+      .catch(() => setAnnouncementsError('Failed to load announcements'))
+      .finally(() => setAnnouncementsLoading(false));
+  }, []);
+
+  const fetchIdeas = () => {
+    setIdeasLoading(true);
+    setIdeasError(null);
+    fetch('/api/ideas/', { credentials: 'include' })
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => setIdeas(data))
+      .catch(() => setIdeasError('Failed to load ideas'))
+      .finally(() => setIdeasLoading(false));
   };
-  const cardVariants = {
-    hidden: { opacity: 0, y: 24 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.4, 0, 0.2, 1] } },
+  useEffect(() => { fetchIdeas(); }, []);
+
+  const handleIdeaSubmit = async (idea) => {
+    setIdeasLoading(true);
+    setIdeasError(null);
+    try {
+      const res = await fetch('/api/ideas/create/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(idea),
+      });
+      if (!res.ok) throw new Error('Failed to submit idea');
+      fetchIdeas();
+    } catch {
+      setIdeasError('Failed to submit idea');
+    } finally {
+      setIdeasLoading(false);
+    }
   };
 
-  if (loading) return <div className="admin-dashboard-loading" />;
+  if (firstLoadRef.current && (statsLoading && announcementsLoading)) return <DashboardSkeleton />;
 
   return (
-    <div className="admin-dashboard-content">
-      <motion.div className="admin-dashboard-masonry" variants={containerVariants} initial="hidden" animate="show">
-        {loading ? (
-          <div className="admin-loading-overlay">
-            {error ? (
-              <div className="admin-error-message">{error}</div>
-            ) : (
-              <div className="admin-loading-spinner"></div>
-            )}
-          </div>
-        ) : (
-          <>
-            <motion.div className="admin-dashboard-card card-users" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
-              <div className="admin-card-header">{dashboardCards[0].icon}<span className="admin-card-title">{dashboardCards[0].title}</span></div>
-              <div className="admin-card-metric">{stats.users}</div>
-              <div className="admin-card-subtext">{dashboardCards[0].subtext}</div>
+    <div className="admin-dashboard-new-layout">
+      <motion.h1
+        style={{ fontSize: '2.25rem', fontWeight: 700, margin: '0 0 24px 0', letterSpacing: '-1px' }}
+        variants={fadeInCard}
+        initial="hidden"
+        animate="visible"
+      >
+        Dashboard
+      </motion.h1>
+      {/* Top summary cards row */}
+      <div className="dashboard-summary-row">
+        <motion.div className="dashboard-summary-card" variants={fadeInCard} initial="hidden" animate="visible" whileHover="hover">
+          <div className="summary-title">Total Users</div>
+          {statsLoading ? <div className="skeleton-box" style={{height: 32, width: 60}} /> : statsError ? <div className="text-red-400 text-xs">No data</div> : <div className="summary-value up">{stats.users || 0}</div>}
+          <div className="summary-progress"><div className="progress-bar up" style={{width: '67%'}}></div></div>
+          <div className="summary-percent">+5 this week</div>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-tenants" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
-              <div className="admin-card-header">{dashboardCards[1].icon}<span className="admin-card-title">{dashboardCards[1].title}</span></div>
-              <div className="admin-card-metric">{stats.tenants}</div>
-              <div className="admin-card-subtext">{dashboardCards[1].subtext}</div>
+        <motion.div className="dashboard-summary-card" variants={fadeInCard} initial="hidden" animate="visible" whileHover="hover">
+          <div className="summary-title">Active Tenants</div>
+          {statsLoading ? <div className="skeleton-box" style={{height: 32, width: 60}} /> : statsError ? <div className="text-red-400 text-xs">No data</div> : <div className="summary-value up">{stats.tenants || 0}</div>}
+          <div className="summary-progress"><div className="progress-bar up" style={{width: '90%'}}></div></div>
+          <div className="summary-percent">All healthy</div>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-tickets" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
-              <div className="admin-card-header">{dashboardCards[2].icon}<span className="admin-card-title">{dashboardCards[2].title}</span></div>
-              <div className="admin-card-metric">{stats.tickets}</div>
-              <div className="admin-card-subtext">{dashboardCards[2].subtext}</div>
+        <motion.div className="dashboard-summary-card" variants={fadeInCard} initial="hidden" animate="visible" whileHover="hover">
+          <div className="summary-title">Open Tickets</div>
+          {statsLoading ? <div className="skeleton-box" style={{height: 32, width: 60}} /> : statsError ? <div className="text-red-400 text-xs">No data</div> : <div className="summary-value down">{stats.tickets || 0}</div>}
+          <div className="summary-progress"><div className="progress-bar down" style={{width: '30%'}}></div></div>
+          <div className="summary-percent">2 scheduled</div>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-failures" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
-              <div className="admin-card-header">{dashboardCards[3].icon}<span className="admin-card-title">{dashboardCards[3].title}</span></div>
-              <div className="admin-card-metric">{stats.failures}</div>
-              <div className="admin-card-subtext">{dashboardCards[3].subtext}</div>
-            </motion.div>
-            <motion.div className="admin-dashboard-card card-activity" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
-              <div className="admin-card-header"><FaCheckCircle className="admin-card-icon" /><span className="admin-card-title">Recent Admin Activity</span></div>
+      </div>
+      {/* Main content and sidebar */}
+      <div className="dashboard-main-row">
+        <motion.div className="dashboard-main-card half-width" variants={fadeInCard} initial="hidden" animate="visible" whileHover="hover">
+          <div className="main-title">Recent Admin Activity</div>
               <ul className="admin-activity-list">
-                <li className="admin-activity-item">admin logged in at Jul/03/2025 04:06 PM</li>
-                <li className="admin-activity-item">testuser logged in at Jul/01/2025 12:43 PM</li>
+            {adminActivity.map((a, i) => (
+              <li key={i} className="admin-activity-item">
+                <span className="font-semibold">{a.user}</span> {a.action} <span className="text-gray-400">{formatTime(a.time)}</span>
+              </li>
+            ))}
               </ul>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-integrations" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
-              <div className="admin-card-header"><FaCogs className="admin-card-icon" /><span className="admin-card-title">System Integrations</span></div>
-              <ul className="admin-integrations-list">
-                <li className="admin-integration-item"><FaCogs /> ConnectWise <span className="admin-integration-dot connected"></span><span className="admin-integration-status">Connected</span></li>
-                <li className="admin-integration-item"><FaCogs /> Pax8 <span className="admin-integration-dot not_configured"></span><span className="admin-integration-status">Not Configured</span></li>
-                <li className="admin-integration-item"><FaCogs /> OpenAI <span className="admin-integration-dot not_configured"></span><span className="admin-integration-status">Not Configured</span></li>
-              </ul>
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '16px', width: '100%' }}>
+          <motion.div className="dashboard-main-card compact-announcements" style={{width: '100%'}} variants={fadeInCard} initial="hidden" animate="visible" whileHover="hover">
+            <div className="main-title">Announcements</div>
+            {announcementsLoading ? <div className="skeleton-box" style={{height: 32, width: 120}} /> : announcementsError ? <div className="text-red-400 text-xs">No data</div> : announcements.length > 0 ? announcements.slice(0,2).map((a, i) => (
+              <div key={a.id || i} style={{marginBottom: 12}}>
+                <div className="admin-announcement-title">{a.title}</div>
+                <div className="admin-announcement-time">{formatTime(a.created_at)}</div>
+              </div>
+            )) : <div className="text-gray-400">No announcements</div>}
+            <button className="admin-btn-primary admin-announcement-btn" style={{marginTop: 8, marginBottom: 0}}>View All</button>
+          </motion.div>
+          <div style={{ display: 'flex', gap: '16px', width: '100%' }}>
+            <motion.div className="dashboard-main-card placeholder-card" style={{ flex: 1 }} variants={fadeInCard} initial="hidden" animate="visible" whileHover="hover">
+              <div className="main-title">Placeholder 1</div>
+              <div className="text-gray-400">Content coming soon...</div>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-announcement" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
-              <div className="admin-card-header"><FaBullhorn className="admin-card-icon" /><span className="admin-card-title">Announcements</span></div>
-              <div className="admin-announcement-title">Scheduled Maintenance July 10</div>
-              <div className="admin-announcement-time">Jul/02/2025 09:00 AM</div>
-              <button className="admin-btn-primary admin-announcement-btn">View All</button>
+            <motion.div className="dashboard-main-card placeholder-card" style={{ flex: 1 }} variants={fadeInCard} initial="hidden" animate="visible" whileHover="hover">
+              <div className="main-title">Placeholder 2</div>
+              <div className="text-gray-400">Content coming soon...</div>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-quickactions" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
-              <QuickActions />
+          </div>
+        </div>
+        <div className="dashboard-sidebar">
+          <motion.div className="dashboard-sidebar-card blue" variants={fadeInCard} initial="hidden" animate="visible" whileHover="hover">
+            <div className="sidebar-title">Automation Failures</div>
+            {statsLoading ? <div className="skeleton-box" style={{height: 28, width: 40}} /> : statsError ? <div className="text-red-400 text-xs">No data</div> : <div className="sidebar-value">{stats.failures || 0}</div>}
+            <div className="sidebar-subtext">All systems operational</div>
+          </motion.div>
+          <motion.div className="dashboard-sidebar-card" variants={fadeInCard} initial="hidden" animate="visible" whileHover="hover">
+            <div className="sidebar-title">Automations Ran</div>
+            {statsLoading ? <div className="skeleton-box" style={{height: 28, width: 40}} /> : statsError ? <div className="text-red-400 text-xs">No data</div> : <div className="sidebar-value">{stats.automations_ran || 0}</div>}
+            <div className="sidebar-subtext">This month</div>
             </motion.div>
-            <motion.div className="admin-dashboard-card card-roadmap" variants={cardVariants} whileHover={{ scale: 1.045, boxShadow: '0 8px 32px rgba(0,0,0,0.13)' }}>
-              <div className="admin-roadmap-title">Coming Soon / Roadmap</div>
-              <ul className="admin-roadmap-list">
-                <li>Advanced reporting & analytics</li>
-                <li>Customizable dashboard widgets</li>
-                <li>Role-based access controls</li>
-                <li>Integration with more platforms</li>
-              </ul>
+          <motion.div className="dashboard-sidebar-card" variants={fadeInCard} initial="hidden" animate="visible" whileHover="hover">
+            <div className="sidebar-title">Automation Fails</div>
+            {statsLoading ? <div className="skeleton-box" style={{height: 28, width: 40}} /> : statsError ? <div className="text-red-400 text-xs">No data</div> : <div className="sidebar-value">{stats.automation_fails || 0}</div>}
+            <div className="sidebar-subtext">This month</div>
             </motion.div>
-          </>
-        )}
+          <motion.div className="dashboard-sidebar-card yellow" style={{ cursor: 'pointer' }} onClick={() => setIdeasOpen(true)} variants={fadeInCard} initial="hidden" animate="visible" whileHover="hover">
+            <div className="sidebar-title flex items-center gap-2"><FaLightbulb className="text-yellow-400" /> Ideas</div>
+            {ideasLoading ? <div className="skeleton-box" style={{height: 28, width: 40}} /> : ideasError ? <div className="text-red-400 text-xs">No data</div> : <div className="sidebar-value">{ideas.length || 0}</div>}
+            <div className="sidebar-subtext">Submit or review ideas</div>
       </motion.div>
+        </div>
+      </div>
+      <IdeasModal open={ideasOpen} onClose={() => setIdeasOpen(false)} ideas={ideas} onSubmit={handleIdeaSubmit} loading={ideasLoading} error={ideasError} isAdmin={isAdmin} />
     </div>
   );
+}
+
+function formatTime(timeStr) {
+  // Accepts ISO or 'Jul/03/2025 04:06 PM' and returns a nice relative or formatted string
+  const d = new Date(timeStr);
+  if (!isNaN(d)) {
+    const now = new Date();
+    const diff = (now - d) / 1000;
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return `${Math.floor(diff/60)} min ago`;
+    if (diff < 86400) return `${Math.floor(diff/3600)} hr ago`;
+    return d.toLocaleString();
+  }
+  return timeStr;
 }
 
 const AdminDashboard = () => {
   useAdminTabTitle();
   const location = useLocation();
+  const isDashboard = location.pathname === '/adminpanel' || location.pathname === '/adminpanel/';
   return (
-    <div className="bg-gray-50 min-h-screen admin-dashboard-root">
+    <div className="bg-gray-50 min-h-screen admin-dashboard-root" style={{ height: '100vh', width: '100vw', overflow: 'visible' }}>
       <Topbar onSignOut={() => { window.location.href = '/adminpanel/login/'; }} />
-      <div className="flex pt-16">
+      <div className="flex pt-16" style={{ height: 'calc(100vh - 64px)', minHeight: 0, minWidth: 0, width: '100%' }}>
         <Sidebar />
-        <div className="flex-1 flex flex-col">
-          <main className="flex-1 p-8 overflow-y-auto">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={location.pathname}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.4 }}
-              >
-                {location.pathname === '/adminpanel' || location.pathname === '/adminpanel/' ? <DashboardContent /> : <Outlet />}
-              </motion.div>
-            </AnimatePresence>
+        <div className="flex-1 flex flex-col min-w-0" style={{ minWidth: 0, flex: '1 1 0%', width: '100%' }}>
+          <main className="flex-1 p-0" style={{ minWidth: 0, minHeight: 0, padding: 0, overflow: 'visible', width: '100%' }}>
+            {isDashboard ? <DashboardContent /> : <Outlet />}
           </main>
         </div>
       </div>

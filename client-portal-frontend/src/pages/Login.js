@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '../context/UserContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Login = ({ title = "Buckeye IT Client Portal" }) => {
   const { login, isAuthenticated } = useUser();
@@ -9,27 +9,41 @@ const Login = ({ title = "Buckeye IT Client Portal" }) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log('Login page path:', location.pathname);
+    if (isAuthenticated) {
+      if (location.pathname.includes('adminpanel/login')) {
+        navigate('/adminpanel', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
+    }
+  }, [isAuthenticated, location.pathname, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     const result = await login(username, password);
+    console.log('Login result:', result);
+    console.log('Login page path (handleSubmit):', location.pathname);
     if (result.success) {
-      // Fade out login, then navigate
       document.getElementById('login-root').classList.add('fade-out');
-      setTimeout(() => navigate('/'), 500);
+      setTimeout(() => {
+        let navTarget = '/dashboard';
+        if (location.pathname.includes('adminpanel/login')) {
+          navTarget = '/adminpanel';
+        }
+        console.log('Navigating to:', navTarget);
+        navigate(navTarget, { replace: true });
+      }, 300);
     } else {
-      setError(result.error || 'Login failed');
+      setError(result.message || 'Login failed');
       setLoading(false);
     }
   };
-
-  // If already logged in, redirect
-  if (isAuthenticated) {
-    navigate('/');
-    return null;
-  }
 
   return (
     <div id="login-root" className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 to-red-300 transition-opacity duration-500 ${loading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>

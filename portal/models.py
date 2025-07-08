@@ -9,10 +9,24 @@ from django.utils import timezone
 # Create your models here.
 
 class Tenant(models.Model):
+    STATUS_CHOICES = [
+        ('Active', 'Active'),
+        ('Suspended', 'Suspended'),
+        ('Inactive', 'Inactive'),
+    ]
+    VIP_LEVEL_CHOICES = [
+        ('Gold', 'Gold'),
+        ('Platinum', 'Platinum'),
+        ('Silver', 'Silver'),
+        ('Custom', 'Custom'),
+    ]
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     vip = models.BooleanField(default=False, help_text="Check if this tenant is VIP and should see automated features.")
+    vip_level = models.CharField(max_length=32, choices=VIP_LEVEL_CHOICES, blank=True, null=True)
+    account_manager = models.ForeignKey('portal.User', null=True, blank=True, on_delete=models.SET_NULL, related_name='managed_tenants')
+    priority_notes = models.TextField(blank=True)
     domain = models.CharField(max_length=100, unique=True, blank=True, null=True, help_text="Primary email domain for auto-assignment, e.g. 'reedminerals.com'")
     # Company Info fields
     address = models.CharField(max_length=255, blank=True)
@@ -24,6 +38,16 @@ class Tenant(models.Model):
     renewal_date = models.DateField(blank=True, null=True, help_text="Renewal or service review date")
     users = models.ManyToManyField('portal.User', blank=True, related_name='tenants')
     groups = models.ManyToManyField(Group, blank=True, related_name='tenants')
+    status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='Active')
+    industry = models.CharField(max_length=100, blank=True, null=True)
+    # Suspension/Deletion fields
+    is_deleted = models.BooleanField(default=False)
+    suspended_at = models.DateTimeField(null=True, blank=True)
+    suspended_by = models.ForeignKey('portal.User', null=True, blank=True, related_name='suspended_tenants', on_delete=models.SET_NULL)
+    suspension_reason = models.TextField(blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.ForeignKey('portal.User', null=True, blank=True, related_name='deleted_tenants', on_delete=models.SET_NULL)
+    deletion_reason = models.TextField(blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -87,17 +111,37 @@ class Ticket(models.Model):
         return f"{self.subject} ({self.get_status_display()})"
 
 class KnowledgeBaseCategory(models.Model):
+    VISIBILITY_CHOICES = [
+        ('public', 'Public'),
+        ('internal', 'Internal'),
+        ('hidden', 'Hidden'),
+    ]
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
     icon = models.CharField(max_length=50, blank=True, help_text="Font Awesome icon class, e.g. 'fa-envelope'")
+    visibility = models.CharField(max_length=20, choices=VISIBILITY_CHOICES, default='public')
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def __str__(self):
         return self.name
 
+    @property
+    def article_count(self):
+        return self.articles.count()
+
 class KnowledgeBaseArticle(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('archived', 'Archived'),
+    ]
     category = models.ForeignKey(KnowledgeBaseCategory, on_delete=models.CASCADE, related_name='articles')
     title = models.CharField(max_length=200)
     content = models.TextField()
+    excerpt = models.TextField(blank=True, help_text="Brief summary of the article")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    author = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, blank=True, related_name='authored_articles')
     view_count = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -198,3 +242,51 @@ class UserGroup(models.Model):
 
     def __str__(self):
         return self.name
+
+class Idea(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending Review'),
+        ('reviewed', 'Reviewed'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('implemented', 'Implemented'),
+        ('in_progress', 'In Progress'),
+    ]
+    
+    PRIORITY_CHOICES = [
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+        ('urgent', 'Urgent'),
+    ]
+    
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    submitted_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='submitted_ideas')
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, null=True, blank=True, related_name='ideas')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='medium')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_ideas')
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    review_notes = models.TextField(blank=True, help_text="Developer/admin notes about this idea")
+    estimated_effort = models.CharField(max_length=50, blank=True, help_text="Estimated development effort, e.g. '2-3 days', '1 week'")
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.title} ({self.get_status_display()})"
+
+class UserAuditLog(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='audit_logs')
+    action_type = models.CharField(max_length=64)
+    performed_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, blank=True, related_name='performed_audit_logs')
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    description = models.TextField(blank=True)
+    details = models.JSONField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['-timestamp']

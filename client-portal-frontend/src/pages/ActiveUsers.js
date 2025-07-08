@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaUser, FaUsers, FaSearch, FaFilter, FaEye, FaEdit, FaTrash, FaPlus, FaUserShield, FaUserCheck, FaUserSlash, FaUserTimes, FaBuilding, FaKey, FaUserSecret, FaSync, FaLock, FaUnlock, FaChevronLeft, FaChevronRight, FaDownload } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const statuses = ['All Statuses', 'Active', 'Suspended', 'Pending'];
 
@@ -44,7 +45,7 @@ function UserDetailsModal({ user, open, onClose }) {
         <button className="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl" onClick={onClose}>&times;</button>
         <div className="flex items-center gap-4 mb-6">
           <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center text-3xl font-bold text-red-700">
-            {user.avatar ? <img src={user.avatar} alt={user.fullName} className="w-full h-full rounded-full object-cover" /> : user.fullName.split(' ').map(n => n[0]).join('')}
+            {user.avatar ? <img src={user.avatar} alt={user.fullName} className="w-full h-full rounded-full object-cover" /> : `${user.first_name?.[0] || ''}${user.last_name?.[0] || ''}`}
           </div>
           <div>
             <div className="text-2xl font-bold">{user.fullName}</div>
@@ -154,6 +155,8 @@ export default function ActiveUsers() {
   const [roles, setRoles] = useState(['All Roles']);
   const [rolesLoading, setRolesLoading] = useState(true);
   const [rolesError, setRolesError] = useState(null);
+  const [showSkeleton, setShowSkeleton] = useState(true);
+  const [skeletonCount, setSkeletonCount] = useState(0);
 
   const usersPerPage = 10;
 
@@ -161,8 +164,32 @@ export default function ActiveUsers() {
     fetchUsers();
     fetchTenants();
     fetchRoles();
+    if (!loading) {
+      // Keep skeleton for 300ms after loading finishes for smooth fade
+      const timeout = setTimeout(() => setShowSkeleton(false), 300);
+      return () => clearTimeout(timeout);
+    } else {
+      setShowSkeleton(true);
+    }
     // eslint-disable-next-line
   }, [search, role, tenant, status, page]);
+
+  // Only show skeleton while loading, and for 300ms after loading finishes
+  useEffect(() => {
+    if (!loading && users && users.length >= 0) {
+      const timeout = setTimeout(() => setShowSkeleton(false), 300);
+      return () => clearTimeout(timeout);
+    } else if (loading) {
+      setShowSkeleton(true);
+    }
+  }, [loading, users]);
+
+  // Calculate skeleton row count only once per loading cycle
+  useEffect(() => {
+    if (loading) {
+      setSkeletonCount(total > 0 ? Math.min(total, usersPerPage) : usersPerPage);
+    }
+  }, [loading, total, usersPerPage]);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -234,6 +261,7 @@ export default function ActiveUsers() {
   const pagedUsers = Array.isArray(users) ? users : [];
 
   return (
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4 }}>
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -283,36 +311,152 @@ export default function ActiveUsers() {
             </tr>
           </thead>
           <tbody>
-            {loading ? (
-              <tr><td colSpan={8} className="text-center py-8 text-gray-400">Loading users…</td></tr>
-            ) : error ? (
-              <tr><td colSpan={8} className="text-center py-8 text-red-400">{error}</td></tr>
-            ) : !pagedUsers || pagedUsers.length === 0 ? (
-              <tr>
-                <td colSpan={8} className="text-center py-8 text-gray-400">No active users found. Try adjusting your filters or create a new user.</td>
-              </tr>
-            ) : pagedUsers.map(user => (
+              <AnimatePresence initial={false}>
+                {pagedUsers.length > 0 ? (
+                  pagedUsers.map((user, idx) => (
               <tr key={user.id} className="border-b hover:bg-blue-50 cursor-pointer">
-                <td className="p-3"><input type="checkbox" /></td>
-                <td className="p-3 font-medium flex items-center gap-2" onClick={() => { setSelectedUser(user); setModalOpen(true); }}>
+                      <td className="p-3 relative" style={{ minWidth: 40 }}>
+                        <div className="relative" style={{ minHeight: 32 }}>
+                          <motion.div
+                            initial={{ opacity: 1 }}
+                            animate={{ opacity: showSkeleton ? 1 : 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="absolute inset-0 flex items-center"
+                            style={{ pointerEvents: 'none' }}
+                          >
+                            <div className="w-4 h-4 bg-gray-200 rounded" />
+                          </motion.div>
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: showSkeleton ? 0 : 1 }}
+                            transition={{ duration: 0.4, delay: showSkeleton ? 0 : 0.1 }}
+                          >
+                            <input type="checkbox" />
+                          </motion.div>
+                        </div>
+                      </td>
+                      <td className="p-3 relative" style={{ minWidth: 160 }}>
+                        <div className="relative flex items-center gap-2" style={{ minHeight: 32 }}>
+                          <motion.div
+                            initial={{ opacity: 1 }}
+                            animate={{ opacity: showSkeleton ? 1 : 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="absolute inset-0 flex items-center gap-2"
+                            style={{ pointerEvents: 'none' }}
+                          >
+                            <span className="w-8 h-8 rounded-full bg-gray-200" />
+                            <span className="h-4 w-24 bg-gray-200 rounded" />
+                          </motion.div>
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: showSkeleton ? 0 : 1 }}
+                            transition={{ duration: 0.4, delay: showSkeleton ? 0 : 0.1 }}
+                            className="flex items-center gap-2"
+                          >
                   <span className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-lg font-bold text-red-700">
-                    {user.avatar ? <img src={user.avatar} alt={user.fullName} className="w-full h-full rounded-full object-cover" /> : user.fullName.split(' ').map(n => n[0]).join('')}
+                              {user.avatar ? <img src={user.avatar} alt={user.fullName} className="w-full h-full rounded-full object-cover" /> : `${user.first_name?.[0] || ''}${user.last_name?.[0] || ''}`}
                   </span>
                   {user.fullName}
+                          </motion.div>
+                        </div>
+                      </td>
+                      <td className="p-3 relative" style={{ minWidth: 180 }}>
+                        <div className="relative" style={{ minHeight: 32 }}>
+                          <motion.div initial={{ opacity: 1 }} animate={{ opacity: showSkeleton ? 1 : 0 }} transition={{ duration: 0.3 }} className="absolute inset-0 flex items-center" style={{ pointerEvents: 'none' }}>
+                            <div className="h-4 w-32 bg-gray-200 rounded" />
+                          </motion.div>
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: showSkeleton ? 0 : 1 }} transition={{ duration: 0.4, delay: showSkeleton ? 0 : 0.1 }}>
+                            {user.email}
+                          </motion.div>
+                        </div>
+                      </td>
+                      <td className="p-3 relative" style={{ minWidth: 100 }}>
+                        <div className="relative" style={{ minHeight: 32 }}>
+                          <motion.div initial={{ opacity: 1 }} animate={{ opacity: showSkeleton ? 1 : 0 }} transition={{ duration: 0.3 }} className="absolute inset-0 flex items-center" style={{ pointerEvents: 'none' }}>
+                            <div className="h-4 w-16 bg-gray-200 rounded" />
+                          </motion.div>
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: showSkeleton ? 0 : 1 }} transition={{ duration: 0.4, delay: showSkeleton ? 0 : 0.1 }}>
+                            {user.role}
+                          </motion.div>
+                        </div>
+                      </td>
+                      <td className="p-3 relative" style={{ minWidth: 120 }}>
+                        <div className="relative" style={{ minHeight: 32 }}>
+                          <motion.div initial={{ opacity: 1 }} animate={{ opacity: showSkeleton ? 1 : 0 }} transition={{ duration: 0.3 }} className="absolute inset-0 flex items-center" style={{ pointerEvents: 'none' }}>
+                            <div className="h-4 w-20 bg-gray-200 rounded" />
+                          </motion.div>
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: showSkeleton ? 0 : 1 }} transition={{ duration: 0.4, delay: showSkeleton ? 0 : 0.1 }}>
+                            {user.tenant}
+                          </motion.div>
+                        </div>
+                      </td>
+                      <td className="p-3 relative" style={{ minWidth: 100 }}>
+                        <div className="relative" style={{ minHeight: 32 }}>
+                          <motion.div initial={{ opacity: 1 }} animate={{ opacity: showSkeleton ? 1 : 0 }} transition={{ duration: 0.3 }} className="absolute inset-0 flex items-center" style={{ pointerEvents: 'none' }}>
+                            <div className="h-4 w-16 bg-gray-200 rounded" />
+                          </motion.div>
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: showSkeleton ? 0 : 1 }} transition={{ duration: 0.4, delay: showSkeleton ? 0 : 0.1 }}>
+                            <StatusBadge status={user.status} />
+                          </motion.div>
+                        </div>
+                      </td>
+                      <td className="p-3 relative" style={{ minWidth: 120 }}>
+                        <div className="relative" style={{ minHeight: 32 }}>
+                          <motion.div initial={{ opacity: 1 }} animate={{ opacity: showSkeleton ? 1 : 0 }} transition={{ duration: 0.3 }} className="absolute inset-0 flex items-center" style={{ pointerEvents: 'none' }}>
+                            <div className="h-4 w-20 bg-gray-200 rounded" />
+                          </motion.div>
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: showSkeleton ? 0 : 1 }} transition={{ duration: 0.4, delay: showSkeleton ? 0 : 0.1 }}>
+                            {user.lastLogin}
+                          </motion.div>
+                        </div>
                 </td>
-                <td className="p-3">{user.email}</td>
-                <td className="p-3">{user.role}</td>
-                <td className="p-3">{user.tenant}</td>
-                <td className="p-3"><StatusBadge status={user.status} /></td>
-                <td className="p-3">{user.lastLogin}</td>
-                <td className="p-3 flex gap-2">
+                      <td className="p-3 relative" style={{ minWidth: 120 }}>
+                        <div className="relative flex gap-2" style={{ minHeight: 32 }}>
+                          <motion.div initial={{ opacity: 1 }} animate={{ opacity: showSkeleton ? 1 : 0 }} transition={{ duration: 0.3 }} className="absolute inset-0 flex items-center gap-2" style={{ pointerEvents: 'none' }}>
+                            <div className="h-4 w-24 bg-gray-200 rounded" />
+                          </motion.div>
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: showSkeleton ? 0 : 1 }} transition={{ duration: 0.4, delay: showSkeleton ? 0 : 0.1 }} className="flex gap-2">
                   <button className="text-blue-600 hover:underline text-xs" onClick={() => { setSelectedUser(user); setModalOpen(true); }}>View</button>
                   <button className="text-yellow-600 hover:underline text-xs">Disable</button>
                   <button className="text-blue-600 hover:underline text-xs">Reset PW</button>
                   <button className="text-green-600 hover:underline text-xs">Impersonate</button>
+                          </motion.div>
+                        </div>
                 </td>
               </tr>
-            ))}
+                  ))
+                ) : (
+                  // fallback: if no users, show skeletons as before
+                  showSkeleton ? (
+                    Array.from({ length: skeletonCount }).map((_, i) => (
+                      <motion.tr
+                        key={i}
+                        className="animate-pulse"
+                        initial={{ opacity: 1 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 0.3 } }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <td className="p-3">
+                          <div className="w-4 h-4 bg-gray-200 rounded" />
+                        </td>
+                        <td className="p-3">
+                          <div className="flex items-center gap-2">
+                            <span className="w-8 h-8 rounded-full bg-gray-200" />
+                            <span className="h-4 w-24 bg-gray-200 rounded" />
+                          </div>
+                        </td>
+                        <td className="p-3"><div className="h-4 w-32 bg-gray-200 rounded" /></td>
+                        <td className="p-3"><div className="h-4 w-16 bg-gray-200 rounded" /></td>
+                        <td className="p-3"><div className="h-4 w-20 bg-gray-200 rounded" /></td>
+                        <td className="p-3"><div className="h-4 w-16 bg-gray-200 rounded" /></td>
+                        <td className="p-3"><div className="h-4 w-20 bg-gray-200 rounded" /></td>
+                        <td className="p-3"><div className="h-4 w-24 bg-gray-200 rounded" /></td>
+                      </motion.tr>
+                    ))
+                  ) : null
+                )}
+              </AnimatePresence>
           </tbody>
         </table>
       </div>
@@ -325,5 +469,6 @@ export default function ActiveUsers() {
       </div>
       <UserDetailsModal user={selectedUser} open={modalOpen} onClose={() => setModalOpen(false)} />
     </div>
+    </motion.div>
   );
 } 

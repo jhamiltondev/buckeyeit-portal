@@ -1,36 +1,36 @@
 import React from "react";
 
 const GroupTable = ({ groups, onView, onEdit, onDelete }) => (
-  <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 24 }}>
+  <table className="min-w-full bg-white">
     <thead>
-      <tr>
-        <th>Group Name</th>
-        <th>Description</th>
-        <th>Roles</th>
-        <th>Members</th>
-        <th>Tenant</th>
-        <th>Last Modified</th>
-        <th>Actions</th>
+      <tr className="bg-gray-50 text-gray-700 text-sm">
+        <th className="p-3 text-left">Group Name</th>
+        <th className="p-3 text-left">Description</th>
+        <th className="p-3 text-left">Roles</th>
+        <th className="p-3 text-left">Members</th>
+        <th className="p-3 text-left">Tenant</th>
+        <th className="p-3 text-left">Last Modified</th>
+        <th className="p-3 text-left">Actions</th>
       </tr>
     </thead>
     <tbody>
       {groups.map(group => (
-        <tr key={group.id}>
-          <td>
-            <a href="#" onClick={e => { e.preventDefault(); onView(group); }}>{group.name}</a>
-            {group.is_default && <span style={{ marginLeft: 8, background: '#eee', color: '#c00', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>Default</span>}
+        <tr key={group.id} className="border-b hover:bg-blue-50 cursor-pointer">
+          <td className="p-3">
+            <a href="#" onClick={e => { e.preventDefault(); onView(group); }} className="text-blue-700 hover:underline font-semibold">{group.name}</a>
+            {group.is_default && <span className="ml-2 bg-gray-100 text-red-600 px-2 py-0.5 rounded text-xs font-semibold">Default</span>}
           </td>
-          <td>{group.description}</td>
-          <td>{group.roles && group.roles.map(role => (
-            <span key={role.id} style={{ background: '#f0f0f0', borderRadius: 4, padding: '2px 6px', marginRight: 4, fontSize: 12 }}>{role.name}</span>
+          <td className="p-3">{group.description}</td>
+          <td className="p-3">{group.roles && group.roles.map(role => (
+            <span key={role.id} className="bg-gray-200 rounded px-2 py-0.5 mr-1 text-xs font-semibold">{role.name}</span>
           ))}</td>
-          <td>{group.users ? group.users.length : 0}</td>
-          <td>{group.tenant ? group.tenant.name : "Global"}</td>
-          <td>{new Date(group.updated_at).toLocaleString()}</td>
-          <td>
-            <button onClick={() => onView(group)}>View</button>{' '}
-            <button onClick={() => onEdit(group)}>Edit</button>{' '}
-            <button onClick={() => onDelete(group)} style={{ color: '#c00' }}>Delete</button>
+          <td className="p-3">{group.users ? group.users.length : 0}</td>
+          <td className="p-3">{group.tenant ? group.tenant.name : "Global"}</td>
+          <td className="p-3">{new Date(group.updated_at).toLocaleString()}</td>
+          <td className="p-3">
+            <button onClick={() => onView(group)} className="text-blue-600 hover:underline mr-2">View</button>
+            <button onClick={() => onEdit(group)} className="text-yellow-700 hover:underline mr-2">Edit</button>
+            <button onClick={() => onDelete(group)} className="text-red-600 hover:underline">Delete</button>
           </td>
         </tr>
       ))}

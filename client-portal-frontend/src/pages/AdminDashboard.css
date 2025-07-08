@@ -205,14 +205,77 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   pointer-events: none;
 }
 
-.admin-dashboard-masonry {
-  height: 100%;
-  display: grid;
-  grid-template-rows: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-  padding: 24px 0 0 0;
-  margin: 0;
+.admin-main-content {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 64px); /* 64px topbar */
+  min-height: 0;
 }
+
+/* --- Responsive Dashboard Masonry Grid --- */
+.admin-dashboard-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  box-sizing: border-box;
+  overflow: visible;
+  padding: 0 0 16px 0;
+  background: #f6f8fb;
+}
+
+.admin-dashboard-masonry {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 1fr;
+  grid-template-areas:
+    "users tenants tickets failures"
+    "activity activity integrations integrations"
+    "announcement announcement roadmap roadmap";
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  box-sizing: border-box;
+  align-items: stretch;
+  justify-items: stretch;
+  background: #f6f8fb;
+}
+
+@media (max-width: 1200px) {
+  .admin-dashboard-masonry {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
+    grid-template-areas:
+      "users tenants"
+      "tickets failures"
+      "activity activity"
+      "integrations integrations"
+      "announcement announcement"
+      "roadmap roadmap";
+    gap: 12px;
+  }
+}
+@media (max-width: 800px) {
+  .admin-dashboard-masonry {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 1fr;
+    grid-template-areas:
+      "users"
+      "tenants"
+      "tickets"
+      "failures"
+      "activity"
+      "integrations"
+      "announcement"
+      "roadmap";
+    gap: 8px;
+  }
+}
+
 .card-users { grid-area: users; }
 .card-tenants { grid-area: tenants; }
 .card-tickets { grid-area: tickets; }
@@ -220,56 +283,51 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
 .card-activity { grid-area: activity; }
 .card-integrations { grid-area: integrations; }
 .card-announcement { grid-area: announcement; }
-.card-quickactions { grid-area: quickactions; }
 .card-roadmap { grid-area: roadmap; }
 
 .admin-dashboard-card {
   background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
-  padding: 24px 28px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(80, 120, 200, 0.06);
+  border: none;
+  padding: 12px 12px 10px 12px;
+  font-size: 0.98rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  align-items: flex-start;
   min-width: 0;
+  width: 100%;
+  height: 100%;
+  transition: box-shadow 0.18s, transform 0.18s;
 }
-
+.admin-dashboard-card:hover {
+  box-shadow: 0 8px 32px rgba(80, 120, 200, 0.16);
+  transform: translateY(-2px) scale(1.03);
+}
 .admin-card-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-.admin-card-icon {
-  font-size: 1.5rem;
-  color: #6b7280;
-  stroke-width: 1.5;
+  font-size: 1rem;
+  margin-bottom: 4px;
 }
 .admin-card-title {
-  font-size: 1.08rem;
-  font-weight: 500;
-  color: #222;
+  font-size: 1rem;
 }
 .admin-card-metric {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #222;
+  font-size: 1.1rem;
   margin-bottom: 2px;
 }
 .admin-card-subtext {
-  font-size: 1rem;
-  color: #6b7280;
+  font-size: 0.85rem;
 }
 .admin-activity-list {
   margin: 0;
   padding: 0 0 0 2px;
   list-style: none;
-  font-size: 0.98rem;
+  font-size: 0.85rem;
   color: #444;
 }
 .admin-activity-item {
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .admin-integrations-list {
   margin: 0;
@@ -279,17 +337,17 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
 .admin-integration-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 1rem;
-  margin-bottom: 6px;
+  gap: 5px;
+  font-size: 0.85rem;
+  margin-bottom: 3px;
 }
 .admin-integration-dot {
-  width: 10px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   display: inline-block;
-  margin-left: 6px;
-  margin-right: 2px;
+  margin-left: 3px;
+  margin-right: 1px;
 }
 .admin-integration-dot.connected {
   background: #21a366;
@@ -298,35 +356,35 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   background: #d1d5db;
 }
 .admin-integration-status {
-  font-size: 0.97rem;
+  font-size: 0.8rem;
   color: #6b7280;
-  margin-left: 4px;
+  margin-left: 2px;
 }
 .admin-announcement-title {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 500;
   color: #222;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 .admin-announcement-time {
-  font-size: 0.97rem;
+  font-size: 0.8rem;
   color: #6b7280;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .admin-announcement-btn {
-  margin-top: 4px;
+  margin-top: 2px;
 }
 .admin-btn-primary {
   background: #0078D4;
   color: #fff;
   border: none;
-  border-radius: 6px;
-  padding: 8px 18px;
-  font-size: 1rem;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.15s;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
 }
 .admin-btn-primary:hover {
   background: #005fa3;
@@ -339,16 +397,16 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   margin-top: 12px;
 }
 .admin-roadmap-title {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: #222;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 .admin-roadmap-list {
   margin: 0;
-  padding-left: 18px;
+  padding-left: 10px;
   color: #444;
-  font-size: 1rem;
+  font-size: 0.85rem;
 }
 
 /* Sidebar minimalism */
@@ -396,203 +454,13 @@ body, .admin-dashboard-root, .admin-topbar, .admin-title, .admin-quick-actions, 
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Updated grid-template-areas and related styles as described. Ensure .admin-dashboard-card is used for all cards. */
-.admin-dashboard-masonry {
-  display: grid;
-  grid-template-areas:
-    'users tenants tickets failures'
-    'activity integrations announcement quickactions'
-    'roadmap roadmap roadmap roadmap';
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 1fr 1fr auto;
-  gap: 28px;
-  margin-bottom: 24px;
-}
-.card-users { grid-area: users; }
-.card-tenants { grid-area: tenants; }
-.card-tickets { grid-area: tickets; }
-.card-failures { grid-area: failures; }
-.card-activity { grid-area: activity; }
-.card-integrations { grid-area: integrations; }
-.card-announcement { grid-area: announcement; }
-.card-quickactions { grid-area: quickactions; }
-.card-roadmap { grid-area: roadmap; }
-.admin-quick-actions-wrapper {
-  grid-area: quickactions;
-  margin-top: 18px;
-  max-width: 340px;
-  width: 100%;
-}
-@media (max-width: 1200px) {
-  .admin-dashboard-masonry {
-    grid-template-areas:
-      'users tenants tickets'
-      'failures activity integrations'
-      'announcement announcement announcement'
-      'roadmap roadmap roadmap';
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto auto auto auto;
-  }
-}
-@media (max-width: 900px) {
-  .admin-dashboard-masonry {
-    grid-template-areas:
-      'users tenants'
-      'tickets failures'
-      'activity integrations'
-      'announcement announcement'
-      'roadmap roadmap';
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto auto auto auto auto;
-  }
-}
-@media (max-width: 600px) {
-  .admin-dashboard-masonry {
-    grid-template-areas:
-      'users'
-      'tenants'
-      'tickets'
-      'failures'
-      'activity'
-      'integrations'
-      'announcement'
-      'roadmap';
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-  }
-}
-.card-roadmap {
-  min-width: 0;
-  width: 100%;
-  max-width: 100%;
-}
-.admin-dashboard-content {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-.admin-card-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-.admin-card-icon {
-  font-size: 1.5rem;
-  color: #6b7280;
-  stroke-width: 1.5;
-}
-.admin-card-title {
-  font-size: 1.08rem;
-  font-weight: 500;
-  color: #222;
-}
-.admin-card-metric {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #222;
-  margin-bottom: 2px;
-}
-.admin-card-subtext {
-  font-size: 1rem;
-  color: #6b7280;
-}
-.admin-activity-list {
-  margin: 0;
-  padding: 0 0 0 2px;
-  list-style: none;
-  font-size: 0.98rem;
-  color: #444;
-}
-.admin-activity-item {
-  margin-bottom: 4px;
-}
-.admin-integrations-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.admin-integration-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 1rem;
-  margin-bottom: 6px;
-}
-.admin-integration-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-left: 6px;
-  margin-right: 2px;
-}
-.admin-integration-dot.connected {
-  background: #21a366;
-}
-.admin-integration-dot.not_configured {
-  background: #d1d5db;
-}
-.admin-integration-status {
-  font-size: 0.97rem;
-  color: #6b7280;
-  margin-left: 4px;
-}
-.admin-announcement-title {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #222;
-  margin-bottom: 2px;
-}
-.admin-announcement-time {
-  font-size: 0.97rem;
-  color: #6b7280;
-  margin-bottom: 10px;
-}
-.admin-announcement-btn {
-  margin-top: 4px;
-}
-.admin-btn-primary {
-  background: #0078D4;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 18px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.15s;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-}
-.admin-btn-primary:hover {
-  background: #005fa3;
-}
-.admin-roadmap-section {
-  background: #f6f8fa;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 20px 24px;
-  margin-top: 12px;
-}
-.admin-roadmap-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #222;
-  margin-bottom: 8px;
-}
-.admin-roadmap-list {
-  margin: 0;
-  padding-left: 18px;
-  color: #444;
-  font-size: 1rem;
-}
-
 html, body, #root {
-  height: 100vh;
-  overflow: hidden;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  width: 100vw !important;
+  min-width: 100vw !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 .admin-dashboard-root {
   display: flex;
@@ -621,4 +489,455 @@ html, body, #root {
   min-height: 0;
   display: grid;
   grid-template-rows: repeat(3, minmax(0, 1fr));
+}
+
+html, body, #root, .admin-main-content, .admin-dashboard-masonry {
+  /* Remove forced 100vh/min-height */
+  height: auto !important;
+  min-height: 0 !important;
+  width: 100vw !important;
+  min-width: 100vw !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+body, #root, .admin-main-content, .admin-dashboard-content {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-x: visible;
+}
+
+/* Remove all grid-area assignments from cards */
+.card-users,
+.card-tenants,
+.card-tickets,
+.card-failures,
+.card-activity,
+.card-integrations,
+.card-announcement,
+.card-quickactions,
+.card-roadmap {
+  /* grid-area removed */
+}
+
+/* --- New Modern Dashboard Layout --- */
+.admin-dashboard-new-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px 16px 32px 16px;
+  box-sizing: border-box;
+}
+.dashboard-summary-row {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+}
+.dashboard-summary-card {
+  flex: 1 1 0;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(80,120,200,0.07);
+  padding: 24px 28px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  position: relative;
+  transition: box-shadow 0.22s cubic-bezier(.4,0,.2,1), transform 0.18s cubic-bezier(.4,0,.2,1);
+  will-change: transform, box-shadow;
+  opacity: 0;
+  animation: fadeInUp 0.7s cubic-bezier(.4,0,.2,1) forwards;
+}
+.summary-title {
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #222b45;
+  margin-bottom: 8px;
+}
+.summary-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.summary-value.up { color: #21c197; }
+.summary-value.down { color: #e74c3c; }
+.summary-progress {
+  width: 100%;
+  height: 6px;
+  background: #f2f6fa;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+.progress-bar.up { background: linear-gradient(90deg, #21c197, #1ec9e7); }
+.progress-bar.down { background: linear-gradient(90deg, #e74c3c, #f39c12); }
+.summary-percent {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #888;
+}
+.dashboard-main-row {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  min-height: 400px;
+}
+.dashboard-main-card {
+  flex: 2 1 0;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(80,120,200,0.07);
+  padding: 24px 28px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 340px;
+  transition: box-shadow 0.22s cubic-bezier(.4,0,.2,1), transform 0.18s cubic-bezier(.4,0,.2,1);
+  will-change: transform, box-shadow;
+  opacity: 0;
+  animation: fadeInUp 0.7s cubic-bezier(.4,0,.2,1) forwards;
+}
+.main-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.main-map-placeholder {
+  flex: 1 1 auto;
+  background: #f2f6fa;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bbb;
+  font-size: 1.2rem;
+  min-height: 220px;
+}
+.dashboard-sidebar {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 220px;
+  max-width: 340px;
+}
+.dashboard-sidebar-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(80,120,200,0.07);
+  padding: 20px 22px 16px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  transition: box-shadow 0.22s cubic-bezier(.4,0,.2,1), transform 0.18s cubic-bezier(.4,0,.2,1);
+  will-change: transform, box-shadow;
+  opacity: 0;
+  animation: fadeInUp 0.7s cubic-bezier(.4,0,.2,1) forwards;
+}
+.dashboard-sidebar-card.blue {
+  background: #0db2ff;
+  color: #fff;
+}
+.dashboard-sidebar-card.blue .sidebar-title,
+.dashboard-sidebar-card.blue .sidebar-value,
+.dashboard-sidebar-card.blue .sidebar-subtext {
+  color: #fff;
+}
+.sidebar-title {
+  font-size: 1.08rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.sidebar-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.sidebar-subtext {
+  font-size: 1rem;
+  color: #888;
+}
+@media (max-width: 1100px) {
+  .dashboard-main-row {
+    flex-direction: column;
+  }
+  .dashboard-sidebar {
+    flex-direction: row;
+    max-width: 100%;
+    gap: 16px;
+  }
+  .dashboard-sidebar-card {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+@media (max-width: 800px) {
+  .dashboard-summary-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .dashboard-main-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .dashboard-main-card {
+    min-height: 180px;
+    padding: 16px 10px;
+  }
+  .dashboard-sidebar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .dashboard-sidebar-card {
+    padding: 12px 10px;
+  }
+}
+
+.dashboard-bottom-row {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  margin-top: 18px;
+}
+.dashboard-bottom-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(80,120,200,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 1.15rem;
+  min-width: 0;
+  transition: box-shadow 0.22s cubic-bezier(.4,0,.2,1), transform 0.18s cubic-bezier(.4,0,.2,1);
+  will-change: transform, box-shadow;
+  opacity: 0;
+  animation: fadeInUp 0.7s cubic-bezier(.4,0,.2,1) forwards;
+}
+.dashboard-bottom-card.large {
+  flex: 2 1 0;
+  min-height: 120px;
+  height: 140px;
+}
+.dashboard-bottom-card.small {
+  flex: 1 1 0;
+  min-height: 120px;
+  height: 140px;
+  max-width: 340px;
+}
+@media (max-width: 1100px) {
+  .dashboard-bottom-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .dashboard-bottom-card.large,
+  .dashboard-bottom-card.small {
+    height: 100px;
+    min-height: 80px;
+    max-width: 100%;
+  }
+}
+
+.dashboard-summary-card:hover,
+.dashboard-main-card:hover,
+.dashboard-sidebar-card:hover,
+.dashboard-bottom-card:hover {
+  box-shadow: 0 8px 32px rgba(80,120,200,0.16);
+  transform: translateY(-2px) scale(1.04);
+  z-index: 2;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ideas Modal Styles */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(30,40,60,0.18);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 32px 28px 24px 28px;
+  min-width: 340px;
+  max-width: 98vw;
+  width: 420px;
+  position: relative;
+  animation: fadeInUp 0.3s;
+}
+.modal-header {
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.modal-close {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: #c8102e; }
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.modal-input {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  background: #f9f9f9;
+  transition: border 0.2s;
+  outline: none;
+}
+.modal-input:focus {
+  border: 1.5px solid #c8102e;
+  background: #fff;
+}
+.modal-section {
+  margin-top: 10px;
+}
+.modal-section-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #222;
+}
+.modal-ideas-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.modal-idea-item {
+  border-bottom: 1px solid #f1f1f1;
+  padding: 10px 0 8px 0;
+  margin-bottom: 2px;
+}
+.modal-idea-item:last-child { border-bottom: none; }
+.modal-idea-actions {
+  margin-top: 6px;
+  display: flex;
+  gap: 6px;
+}
+
+/* Yellow sidebar card for Ideas */
+.dashboard-sidebar-card.yellow {
+  background: linear-gradient(90deg, #fffbe6 60%, #fff7c2 100%);
+  border: 1.5px solid #ffe066;
+  color: #bfa100;
+}
+.dashboard-sidebar-card.yellow .sidebar-title {
+  color: #bfa100;
+}
+.dashboard-sidebar-card.yellow .sidebar-value {
+  color: #bfa100;
+}
+.dashboard-sidebar-card.yellow .sidebar-subtext {
+  color: #bfa100;
+}
+
+.dashboard-main-card.half-width {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 50%;
+  margin-right: 12px;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+@media (max-width: 1100px) {
+  .dashboard-main-card.half-width {
+    max-width: 100%;
+    margin-right: 0;
+    margin-bottom: 16px;
+  }
+  .dashboard-main-row {
+    flex-direction: column;
+  }
+}
+
+.dashboard-main-card.compact-announcements {
+  min-height: 0 !important;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: auto;
+}
+.dashboard-main-card.compact-announcements .admin-announcement-btn {
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.dashboard-main-card.placeholder-card {
+  min-height: 80px;
+  background: #fafbfc;
+  border: 1.5px dashed #e0e4ea;
+  color: #bbb;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+/* Skeleton Loader Styles */
+.skeleton-box {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 37%, #f3f4f6 63%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.2s ease-in-out infinite;
+  border-radius: 12px;
+  min-height: 48px;
+  min-width: 0;
+  opacity: 0.85;
+}
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+.dashboard-skeleton .dashboard-summary-card,
+.dashboard-skeleton .dashboard-main-card,
+.dashboard-skeleton .dashboard-sidebar-card {
+  box-shadow: none !important;
+  border: none !important;
+  color: transparent !important;
 } 

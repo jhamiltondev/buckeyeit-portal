@@ -21,6 +21,21 @@ import AdminDashboard from './pages/AdminDashboard';
 import ActiveUsers from './pages/ActiveUsers';
 import Groups from './pages/Groups';
 import SuspendedDeletedUsers from './pages/SuspendedDeletedUsers';
+import UserAuditLogs from './pages/UserAuditLogs';
+import ActiveTenants from './pages/ActiveTenants';
+import VIPTenants from './pages/VIPTenants';
+import SuspendedDeletedTenants from './pages/SuspendedDeletedTenants';
+import AllArticles from './pages/AllArticles';
+import Categories from './pages/Categories';
+import DraftPendingReview from './pages/DraftPendingReview';
+import ArchivedArticles from './pages/ArchivedArticles';
+import MostViewedArticles from './pages/MostViewedArticles';
+import TenantAccessControl from './pages/TenantAccessControl';
+import ArticleFeedback from './pages/ArticleFeedback';
+import AllAnnouncements from './pages/AllAnnouncements';
+import DraftAnnouncements from './pages/DraftAnnouncements';
+import ScheduledAnnouncements from './pages/ScheduledAnnouncements';
+import ExpiredArchivedAnnouncements from './pages/ExpiredArchivedAnnouncements';
 
 // ProtectedRoute component
 function ProtectedRoute({ children }) {
@@ -97,13 +112,25 @@ function App() {
                 <AdminDashboard />
               </ProtectedRoute>
             }>
-              <Route index element={<div className="text-center py-12">
-                <h1 className="text-3xl font-bold text-gray-800 mb-4">Welcome to the Admin Center</h1>
-                <p className="text-gray-600">Select an option from the sidebar to get started.</p>
-              </div>} />
+              <Route index element={<AdminDashboard />} />
               <Route path="users/active" element={<ActiveUsers />} />
               <Route path="groups" element={<Groups />} />
               <Route path="users/suspended" element={<SuspendedDeletedUsers />} />
+              <Route path="users/logs" element={<UserAuditLogs />} />
+              <Route path="tenants/active" element={<ActiveTenants />} />
+              <Route path="tenants/vip" element={<VIPTenants />} />
+              <Route path="tenants/suspended-deleted" element={<SuspendedDeletedTenants />} />
+              <Route path="kb/articles" element={<AllArticles />} />
+              <Route path="kb/categories" element={<Categories />} />
+              <Route path="kb/draft-pending" element={<DraftPendingReview />} />
+              <Route path="kb/archived" element={<ArchivedArticles />} />
+              <Route path="kb/popular" element={<MostViewedArticles />} />
+              <Route path="kb/access" element={<TenantAccessControl />} />
+              <Route path="kb/feedback" element={<ArticleFeedback />} />
+              <Route path="announcements/all" element={<AllAnnouncements />} />
+              <Route path="announcements/drafts" element={<DraftAnnouncements />} />
+              <Route path="announcements/scheduled" element={<ScheduledAnnouncements />} />
+              <Route path="announcements/archived" element={<ExpiredArchivedAnnouncements />} />
               <Route path="*" element={<div className="text-center py-12">
                 <h1 className="text-2xl font-bold text-gray-800 mb-4">Page Not Found</h1>
                 <p className="text-gray-600">The requested admin page could not be found.</p>

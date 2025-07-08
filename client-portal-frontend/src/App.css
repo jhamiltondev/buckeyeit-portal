@@ -36,3 +36,23 @@
     transform: rotate(360deg);
   }
 }
+
+/* Disable all transitions and animations in the sidebar */
+.sidebar-no-anim, .sidebar-no-anim * {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* (Removed global * selector for transitions/animations) */
+
+/* Absolutely nuke all transitions/animations in the sidebar and its children */
+aside.sidebar-no-anim, aside.sidebar-no-anim * {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* DEBUG: Disable all transitions and animations everywhere */
+*, *::before, *::after {
+  transition: none !important;
+  animation: none !important;
+}

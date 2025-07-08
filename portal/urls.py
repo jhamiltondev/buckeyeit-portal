@@ -1,7 +1,7 @@
 from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
-from .views import LogoutViewAllowGet, logout_allow_get, dashboard, login_view, password_view, root_redirect, debug_urls, support_view, submit_ticket_view, knowledge_base_view, knowledge_article_view, profile_view, company_info_view, announcements_view, all_tickets_view, connectwise_ticket_detail, debug_tech_news, notifications_api, dashboard_tickets_api, dashboard_tech_news_api, dashboard_announcements_api, support_tickets_api, api_announcements_list, status_proxy, dashboard_ticket_summary_api, security_center_api, api_knowledge_base_articles, RoleViewSet, UserGroupViewSet, api_suspended_users, api_deleted_users, api_restore_user, api_permanent_delete_user, api_system_usage, api_security_center
+from .views import LogoutViewAllowGet, logout_allow_get, dashboard, login_view, password_view, root_redirect, debug_urls, support_view, submit_ticket_view, knowledge_base_view, knowledge_article_view, profile_view, company_info_view, announcements_view, all_tickets_view, connectwise_ticket_detail, debug_tech_news, notifications_api, dashboard_tickets_api, dashboard_tech_news_api, dashboard_announcements_api, support_tickets_api, api_announcements_list, status_proxy, dashboard_ticket_summary_api, security_center_api, api_knowledge_base_articles, RoleViewSet, UserGroupViewSet, api_suspended_users, api_deleted_users, api_restore_user, api_permanent_delete_user, api_system_usage, api_security_center, api_ideas_list, api_idea_create, api_idea_update, api_ideas_stats, UserAuditLogListView, TenantListCreateView, TenantDetailView, KnowledgeBaseArticleListView, KnowledgeBaseArticleDetailView, KnowledgeBaseCategoryListView, KnowledgeBaseCategoryDetailView, KnowledgeBaseAuthorListView, APITenantListView, APIUserGroupListView
 from rest_framework.routers import DefaultRouter
 
 app_name = 'portal'
@@ -62,5 +62,21 @@ urlpatterns = [
     path('group/<int:pk>/', views.UserGroupViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'}), name='usergroup-detail'),
     path('roles/', views.RoleViewSet.as_view({'get': 'list', 'post': 'create'}), name='role-list'),
     path('roles/<int:pk>/', views.RoleViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'}), name='role-detail'),
+    # Idea API endpoints
+    path('ideas/', views.api_ideas_list, name='api_ideas_list'),
+    path('ideas/create/', views.api_idea_create, name='api_idea_create'),
+    path('ideas/<int:idea_id>/update/', views.api_idea_update, name='api_idea_update'),
+    path('ideas/stats/', views.api_ideas_stats, name='api_ideas_stats'),
+    # Add missing API endpoints for frontend (using more permissive views)
+    path('tenants/', views.APITenantListView.as_view(), name='api-tenant-list'),
+    path('user-groups/', views.APIUserGroupListView.as_view(), name='api-usergroup-list'),
     path('api/', include(router.urls)),
+    path('adminpanel/api/user-audit-logs/', UserAuditLogListView.as_view(), name='user-audit-logs'),
+    path('adminpanel/api/tenants/', TenantListCreateView.as_view(), name='tenant-list-create'),
+    path('adminpanel/api/tenants/<int:pk>/', TenantDetailView.as_view(), name='tenant-detail'),
+    path('adminpanel/api/kb-articles/', KnowledgeBaseArticleListView.as_view(), name='kb-articles-list'),
+    path('adminpanel/api/kb-articles/<int:pk>/', KnowledgeBaseArticleDetailView.as_view(), name='kb-articles-detail'),
+    path('adminpanel/api/kb-categories/', KnowledgeBaseCategoryListView.as_view(), name='kb-categories-list'),
+    path('adminpanel/api/kb-categories/<int:pk>/', KnowledgeBaseCategoryDetailView.as_view(), name='kb-categories-detail'),
+    path('adminpanel/api/kb-authors/', KnowledgeBaseAuthorListView.as_view(), name='kb-authors-list'),
 ] 

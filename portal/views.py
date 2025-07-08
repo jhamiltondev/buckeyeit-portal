@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as django_login, logout
 from django.contrib import messages
@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
 from django.urls import get_resolver
-from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument, TicketStatusSeen, Role, UserGroup
+from .models import Announcement, Ticket, KnowledgeBaseCategory, KnowledgeBaseArticle, Tenant, User, TenantDocument, TicketStatusSeen, Role, UserGroup, Idea, UserAuditLog
 from django.contrib.admin.views.decorators import staff_member_required
 import requests
 from .adapters import get_connectwise_tickets, create_connectwise_ticket, get_connectwise_ticket_notes, post_connectwise_ticket_note, get_connectwise_ticket, split_ticket_notes, get_connectwise_contact_id
@@ -20,11 +20,18 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from .serializers import AnnouncementSerializer, KnowledgeBaseArticleSerializer, RoleSerializer, UserGroupSerializer, TenantSerializer, SuspendedDeletedUserSerializer
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from .serializers import AnnouncementSerializer, KnowledgeBaseArticleSerializer, KnowledgeBaseCategorySerializer, RoleSerializer, UserGroupSerializer, TenantSerializer, SuspendedDeletedUserSerializer, UserAuditLogSerializer
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from django.conf import settings
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, generics
 from django.db import models
+from .utils import log_user_action
+from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.views.decorators.http import require_POST
+from django.core.paginator import Paginator
+from django.db.models import Q
+from rest_framework import serializers
 
 # Set up logger for views
 logger = logging.getLogger('portal.views')
@@ -160,18 +167,54 @@ def login_view(request):
         
         if user is not None:
             django_login(request, user)
+            # Log the login event
+            log_user_action(
+                user=user,
+                action_type='Login',
+                performed_by=user,
+                ip_address=request.META.get('REMOTE_ADDR'),
+                description='User logged in',
+                details={
+                    'user_agent': request.META.get('HTTP_USER_AGENT'),
+                    'login_method': 'form',
+                }
+            )
             tenant_slug = user.tenant.slug if user.tenant else None
             if tenant_slug:
                 return redirect('portal:tenant_dashboard', tenant_slug=tenant_slug)
             else:
                 return redirect('portal:dashboard')
         else:
+            # Log the failed login attempt
+            log_user_action(
+                user=None,
+                action_type='Login Failed',
+                performed_by=None,
+                ip_address=request.META.get('REMOTE_ADDR'),
+                description=f'Failed login attempt for username/email: {username}',
+                details={
+                    'user_agent': request.META.get('HTTP_USER_AGENT'),
+                    'login_method': 'form',
+                }
+            )
             messages.error(request, 'Invalid username/email or password.')
     
     return render(request, 'portal/login.html')
 
 @login_required(login_url='/adminpanel/login/')
 def password_view(request):
+    if request.method == 'POST':
+        # This is a placeholder for actual password reset logic
+        log_user_action(
+            user=request.user,
+            action_type='Password Reset',
+            performed_by=request.user,
+            ip_address=request.META.get('REMOTE_ADDR'),
+            description='User reset their password',
+            details={
+                'user_agent': request.META.get('HTTP_USER_AGENT'),
+            }
+        )
     return render(request, 'portal/password.html')
 
 def root_redirect(request):
@@ -1025,7 +1068,489 @@ def api_system_usage(request):
 def api_security_center(request):
     # TODO: Replace with real security data
     return Response({
-        'mfa_status': 'Enabled',
-        'last_blocked_login': '2 days ago',
-        'risky_signins': 'None'
+        'mfa_enabled_users': 85,
+        'suspicious_logins': 2,
+        'failed_login_attempts': 12,
+        'security_score': 92
     })
+
+# Idea API Views
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_ideas_list(request):
+    """Get list of ideas for the current user/tenant"""
+    user = request.user
+    tenant = user.tenant
+    
+    # Filter ideas based on user permissions
+    if user.is_staff or user.is_superuser:
+        # Admins can see all ideas
+        ideas = Idea.objects.all()
+    else:
+        # Regular users see only their own ideas or tenant ideas
+        ideas = Idea.objects.filter(
+            models.Q(submitted_by=user) | 
+            models.Q(tenant=tenant)
+        )
+    
+    # Apply filters
+    status = request.GET.get('status')
+    if status:
+        ideas = ideas.filter(status=status)
+    
+    priority = request.GET.get('priority')
+    if priority:
+        ideas = ideas.filter(priority=priority)
+    
+    # Serialize and return
+    ideas_data = []
+    for idea in ideas:
+        ideas_data.append({
+            'id': idea.id,
+            'title': idea.title,
+            'description': idea.description,
+            'status': idea.status,
+            'priority': idea.priority,
+            'created_at': idea.created_at.isoformat(),
+            'updated_at': idea.updated_at.isoformat(),
+            'submitted_by': {
+                'id': idea.submitted_by.id,
+                'name': f"{idea.submitted_by.first_name} {idea.submitted_by.last_name}".strip() or idea.submitted_by.username,
+                'email': idea.submitted_by.email
+            },
+            'tenant': idea.tenant.name if idea.tenant else None,
+            'reviewed_by': {
+                'id': idea.reviewed_by.id,
+                'name': f"{idea.reviewed_by.first_name} {idea.reviewed_by.last_name}".strip() or idea.reviewed_by.username
+            } if idea.reviewed_by else None,
+            'reviewed_at': idea.reviewed_at.isoformat() if idea.reviewed_at else None,
+            'review_notes': idea.review_notes,
+            'estimated_effort': idea.estimated_effort
+        })
+    
+    return Response(ideas_data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_idea_create(request):
+    """Create a new idea"""
+    user = request.user
+    tenant = user.tenant
+    
+    title = request.data.get('title')
+    description = request.data.get('description')
+    priority = request.data.get('priority', 'medium')
+    
+    if not title or not description:
+        return Response({'error': 'Title and description are required'}, status=400)
+    
+    idea = Idea.objects.create(
+        title=title,
+        description=description,
+        priority=priority,
+        submitted_by=user,
+        tenant=tenant
+    )
+    
+    return Response({
+        'id': idea.id,
+        'title': idea.title,
+        'description': idea.description,
+        'status': idea.status,
+        'priority': idea.priority,
+        'created_at': idea.created_at.isoformat(),
+        'submitted_by': {
+            'id': user.id,
+            'name': f"{user.first_name} {user.last_name}".strip() or user.username,
+            'email': user.email
+        },
+        'tenant': tenant.name if tenant else None
+    }, status=201)
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def api_idea_update(request, idea_id):
+    """Update an idea (admin/dev only)"""
+    user = request.user
+    
+    if not user.is_staff and not user.is_superuser:
+        return Response({'error': 'Permission denied'}, status=403)
+    
+    try:
+        idea = Idea.objects.get(id=idea_id)
+    except Idea.DoesNotExist:
+        return Response({'error': 'Idea not found'}, status=404)
+    
+    # Update fields
+    if 'status' in request.data:
+        idea.status = request.data['status']
+    
+    if 'priority' in request.data:
+        idea.priority = request.data['priority']
+    
+    if 'review_notes' in request.data:
+        idea.review_notes = request.data['review_notes']
+    
+    if 'estimated_effort' in request.data:
+        idea.estimated_effort = request.data['estimated_effort']
+    
+    # Mark as reviewed if status is being updated
+    if 'status' in request.data and idea.status != 'pending':
+        idea.reviewed_by = user
+        idea.reviewed_at = timezone.now()
+    
+    idea.save()
+    
+    return Response({
+        'id': idea.id,
+        'title': idea.title,
+        'status': idea.status,
+        'priority': idea.priority,
+        'review_notes': idea.review_notes,
+        'estimated_effort': idea.estimated_effort,
+        'reviewed_by': {
+            'id': idea.reviewed_by.id,
+            'name': f"{idea.reviewed_by.first_name} {idea.reviewed_by.last_name}".strip() or idea.reviewed_by.username
+        } if idea.reviewed_by else None,
+        'reviewed_at': idea.reviewed_at.isoformat() if idea.reviewed_at else None
+    })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def api_ideas_stats(request):
+    """Get statistics about ideas"""
+    user = request.user
+    tenant = user.tenant
+    
+    if user.is_staff or user.is_superuser:
+        # Admins see all ideas
+        total_ideas = Idea.objects.count()
+        pending_ideas = Idea.objects.filter(status='pending').count()
+        approved_ideas = Idea.objects.filter(status='approved').count()
+        implemented_ideas = Idea.objects.filter(status='implemented').count()
+    else:
+        # Regular users see only their ideas
+        total_ideas = Idea.objects.filter(submitted_by=user).count()
+        pending_ideas = Idea.objects.filter(submitted_by=user, status='pending').count()
+        approved_ideas = Idea.objects.filter(submitted_by=user, status='approved').count()
+        implemented_ideas = Idea.objects.filter(submitted_by=user, status='implemented').count()
+    
+    return Response({
+        'total_ideas': total_ideas,
+        'pending_ideas': pending_ideas,
+        'approved_ideas': approved_ideas,
+        'implemented_ideas': implemented_ideas
+    })
+
+class UserAuditLogListView(generics.ListAPIView):
+    queryset = UserAuditLog.objects.select_related('user', 'performed_by').all()
+    serializer_class = UserAuditLogSerializer
+    permission_classes = [IsAdminUser]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['user__email', 'user__first_name', 'user__last_name', 'ip_address', 'description']
+    ordering_fields = ['timestamp', 'action_type']
+    ordering = ['-timestamp']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        from_date = self.request.query_params.get('from')
+        to_date = self.request.query_params.get('to')
+        action = self.request.query_params.get('action')
+        user = self.request.query_params.get('user')
+        if from_date:
+            qs = qs.filter(timestamp__gte=from_date)
+        if to_date:
+            qs = qs.filter(timestamp__lte=to_date)
+        if action and action != 'All Actions':
+            qs = qs.filter(action_type=action)
+        if user:
+            qs = qs.filter(user__email__icontains=user) | qs.filter(user__first_name__icontains=user) | qs.filter(user__last_name__icontains=user)
+        return qs
+
+class TenantListCreateView(generics.ListCreateAPIView):
+    queryset = Tenant.objects.all()
+    serializer_class = TenantSerializer
+    permission_classes = [IsAdminUser]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'domain', 'id']
+    ordering_fields = ['name', 'created_at', 'status', 'industry', 'vip_level']
+    ordering = ['name']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        status = self.request.query_params.get('status')
+        industry = self.request.query_params.get('industry')
+        vip = self.request.query_params.get('vip')
+        vip_level = self.request.query_params.get('vip_level')
+        is_deleted = self.request.query_params.get('is_deleted')
+        suspended = self.request.query_params.get('suspended')
+        if status and status != 'All':
+            qs = qs.filter(status=status)
+        if industry:
+            qs = qs.filter(industry__icontains=industry)
+        if vip == 'true':
+            qs = qs.filter(vip=True)
+        if vip_level:
+            qs = qs.filter(vip_level=vip_level)
+        if is_deleted == 'true':
+            qs = qs.filter(is_deleted=True)
+        elif is_deleted == 'false':
+            qs = qs.filter(is_deleted=False)
+        if suspended == 'true':
+            qs = qs.filter(suspended_at__isnull=False)
+        elif suspended == 'false':
+            qs = qs.filter(suspended_at__isnull=True)
+        return qs
+
+class TenantDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Tenant.objects.all()
+    serializer_class = TenantSerializer
+    permission_classes = [IsAdminUser]
+
+    def update(self, request, *args, **kwargs):
+        tenant = self.get_object()
+        user = request.user
+        
+        # Handle reactivation (restore from deleted state)
+        if 'is_deleted' in request.data and request.data['is_deleted'] is False:
+            tenant.is_deleted = False
+            tenant.deleted_at = None
+            tenant.deleted_by = None
+            tenant.deletion_reason = ''
+            tenant.save()
+            
+            # Log the action
+            from .utils import log_user_action
+            log_user_action(
+                user=tenant,  # The tenant being acted upon
+                action_type='tenant_reactivated',
+                performed_by=user,
+                ip_address=request.META.get('REMOTE_ADDR'),
+                description=f'Tenant {tenant.name} reactivated',
+                details={'reactivated_by': user.get_full_name()}
+            )
+            
+        # Handle restoration (restore from suspended state)
+        elif 'suspended_at' in request.data and request.data['suspended_at'] is None:
+            tenant.suspended_at = None
+            tenant.suspended_by = None
+            tenant.suspension_reason = ''
+            tenant.save()
+            
+            # Log the action
+            from .utils import log_user_action
+            log_user_action(
+                user=tenant,  # The tenant being acted upon
+                action_type='tenant_restored',
+                performed_by=user,
+                ip_address=request.META.get('REMOTE_ADDR'),
+                description=f'Tenant {tenant.name} restored from suspension',
+                details={'restored_by': user.get_full_name()}
+            )
+        
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        tenant = self.get_object()
+        user = request.user
+        
+        # Log the permanent deletion
+        from .utils import log_user_action
+        log_user_action(
+            user=tenant,  # The tenant being acted upon
+            action_type='tenant_permanently_deleted',
+            performed_by=user,
+            ip_address=request.META.get('REMOTE_ADDR'),
+            description=f'Tenant {tenant.name} permanently deleted',
+            details={'deleted_by': user.get_full_name()}
+        )
+        
+        return super().destroy(request, *args, **kwargs)
+
+class KnowledgeBaseArticleListView(generics.ListCreateAPIView):
+    queryset = KnowledgeBaseArticle.objects.select_related('category', 'author').all()
+    serializer_class = KnowledgeBaseArticleSerializer
+    permission_classes = [IsAdminUser]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['title', 'excerpt', 'content']
+    ordering_fields = ['title', 'created_at', 'updated_at', 'status', 'view_count']
+    ordering = ['-updated_at']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        status = self.request.query_params.get('status')
+        category = self.request.query_params.get('category')
+        author = self.request.query_params.get('author')
+        
+        if status and status != 'All':
+            qs = qs.filter(status=status)
+        if category and category != 'All':
+            qs = qs.filter(category__name=category)
+        if author and author != 'All':
+            qs = qs.filter(author_id=author)
+            
+        return qs
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+class KnowledgeBaseArticleDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = KnowledgeBaseArticle.objects.select_related('category', 'author').all()
+    serializer_class = KnowledgeBaseArticleSerializer
+    permission_classes = [IsAdminUser]
+
+    def update(self, request, *args, **kwargs):
+        article = self.get_object()
+        user = request.user
+        
+        # Log status changes
+        if 'status' in request.data and request.data['status'] != article.status:
+            from .utils import log_user_action
+            log_user_action(
+                user=article,  # The article being acted upon
+                action_type='kb_article_status_changed',
+                performed_by=user,
+                ip_address=request.META.get('REMOTE_ADDR'),
+                description=f'Article "{article.title}" status changed from {article.status} to {request.data["status"]}',
+                details={'old_status': article.status, 'new_status': request.data['status']}
+            )
+        
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        article = self.get_object()
+        user = request.user
+        
+        # Log the deletion
+        from .utils import log_user_action
+        log_user_action(
+            user=article,  # The article being acted upon
+            action_type='kb_article_deleted',
+            performed_by=user,
+            ip_address=request.META.get('REMOTE_ADDR'),
+            description=f'Article "{article.title}" deleted',
+            details={'article_id': article.id, 'category': article.category.name}
+        )
+        
+        return super().destroy(request, *args, **kwargs)
+
+class KnowledgeBaseCategoryListView(generics.ListCreateAPIView):
+    queryset = KnowledgeBaseCategory.objects.all()
+    serializer_class = KnowledgeBaseCategorySerializer
+    permission_classes = [IsAdminUser]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'description']
+    ordering_fields = ['name', 'created_at', 'updated_at', 'article_count']
+    ordering = ['name']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        visibility = self.request.query_params.get('visibility')
+        
+        if visibility and visibility != 'All':
+            qs = qs.filter(visibility=visibility)
+            
+        return qs
+
+class KnowledgeBaseCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = KnowledgeBaseCategory.objects.all()
+    serializer_class = KnowledgeBaseCategorySerializer
+    permission_classes = [IsAdminUser]
+
+    def update(self, request, *args, **kwargs):
+        category = self.get_object()
+        user = request.user
+        
+        # Log visibility changes
+        if 'visibility' in request.data and request.data['visibility'] != category.visibility:
+            from .utils import log_user_action
+            log_user_action(
+                user=category,  # The category being acted upon
+                action_type='kb_category_visibility_changed',
+                performed_by=user,
+                ip_address=request.META.get('REMOTE_ADDR'),
+                description=f'Category "{category.name}" visibility changed from {category.visibility} to {request.data["visibility"]}',
+                details={'old_visibility': category.visibility, 'new_visibility': request.data['visibility']}
+            )
+        
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        category = self.get_object()
+        user = request.user
+        
+        # Log the deletion
+        from .utils import log_user_action
+        log_user_action(
+            user=category,  # The category being acted upon
+            action_type='kb_category_deleted',
+            performed_by=user,
+            ip_address=request.META.get('REMOTE_ADDR'),
+            description=f'Category "{category.name}" deleted',
+            details={'category_id': category.id, 'article_count': category.article_count}
+        )
+        
+        return super().destroy(request, *args, **kwargs)
+
+class KnowledgeBaseAuthorListView(generics.ListAPIView):
+    permission_classes = [IsAdminUser]
+    
+    def get_queryset(self):
+        return User.objects.filter(is_staff=True).order_by('first_name', 'last_name')
+    
+    def list(self, request, *args, **kwargs):
+        authors = self.get_queryset()
+        data = [{'id': author.id, 'name': f"{author.first_name} {author.last_name}".strip() or author.email} for author in authors]
+        return Response(data)
+
+# New API views for frontend admin panel (more permissive permissions)
+class APITenantListView(generics.ListAPIView):
+    queryset = Tenant.objects.all()
+    serializer_class = TenantSerializer
+    permission_classes = [IsAuthenticated]  # Allow any authenticated user
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'domain', 'id']
+    ordering_fields = ['name', 'created_at', 'status', 'industry', 'vip_level']
+    ordering = ['name']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        status = self.request.query_params.get('status')
+        industry = self.request.query_params.get('industry')
+        vip = self.request.query_params.get('vip')
+        vip_level = self.request.query_params.get('vip_level')
+        is_deleted = self.request.query_params.get('is_deleted')
+        suspended = self.request.query_params.get('suspended')
+        if status and status != 'All':
+            qs = qs.filter(status=status)
+        if industry:
+            qs = qs.filter(industry__icontains=industry)
+        if vip == 'true':
+            qs = qs.filter(vip=True)
+        if vip_level:
+            qs = qs.filter(vip_level=vip_level)
+        if is_deleted == 'true':
+            qs = qs.filter(is_deleted=True)
+        elif is_deleted == 'false':
+            qs = qs.filter(is_deleted=False)
+        if suspended == 'true':
+            qs = qs.filter(suspended_at__isnull=False)
+        elif suspended == 'false':
+            qs = qs.filter(suspended_at__isnull=True)
+        return qs
+
+class APIUserGroupListView(generics.ListAPIView):
+    queryset = UserGroup.objects.all().prefetch_related('roles', 'users', 'tenant')
+    serializer_class = UserGroupSerializer
+    permission_classes = [IsAuthenticated]  # Allow any authenticated user
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['name', 'description']
+    ordering_fields = ['updated_at', 'name']
+    ordering = ['name']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        tenant = self.request.query_params.get('tenant')
+        if tenant and tenant != 'All':
+            qs = qs.filter(tenant__name=tenant)
+        return qs

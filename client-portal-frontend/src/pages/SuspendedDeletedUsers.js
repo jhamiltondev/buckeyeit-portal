@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from 'framer-motion';
 
 const TABS = [
   { key: "suspended", label: "Suspended Users" },
@@ -61,79 +62,83 @@ const SuspendedDeletedUsers = () => {
   };
 
   return (
-    <div>
-      <div className="header-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h2>Suspended & Deleted Users</h2>
-        <div>
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4 }}>
+      <div className="p-8">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-gray-800">Suspended & Deleted Users</h1>
+          <div className="flex gap-2">
           {TABS.map(t => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              style={{ marginRight: 8, fontWeight: tab === t.key ? 'bold' : 'normal', background: tab === t.key ? '#eee' : 'transparent' }}
+                className={`px-4 py-2 rounded font-semibold transition-colors ${tab === t.key ? 'bg-gray-200 text-gray-900' : 'bg-white text-gray-500 hover:bg-gray-100'}`}
             >
               {t.label}
             </button>
           ))}
         </div>
       </div>
-      <div style={{ margin: '16px 0', display: 'flex', gap: 12 }}>
-        <input placeholder="Search by name/email" value={filters.search} onChange={e => setFilters(f => ({ ...f, search: e.target.value }))} />
+        <div className="flex flex-wrap gap-4 mb-4 items-center">
+          <input placeholder="Search by name/email" value={filters.search} onChange={e => setFilters(f => ({ ...f, search: e.target.value }))} className="bg-white rounded shadow px-3 py-2 outline-none" />
         {/* Add more filters here as needed */}
       </div>
-      {loading && <div>Loading users...</div>}
-      {error && <div style={{ color: 'red' }}>Error: {error}</div>}
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
+        {loading && <div className="text-gray-500 mb-2">Loading users...</div>}
+        {error && <div className="bg-red-50 text-red-700 border border-red-200 rounded px-4 py-2 mb-2 font-semibold flex items-center"><span className="mr-2">⚠️</span>Error: {error}</div>}
+        <div className="overflow-x-auto rounded-lg shadow bg-white">
+          <table className="min-w-full bg-white">
         <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Tenant</th>
-            <th>{tab === 'suspended' ? 'Suspended' : 'Deleted'} Date</th>
-            <th>Reason</th>
-            <th>Actioned By</th>
-            <th>Actions</th>
+              <tr className="bg-gray-50 text-gray-700 text-sm">
+                <th className="p-3 text-left">Name</th>
+                <th className="p-3 text-left">Email</th>
+                <th className="p-3 text-left">Role</th>
+                <th className="p-3 text-left">Tenant</th>
+                <th className="p-3 text-left">{tab === 'suspended' ? 'Suspended' : 'Deleted'} Date</th>
+                <th className="p-3 text-left">Reason</th>
+                <th className="p-3 text-left">Actioned By</th>
+                <th className="p-3 text-left">Actions</th>
           </tr>
         </thead>
         <tbody>
           {users.map(user => (
-            <tr key={user.id}>
-              <td>{user.first_name} {user.last_name}</td>
-              <td>{user.email}</td>
-              <td>{user.support_role}</td>
-              <td>{user.tenant ? user.tenant.name : ''}</td>
-              <td>{tab === 'suspended' ? (user.suspended_at ? new Date(user.suspended_at).toLocaleString() : '') : (user.deleted_at ? new Date(user.deleted_at).toLocaleString() : '')}</td>
-              <td>{tab === 'suspended' ? user.suspension_reason : user.deletion_reason}</td>
-              <td>{tab === 'suspended' ? (user.suspended_by ? `${user.suspended_by.first_name} ${user.suspended_by.last_name}` : '') : (user.deleted_by ? `${user.deleted_by.first_name} ${user.deleted_by.last_name}` : '')}</td>
-              <td>
-                <button onClick={() => { setSelectedUser(user); setModal('details'); }}>View</button>{' '}
-                {tab === 'suspended' && <button onClick={() => handleRestore(user)}>Restore</button>}
-                {tab === 'deleted' && <button onClick={() => handleRestore(user)}>Restore</button>}
-                {tab === 'deleted' && <button onClick={() => handlePermanentDelete(user)} style={{ color: '#c00' }}>Delete</button>}
+                <tr key={user.id} className="border-b hover:bg-blue-50 cursor-pointer">
+                  <td className="p-3">{user.first_name} {user.last_name}</td>
+                  <td className="p-3">{user.email}</td>
+                  <td className="p-3">{user.support_role}</td>
+                  <td className="p-3">{user.tenant ? user.tenant.name : ''}</td>
+                  <td className="p-3">{tab === 'suspended' ? (user.suspended_at ? new Date(user.suspended_at).toLocaleString() : '') : (user.deleted_at ? new Date(user.deleted_at).toLocaleString() : '')}</td>
+                  <td className="p-3">{tab === 'suspended' ? user.suspension_reason : user.deletion_reason}</td>
+                  <td className="p-3">{tab === 'suspended' ? (user.suspended_by ? `${user.suspended_by.first_name} ${user.suspended_by.last_name}` : '') : (user.deleted_by ? `${user.deleted_by.first_name} ${user.deleted_by.last_name}` : '')}</td>
+                  <td className="p-3">
+                    <button onClick={() => { setSelectedUser(user); setModal('details'); }} className="text-blue-600 hover:underline mr-2">View</button>
+                    <button onClick={() => handleRestore(user)} className="text-green-700 hover:underline mr-2">Restore</button>
+                    {tab === 'deleted' && <button onClick={() => handlePermanentDelete(user)} className="text-red-600 hover:underline">Delete</button>}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+        </div>
       {/* Placeholder modals */}
       {modal === 'details' && selectedUser && (
-        <div className="modal-backdrop" style={{ position: 'fixed', top:0, left:0, right:0, bottom:0, background: 'rgba(0,0,0,0.2)', zIndex: 1000 }}>
-          <div className="modal" style={{ background: '#fff', maxWidth: 480, margin: '60px auto', padding: 32, borderRadius: 8, boxShadow: '0 2px 16px rgba(0,0,0,0.15)' }}>
-            <h3>User Details</h3>
-            <div><strong>Name:</strong> {selectedUser.first_name} {selectedUser.last_name}</div>
-            <div><strong>Email:</strong> {selectedUser.email}</div>
-            <div><strong>Role:</strong> {selectedUser.support_role}</div>
-            <div><strong>Tenant:</strong> {selectedUser.tenant ? selectedUser.tenant.name : ''}</div>
-            <div><strong>Status:</strong> {selectedUser.is_active ? 'Active' : (selectedUser.is_deleted ? 'Deleted' : 'Suspended')}</div>
-            <div><strong>Suspended At:</strong> {selectedUser.suspended_at ? new Date(selectedUser.suspended_at).toLocaleString() : ''}</div>
-            <div><strong>Suspension Reason:</strong> {selectedUser.suspension_reason}</div>
-            <div><strong>Deleted At:</strong> {selectedUser.deleted_at ? new Date(selectedUser.deleted_at).toLocaleString() : ''}</div>
-            <div><strong>Deletion Reason:</strong> {selectedUser.deletion_reason}</div>
-            <button onClick={() => setModal(null)}>Close</button>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg p-8 relative">
+              <button className="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl" onClick={() => setModal(null)}>&times;</button>
+              <h3 className="text-xl font-bold mb-4">User Details</h3>
+              <div className="mb-2"><strong>Name:</strong> {selectedUser.first_name} {selectedUser.last_name}</div>
+              <div className="mb-2"><strong>Email:</strong> {selectedUser.email}</div>
+              <div className="mb-2"><strong>Role:</strong> {selectedUser.support_role}</div>
+              <div className="mb-2"><strong>Tenant:</strong> {selectedUser.tenant ? selectedUser.tenant.name : ''}</div>
+              <div className="mb-2"><strong>Status:</strong> {selectedUser.is_active ? 'Active' : (selectedUser.is_deleted ? 'Deleted' : 'Suspended')}</div>
+              <div className="mb-2"><strong>Suspended At:</strong> {selectedUser.suspended_at ? new Date(selectedUser.suspended_at).toLocaleString() : ''}</div>
+              <div className="mb-2"><strong>Suspension Reason:</strong> {selectedUser.suspension_reason}</div>
+              <div className="mb-2"><strong>Deleted At:</strong> {selectedUser.deleted_at ? new Date(selectedUser.deleted_at).toLocaleString() : ''}</div>
+              <div className="mb-2"><strong>Deletion Reason:</strong> {selectedUser.deletion_reason}</div>
+              <button onClick={() => setModal(null)} className="mt-4 bg-gray-100 text-gray-700 px-4 py-2 rounded font-semibold">Close</button>
           </div>
         </div>
       )}
     </div>
+    </motion.div>
   );
 };
 
