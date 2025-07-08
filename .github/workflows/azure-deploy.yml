@@ -38,6 +38,11 @@ jobs:
           CI=false npm run build
           cd ..
 
+      - name: Copy React build to Django static
+        run: |
+          mkdir -p portal/static/portal/react
+          cp -r client-portal-frontend/build/* portal/static/portal/react/
+
       - name: Install dependencies and collect static files
         run: |
           python -m venv venv
