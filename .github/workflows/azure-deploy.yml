@@ -35,7 +35,7 @@ jobs:
         run: |
           cd client-portal-frontend
           npm ci
-          npm run build
+          CI=false npm run build
           cd ..
 
       - name: Create and start virtual environment
